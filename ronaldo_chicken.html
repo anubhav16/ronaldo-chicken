@@ -15,28 +15,25 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
 #timer-pill{border-color:#ff6b6b;color:#ff9090}
 #title-pill{border-color:rgba(255,255,255,0.3);color:#fff;font-size:13px}
 .char-wrap{position:absolute;bottom:220px;z-index:15;display:flex;flex-direction:column;align-items:center}
-.char-name{font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:2px}
+.char-label{font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:2px}
 .char-body{position:relative;font-size:70px;line-height:1}
 .jersey-num{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:16px;text-shadow:0 0 4px #000,-1px -1px 0 #000,1px 1px 0 #000;pointer-events:none}
-/* Chickens - scattered everywhere including different heights */
-.chicken{position:absolute;z-index:12;font-size:48px;line-height:1;pointer-events:none;animation:chickenWalk 0.4s steps(2) infinite}
-@keyframes chickenWalk{0%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
-.chicken.show{animation:pop 0.3s ease-out forwards, chickenWalk 0.5s steps(2) 0.3s infinite}
+.chicken{position:absolute;z-index:12;font-size:48px;line-height:1;pointer-events:none}
+.chicken.show{animation:pop 0.3s ease-out forwards}
 .chicken.caught{animation:gone 0.35s ease-in forwards!important}
 @keyframes pop{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.4)}100%{transform:scale(1)}}
 @keyframes gone{0%{transform:scale(1)}30%{transform:scale(1.8) rotate(15deg)}100%{transform:scale(0) translateY(-80px);opacity:0}}
-/* chickens also bounce a little */
-.chicken.bounce{animation:chickenBounce 0.6s ease-in-out infinite, pop 0.3s ease-out}
-@keyframes chickenBounce{0%,100%{margin-bottom:0px}50%{margin-bottom:10px}}
 #catch-btn{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:40;background:linear-gradient(135deg,gold,orange);color:#1a1a2e;font-family:'Bangers',cursive;font-size:36px;letter-spacing:2px;border:none;padding:18px 70px;border-radius:50px;cursor:pointer;box-shadow:0 4px 28px rgba(255,165,0,0.8);user-select:none;-webkit-tap-highlight-color:transparent}
 #catch-btn:active{transform:translateX(-50%) scale(0.93)}
-#status{position:absolute;top:68px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:30px;color:#fff;text-shadow:0 0 14px gold;z-index:25;text-align:center;pointer-events:none;transition:opacity 0.3s;white-space:nowrap}
+#status{position:absolute;top:68px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:28px;color:#fff;text-shadow:0 0 14px gold;z-index:25;text-align:center;pointer-events:none;transition:opacity 0.3s;white-space:nowrap}
 #bubble{position:absolute;z-index:35;background:#fff;border-radius:14px;padding:6px 14px;font-size:15px;font-weight:700;color:#1a1a2e;pointer-events:none;transition:opacity 0.25s;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.4);bottom:330px}
 #bubble::after{content:'';position:absolute;bottom:-9px;left:14px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
 .particle{position:absolute;pointer-events:none;font-size:34px;animation:floatPart 1s ease-out forwards;z-index:28}
 @keyframes floatPart{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-110px) scale(0.3);opacity:0}}
 .score-pop{position:absolute;font-family:'Bangers',cursive;font-size:40px;color:gold;text-shadow:0 0 12px gold;pointer-events:none;animation:scorePop 0.8s ease-out forwards;z-index:29}
 @keyframes scorePop{0%{transform:translateY(0) scale(0.5);opacity:1}100%{transform:translateY(-90px) scale(1.4);opacity:0}}
+.funny-pop{position:absolute;font-family:'Bangers',cursive;font-size:32px;pointer-events:none;animation:funnyFloat 1.2s ease-out forwards;z-index:30;text-shadow:0 2px 8px rgba(0,0,0,0.6)}
+@keyframes funnyFloat{0%{transform:translateY(0) scale(0.5) rotate(-5deg);opacity:1}40%{transform:translateY(-40px) scale(1.2) rotate(5deg);opacity:1}100%{transform:translateY(-100px) scale(0.8);opacity:0}}
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;background:rgba(5,5,20,0.92)}
 .screen h1{font-family:'Bangers',cursive;font-size:56px;color:gold;letter-spacing:3px;text-shadow:0 0 30px gold;margin-bottom:6px;text-align:center}
 .screen p{color:#ccc;font-size:15px;text-align:center;max-width:300px;margin-bottom:20px;line-height:1.7}
@@ -44,8 +41,6 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
 .btn:active{transform:scale(0.96)}
 #final-score{font-family:'Bangers',cursive;font-size:48px;color:#fff;margin-bottom:6px}
 .bg-el{position:absolute;bottom:220px;font-size:36px;z-index:6;opacity:0.4}
-@keyframes bobR{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-@keyframes bobM{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
 </style>
 </head>
 <body>
@@ -63,31 +58,28 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
 
   <div id="status" style="opacity:0"></div>
 
-  <!-- Mbappe faces left (backwards) -->
-  <div class="char-wrap" id="mbappe-wrap" style="transform:scaleX(-1)">
-    <div class="char-name" style="color:#60A5FA;transform:scaleX(-1);font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:2px">MBAPPE</div>
-    <div class="char-body" id="mba-body" style="font-size:70px">🏃‍♂️<div class="jersey-num" style="color:#60A5FA;transform:scaleX(-1)">10</div></div>
+  <!-- Ronaldo — facing RIGHT (forward) using scaleX(-1) to flip the running emoji -->
+  <div class="char-wrap" id="ronaldo-wrap">
+    <div class="char-label" style="color:#FFD700">CR7</div>
+    <div class="char-body" id="ron-body" style="transform:scaleX(-1);font-size:70px">🏃<div class="jersey-num" style="color:#FFD700;transform:scaleX(-1)">7</div></div>
   </div>
 
-  <!-- Ronaldo -->
-  <div class="char-wrap" id="ronaldo-wrap">
-    <div class="char-name" style="color:#FFD700;font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:2px">CR7</div>
-    <div class="char-body" id="ron-body" style="font-size:70px">🏃<div class="jersey-num" style="color:#FFD700">7</div></div>
+  <!-- Mbappe — facing LEFT (backwards) normal emoji direction -->
+  <div class="char-wrap" id="mbappe-wrap">
+    <div class="char-label" style="color:#60A5FA">MBAPPE</div>
+    <div class="char-body" id="mba-body" style="font-size:70px">🏃‍♂️<div class="jersey-num" style="color:#60A5FA">10</div></div>
   </div>
 
   <div id="bubble" style="opacity:0;left:200px">CHICKENS!!</div>
-
   <button id="catch-btn" onclick="pressCatch()">🍗 CATCH!</button>
 
-  <!-- Start Screen -->
   <div class="screen" id="start-screen">
     <div style="font-size:80px;margin-bottom:4px">🐔🐔🐔🐔🐔</div>
     <h1>RONALDO<br>CHICKEN GAME</h1>
-    <p>SO MANY CHICKENS everywhere!<br>When Mbappe calls — tap <b style="color:gold">🍗 CATCH</b> as fast as you can!<br><br>Catch them all before they run away!</p>
+    <p>Ronaldo runs forwards! Mbappe runs backwards!<br>When Mbappe spots chickens — tap <b style="color:gold">🍗 CATCH</b> fast!<br><br>Listen for the <b style="color:#60A5FA">funny sounds! 😂</b></p>
     <button class="btn" onclick="startGame()">SIUUUU! 🚀</button>
   </div>
 
-  <!-- End Screen -->
   <div class="screen" id="end-screen" style="display:none">
     <div style="font-size:64px">🏆</div>
     <h1>FULL TIME!</h1>
@@ -98,7 +90,7 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
 </div>
 
 <script>
-const AC=new(window.AudioContext||window.webkitAudioContext)();
+const AC = new (window.AudioContext || window.webkitAudioContext)();
 function tone(f,t,dur,v=0.3,d=0){
   const o=AC.createOscillator(),g=AC.createGain();
   o.connect(g);g.connect(AC.destination);
@@ -108,7 +100,22 @@ function tone(f,t,dur,v=0.3,d=0){
   g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+d+dur);
   o.start(AC.currentTime+d);o.stop(AC.currentTime+d+dur+0.05);
 }
-function sfxCoin(){tone(660,'square',0.07,0.35);tone(880,'square',0.07,0.35,0.08);tone(1100,'square',0.09,0.35,0.16);}
+
+function sfxChicken(){
+  const sounds=[
+    ()=>{tone(400,'sawtooth',0.06,0.4);tone(600,'sawtooth',0.08,0.4,0.07);tone(350,'sawtooth',0.06,0.35,0.16);tone(550,'sawtooth',0.07,0.35,0.22);},
+    ()=>{tone(800,'sawtooth',0.05,0.45);tone(300,'sawtooth',0.12,0.4,0.06);tone(700,'sawtooth',0.05,0.3,0.18);},
+    ()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(200,AC.currentTime);o.frequency.linearRampToValueAtTime(900,AC.currentTime+0.25);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.3);o.start();o.stop(AC.currentTime+0.35);},
+    ()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(600,AC.currentTime);o.frequency.exponentialRampToValueAtTime(100,AC.currentTime+0.3);g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.35);o.start();o.stop(AC.currentTime+0.4);},
+    ()=>{tone(660,'square',0.07,0.35);tone(880,'square',0.07,0.35,0.08);tone(1100,'square',0.09,0.3,0.16);tone(500,'sawtooth',0.12,0.3,0.28);tone(300,'sawtooth',0.1,0.25,0.36);},
+    ()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sawtooth';o.frequency.setValueAtTime(400,AC.currentTime);o.frequency.setValueAtTime(600,AC.currentTime+0.05);o.frequency.setValueAtTime(350,AC.currentTime+0.1);o.frequency.setValueAtTime(550,AC.currentTime+0.15);o.frequency.setValueAtTime(300,AC.currentTime+0.2);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.28);o.start();o.stop(AC.currentTime+0.3);},
+    ()=>{tone(150,'sawtooth',0.08,0.45);tone(130,'sawtooth',0.1,0.4,0.07);tone(160,'sawtooth',0.08,0.35,0.15);tone(140,'sawtooth',0.09,0.3,0.22);},
+    ()=>{[0,0.07,0.14,0.21].forEach((d,i)=>tone(500+i*80,'square',0.05,0.35,d));},
+  ];
+  sounds[Math.floor(Math.random()*sounds.length)]();
+}
+
+const funnyTexts=['BAWK! 🐔','SQUAWK!!','GOT IT! 😂','SIUU! 🎉','YUMMY! 🍗','BAWK BAWK!','FEATHERS! 🪶','CLUCK! 😆','CHICKEN! 🐔','CR7 EATS! 😋','BOINGG! 🐔','BWAAAK!!'];
 function sfxCall(){tone(700,'sine',0.07,0.3);tone(900,'sine',0.07,0.3,0.08);tone(1100,'sine',0.1,0.25,0.16);}
 function sfxMiss(){tone(220,'sawtooth',0.1,0.2);tone(160,'sawtooth',0.08,0.15,0.1);}
 function sfxStart(){[523,659,784,1047].forEach((f,i)=>tone(f,'square',0.12,0.3,i*0.12));}
@@ -118,7 +125,7 @@ const GW=680;
 let score=0,timeLeft=60,running=false;
 let ronX=80,mbappeX=220;
 let chickens=[],bgEls=[];
-let loopId,timerIntv,callTimer,callScheduleTimer;
+let loopId,timerIntv,callTimer,callSchedTimer;
 let callActive=false;
 
 const ronWrap=document.getElementById('ronaldo-wrap');
@@ -131,7 +138,6 @@ const bubbleEl=document.getElementById('bubble');
 const statusEl=document.getElementById('status');
 const gameEl=document.getElementById('game');
 
-// Background
 for(let i=0;i<8;i++){
   const el=document.createElement('div');
   el.className='bg-el';
@@ -142,159 +148,89 @@ for(let i=0;i<8;i++){
   bgEls.push(el);
 }
 
-function showStatus(msg,dur=1800){
-  statusEl.textContent=msg;
-  statusEl.style.opacity='1';
-  clearTimeout(statusEl._t);
-  statusEl._t=setTimeout(()=>statusEl.style.opacity='0',dur);
-}
-function showBubble(txt){
-  const gw=gameEl.offsetWidth||680;
-  bubbleEl.textContent=txt;
-  bubbleEl.style.left=Math.min((mbappeX/GW)*gw+10,gw-200)+'px';
-  bubbleEl.style.opacity='1';
-  clearTimeout(bubbleEl._t);
-  bubbleEl._t=setTimeout(()=>bubbleEl.style.opacity='0',2200);
-}
+function showStatus(msg,dur=1800){statusEl.textContent=msg;statusEl.style.opacity='1';clearTimeout(statusEl._t);statusEl._t=setTimeout(()=>statusEl.style.opacity='0',dur);}
+function showBubble(txt){const gw=gameEl.offsetWidth||680;bubbleEl.textContent=txt;bubbleEl.style.left=Math.min((mbappeX/GW)*gw+10,gw-200)+'px';bubbleEl.style.opacity='1';clearTimeout(bubbleEl._t);bubbleEl._t=setTimeout(()=>bubbleEl.style.opacity='0',2200);}
 
-// Scatter chickens EVERYWHERE — on ground, on different heights, all over
 function spawnChickens(){
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});
   chickens=[];
-
-  const count = 15 + Math.floor(Math.random()*8); // 15–22 chickens!
+  const count=15+Math.floor(Math.random()*8);
   const gw=gameEl.offsetWidth||680;
-
-  // Heights: ground level, mid, higher — chickens on different rows
-  const rows=[220,260,300,340]; // bottom offset variations
-
+  const rows=[220,260,300,340];
   for(let i=0;i<count;i++){
     const el=document.createElement('div');
     el.className='chicken show';
     el.textContent=['🐔','🐓'][Math.floor(Math.random()*2)];
-    // Random x across full width
-    const x=30+Math.random()*(gw-80);
-    // Random row height
-    const rowH=rows[Math.floor(Math.random()*rows.length)];
-    el.style.left=x+'px';
-    el.style.bottom=rowH+'px';
+    el.style.left=(30+Math.random()*(gw-80))+'px';
+    el.style.bottom=rows[Math.floor(Math.random()*rows.length)]+'px';
     el.style.fontSize=(40+Math.random()*18)+'px';
     el.style.zIndex=12;
-    // Random wobble delay
-    el.style.animationDelay=(Math.random()*0.4)+'s';
     gameEl.appendChild(el);
-    chickens.push({el,alive:true,x,rowH});
+    chickens.push({el,alive:true});
   }
   callActive=true;
   showStatus('🐔🐔🐔 CHICKENS!! TAP CATCH!! 🐔🐔🐔',2800);
   clearTimeout(callTimer);
-  callTimer=setTimeout(()=>{
-    if(!running) return;
-    clearChickens();
-    showStatus('They ran away! 😅',1500);
-  },7000); // 7 seconds to catch
+  callTimer=setTimeout(()=>{if(!running)return;clearChickens();showStatus('They ran away! 😅',1500);},7000);
 }
 
-function clearChickens(){
-  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});
-  chickens=[];
-  callActive=false;
-}
+function clearChickens(){chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];callActive=false;}
+function mbappeCalls(){if(!running)return;sfxCall();showBubble(['SO MANY CHICKENS! 🐔🐔🐔','CR7!! CHICKENS EVERYWHERE!!','SIUU! CATCH THEM ALL! 🐔','OI! OI! CHICKENS!! ⚽🐔'][Math.floor(Math.random()*4)]);spawnChickens();}
 
-function mbappeCalls(){
-  if(!running) return;
-  sfxCall();
-  showBubble(['SO MANY CHICKENS! 🐔🐔🐔','CR7!! CHICKENS EVERYWHERE!!','SIUU! CATCH THEM ALL! 🐔','OI! OI! CHICKENS!! ⚽🐔'][Math.floor(Math.random()*4)]);
-  spawnChickens();
+function spawnFunnyText(x,y){
+  const p=document.createElement('div');
+  p.className='funny-pop';
+  p.textContent=funnyTexts[Math.floor(Math.random()*funnyTexts.length)];
+  p.style.left=x+'px';p.style.bottom=y+'px';
+  const colors=['#FFD700','#FF6B6B','#60A5FA','#4ADE80','#F472B6','#FB923C'];
+  p.style.color=colors[Math.floor(Math.random()*colors.length)];
+  gameEl.appendChild(p);
+  setTimeout(()=>p.remove(),1300);
 }
 
 function pressCatch(){
-  if(!running) return;
+  if(!running)return;
   AC.resume();
   const alive=chickens.filter(c=>c.alive);
   if(alive.length>0){
-    // Catch the first alive chicken
     const c=alive[0];
     c.alive=false;
     c.el.classList.add('caught');
+    const cx=parseFloat(c.el.style.left);
+    const cy=parseFloat(c.el.style.bottom);
     setTimeout(()=>{try{c.el.remove();}catch(e){}},380);
-    score++;
-    scoreEl.textContent=score;
-    sfxCoin();
-    // Particle near ronaldo
-    const gw=gameEl.offsetWidth||680;
-    spawnParticle((ronX/GW)*gw,'🍗');
-    spawnParticle((ronX/GW)*gw+30,'⭐');
+    score++;scoreEl.textContent=score;
+    sfxChicken();
+    spawnParticle(cx,'🍗');spawnParticle(cx+30,'⭐');
+    spawnFunnyText(cx,cy+40);
     showScorePop('+1');
     const remaining=chickens.filter(c=>c.alive);
-    if(remaining.length===0){
-      clearTimeout(callTimer);
-      callActive=false;
-      sfxAllCaught();
-      showStatus('🏆 ALL CAUGHT!! SIUUUU!!',2000);
-    } else {
-      showStatus(`${remaining.length} chickens left! 🐔`,800);
-    }
+    if(remaining.length===0){clearTimeout(callTimer);callActive=false;sfxAllCaught();showStatus('🏆 ALL CAUGHT!! SIUUUU!!',2000);}
+    else{showStatus(`${remaining.length} left! 🐔 Keep going!`,700);}
   } else {
-    sfxMiss();
-    showStatus('No chickens! Wait for Mbappe! 🤔',1000);
+    sfxMiss();showStatus('No chickens! Wait for Mbappe! 🤔',1000);
   }
 }
 
-document.addEventListener('keydown',e=>{
-  if(!running) return;
-  if(e.key===' '||e.key==='ArrowUp'||e.key==='Enter'){e.preventDefault();pressCatch();}
-});
+document.addEventListener('keydown',e=>{if(!running)return;if(e.key===' '||e.key==='ArrowUp'||e.key==='Enter'){e.preventDefault();pressCatch();}});
 
-function spawnParticle(x,emoji){
-  const p=document.createElement('div');
-  p.className='particle';p.textContent=emoji;
-  p.style.left=x+'px';p.style.bottom='260px';
-  gameEl.appendChild(p);
-  setTimeout(()=>p.remove(),1050);
-}
-function spawnScorePop(txt){
-  const p=document.createElement('div');
-  p.className='score-pop';p.textContent=txt;
-  const gw=gameEl.offsetWidth||680;
-  p.style.left=((ronX/GW)*gw)+'px';p.style.bottom='250px';
-  gameEl.appendChild(p);
-  setTimeout(()=>p.remove(),900);
-}
+function spawnParticle(x,emoji){const p=document.createElement('div');p.className='particle';p.textContent=emoji;p.style.left=x+'px';p.style.bottom='260px';gameEl.appendChild(p);setTimeout(()=>p.remove(),1050);}
+function showScorePop(txt){const p=document.createElement('div');p.className='score-pop';p.textContent=txt;const gw=gameEl.offsetWidth||680;p.style.left=((ronX/GW)*gw)+'px';p.style.bottom='250px';gameEl.appendChild(p);setTimeout(()=>p.remove(),900);}
 
 function gameFrame(){
   const gw=gameEl.offsetWidth||680;
   const scale=gw/GW;
-
-  ronX+=2.5;if(ronX>GW+20) ronX=-60;
+  ronX+=2.5;if(ronX>GW+20)ronX=-60;
   mbappeX=ronX+110;
-
   ronWrap.style.left=(ronX*scale)+'px';
   mbaWrap.style.left=(mbappeX*scale)+'px';
-
-  // Bob characters
   const t=Date.now();
-  const bobR=Math.sin(t/110)*5;
-  const bobM=Math.sin(t/90)*7;
-  ronBody.style.transform=`translateY(${bobR}px)`;
-  mbaBody.style.transform=`translateY(${bobM}px)`;
-
-  bgEls.forEach(el=>{
-    let x=parseFloat(el.style.left);
-    x-=parseFloat(el.dataset.spd)*2;
-    if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];}
-    el.style.left=x+'px';
-  });
+  ronBody.style.transform=`scaleX(-1) translateY(${Math.sin(t/110)*5}px)`;
+  mbaBody.style.transform=`translateY(${Math.sin(t/90)*7}px)`;
+  bgEls.forEach(el=>{let x=parseFloat(el.style.left);x-=parseFloat(el.dataset.spd)*2;if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];}el.style.left=x+'px';});
 }
 
-function scheduleCall(){
-  clearTimeout(callScheduleTimer);
-  callScheduleTimer=setTimeout(()=>{
-    if(!running) return;
-    if(!callActive) mbappeCalls();
-    scheduleCall();
-  },5000+Math.random()*3000);
-}
+function scheduleCall(){clearTimeout(callSchedTimer);callSchedTimer=setTimeout(()=>{if(!running)return;if(!callActive)mbappeCalls();scheduleCall();},5000+Math.random()*3000);}
 
 function startGame(){
   AC.resume();
@@ -303,23 +239,16 @@ function startGame(){
   score=0;timeLeft=60;running=true;
   scoreEl.textContent=0;timerEl.textContent=60;
   ronX=80;mbappeX=220;
-  clearChickens();
-  sfxStart();
-  clearInterval(loopId);clearInterval(timerIntv);
-  clearTimeout(callTimer);clearTimeout(callScheduleTimer);
+  clearChickens();sfxStart();
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(callTimer);clearTimeout(callSchedTimer);
   loopId=setInterval(gameFrame,16);
-  timerIntv=setInterval(()=>{
-    timeLeft--;timerEl.textContent=timeLeft;
-    if(timeLeft<=0) endGame();
-  },1000);
-  // First call fast!
-  setTimeout(()=>{if(running) mbappeCalls();},1800);
+  timerIntv=setInterval(()=>{timeLeft--;timerEl.textContent=timeLeft;if(timeLeft<=0)endGame();},1000);
+  setTimeout(()=>{if(running)mbappeCalls();},1800);
   scheduleCall();
 }
 
 function endGame(){
-  clearInterval(loopId);clearInterval(timerIntv);
-  clearTimeout(callTimer);clearTimeout(callScheduleTimer);
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(callTimer);clearTimeout(callSchedTimer);
   running=false;clearChickens();
   document.getElementById('final-score').textContent=`${score} chicken${score!==1?'s':''}! 🍗`;
   const msgs=score>=20?'SIUUUUU!! RONALDO IS THE GOAT!! 🐐':score>=12?'Brilliant! Mbappe is VERY proud! 💙':score>=5?'Good run! Try again!':'The chickens escaped! Try again CR7!';

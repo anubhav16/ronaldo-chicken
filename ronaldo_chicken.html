@@ -15,39 +15,40 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
 #timer-pill{border-color:#ff6b6b;color:#ff9090}
 #title-pill{border-color:rgba(255,255,255,0.3);color:#fff;font-size:13px}
 
-/* ── Characters drawn with canvas-like SVG so we can animate legs ── */
 .char-wrap{position:absolute;bottom:215px;z-index:15;display:flex;flex-direction:column;align-items:center}
-.char-label{font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:1px}
-.char-svg{width:64px;height:80px;overflow:visible}
+.char-label{font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:2px;white-space:nowrap}
+.char-svg{width:70px;height:90px;overflow:visible}
 
-/* Bicycle kick anim on Ronaldo's SVG */
+/* Leg swing animations */
+@keyframes legSwingL{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(30deg)}}
+@keyframes legSwingR{0%,100%{transform:rotate(30deg)}50%{transform:rotate(-30deg)}}
+@keyframes armSwingL{0%,100%{transform:rotate(25deg)}50%{transform:rotate(-25deg)}}
+@keyframes armSwingR{0%,100%{transform:rotate(-25deg)}50%{transform:rotate(25deg)}}
+
+.run-leg-l{transform-origin:0px 0px;animation:legSwingL 0.28s linear infinite}
+.run-leg-r{transform-origin:0px 0px;animation:legSwingR 0.28s linear infinite}
+.run-arm-l{transform-origin:0px 0px;animation:armSwingL 0.28s linear infinite}
+.run-arm-r{transform-origin:0px 0px;animation:armSwingR 0.28s linear infinite}
+
+.run-leg-lm{transform-origin:0px 0px;animation:legSwingL 0.22s linear infinite}
+.run-leg-rm{transform-origin:0px 0px;animation:legSwingR 0.22s linear infinite}
+.run-arm-lm{transform-origin:0px 0px;animation:armSwingL 0.22s linear infinite}
+.run-arm-rm{transform-origin:0px 0px;animation:armSwingR 0.22s linear infinite}
+
+/* Bicycle kick — whole body rotates */
 @keyframes bikeKick{
-  0%  {transform:rotate(0deg)}
-  20% {transform:rotate(-30deg) translateY(-10px)}
-  50% {transform:rotate(15deg) translateY(-20px)}
-  75% {transform:rotate(-20deg) translateY(-8px)}
-  100%{transform:rotate(0deg)}
+  0%  {transform:translateY(0) rotate(0deg)}
+  25% {transform:translateY(-18px) rotate(-40deg)}
+  55% {transform:translateY(-22px) rotate(20deg)}
+  80% {transform:translateY(-8px) rotate(-10deg)}
+  100%{transform:translateY(0) rotate(0deg)}
 }
-.kicking{animation:bikeKick 0.55s ease-out}
+.kicking{animation:bikeKick 0.6s ease-out forwards!important}
 
-/* leg animations */
-@keyframes legL{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(28deg)}}
-@keyframes legR{0%,100%{transform:rotate(28deg)}50%{transform:rotate(-28deg)}}
-@keyframes legLm{0%,100%{transform:rotate(-32deg)}50%{transform:rotate(32deg)}}
-@keyframes legRm{0%,100%{transform:rotate(32deg)}50%{transform:rotate(-32deg)}}
-
-.leg-l{transform-origin:50% 0%;animation:legL 0.28s linear infinite}
-.leg-r{transform-origin:50% 0%;animation:legR 0.28s linear infinite}
-.leg-lm{transform-origin:50% 0%;animation:legLm 0.22s linear infinite}
-.leg-rm{transform-origin:50% 0%;animation:legRm 0.22s linear infinite}
-
-/* arm swing */
-@keyframes armL{0%,100%{transform:rotate(20deg)}50%{transform:rotate(-20deg)}}
-@keyframes armR{0%,100%{transform:rotate(-20deg)}50%{transform:rotate(20deg)}}
-.arm-l{transform-origin:50% 0%;animation:armL 0.28s linear infinite}
-.arm-r{transform-origin:50% 0%;animation:armR 0.28s linear infinite}
-.arm-lm{transform-origin:50% 0%;animation:armL 0.22s linear infinite}
-.arm-rm{transform-origin:50% 0%;animation:armR 0.22s linear infinite}
+/* body bob while running */
+@keyframes bodyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.bobbing{animation:bodyBob 0.28s linear infinite}
+.bobbingM{animation:bodyBob 0.22s linear infinite}
 
 .chicken{position:absolute;z-index:12;font-size:48px;line-height:1;pointer-events:none}
 .chicken.show{animation:pop 0.3s ease-out forwards}
@@ -57,21 +58,15 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
 
 #catch-btn{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:40;background:linear-gradient(135deg,gold,orange);color:#1a1a2e;font-family:'Bangers',cursive;font-size:34px;letter-spacing:2px;border:none;padding:16px 64px;border-radius:50px;cursor:pointer;box-shadow:0 4px 28px rgba(255,165,0,0.8);user-select:none;-webkit-tap-highlight-color:transparent}
 #catch-btn:active{transform:translateX(-50%) scale(0.93)}
-
 #status{position:absolute;top:68px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:28px;color:#fff;text-shadow:0 0 14px gold;z-index:25;text-align:center;pointer-events:none;transition:opacity 0.3s;white-space:nowrap}
 #bubble{position:absolute;z-index:35;background:#fff;border-radius:14px;padding:6px 14px;font-size:15px;font-weight:700;color:#1a1a2e;pointer-events:none;transition:opacity 0.25s;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.4);bottom:340px}
 #bubble::after{content:'';position:absolute;bottom:-9px;left:14px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
-
 .particle{position:absolute;pointer-events:none;font-size:34px;animation:floatPart 1s ease-out forwards;z-index:28}
 @keyframes floatPart{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-110px) scale(0.3);opacity:0}}
 .score-pop{position:absolute;font-family:'Bangers',cursive;font-size:40px;color:gold;text-shadow:0 0 12px gold;pointer-events:none;animation:scorePop 0.8s ease-out forwards;z-index:29}
 @keyframes scorePop{0%{transform:translateY(0) scale(0.5);opacity:1}100%{transform:translateY(-90px) scale(1.4);opacity:0}}
 .funny-pop{position:absolute;font-family:'Bangers',cursive;font-size:32px;pointer-events:none;animation:funnyFloat 1.2s ease-out forwards;z-index:30;text-shadow:0 2px 8px rgba(0,0,0,0.6)}
 @keyframes funnyFloat{0%{transform:translateY(0) scale(0.5) rotate(-5deg);opacity:1}40%{transform:translateY(-40px) scale(1.2) rotate(5deg);opacity:1}100%{transform:translateY(-100px) scale(0.8);opacity:0}}
-
-/* bicycle kick flash */
-#kick-flash{position:absolute;font-size:52px;pointer-events:none;z-index:32;opacity:0;transition:opacity 0.1s}
-
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;background:rgba(5,5,20,0.92)}
 .screen h1{font-family:'Bangers',cursive;font-size:52px;color:gold;letter-spacing:3px;text-shadow:0 0 30px gold;margin-bottom:6px;text-align:center}
 .screen p{color:#ccc;font-size:14px;text-align:center;max-width:300px;margin-bottom:20px;line-height:1.7}
@@ -95,91 +90,156 @@ body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
   </div>
   <div id="status" style="opacity:0"></div>
 
-  <!-- RONALDO — SVG stick figure facing right -->
+  <!-- ══ RONALDO — proper looking, facing forward ══ -->
   <div class="char-wrap" id="ronaldo-wrap">
-    <div class="char-label" style="color:#FFD700">CR7 ⭐7</div>
-    <svg class="char-svg" id="ron-svg" viewBox="-32 -80 64 90" xmlns="http://www.w3.org/2000/svg">
-      <!-- Body group, can rotate for bicycle kick -->
-      <g id="ron-body-g">
-        <!-- Head -->
-        <circle cx="0" cy="-72" r="10" fill="#FBBF24" stroke="#92400E" stroke-width="1.5"/>
-        <!-- Hair -->
-        <ellipse cx="0" cy="-80" rx="8" ry="4" fill="#1a1a1a"/>
-        <!-- Jersey - red/black CR7 -->
-        <rect x="-10" y="-62" width="20" height="22" rx="3" fill="#DC2626"/>
-        <text x="0" y="-47" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff" font-family="Arial">CR7</text>
+    <div class="char-label" style="color:#FFD700">CR7 ⭐</div>
+    <svg class="char-svg" id="ron-svg" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
+      <g id="ron-all" class="bobbing">
+        <!-- Shadow -->
+        <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.25)"/>
+        <!-- LEFT LEG (behind) -->
+        <g class="run-leg-l" style="transform:translate(−4px,−30px)">
+          <g transform="translate(-4,-30)">
+            <line x1="0" y1="0" x2="-3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/>
+            <line x1="-3" y1="18" x2="-2" y2="30" stroke="#D4A574" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="-1" cy="32" rx="7" ry="4" fill="#111" transform="rotate(-5,-1,32)"/>
+          </g>
+        </g>
+        <!-- RIGHT LEG (front) -->
+        <g class="run-leg-r" style="transform:translate(4px,−30px)">
+          <g transform="translate(4,-30)">
+            <line x1="0" y1="0" x2="3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/>
+            <line x1="3" y1="18" x2="4" y2="30" stroke="#D4A574" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="5" cy="32" rx="7" ry="4" fill="#111" transform="rotate(5,5,32)"/>
+          </g>
+        </g>
+        <!-- BODY — Red CR7 jersey -->
+        <rect x="-13" y="-60" width="26" height="32" rx="5" fill="#C62828"/>
+        <!-- Jersey stripes -->
+        <rect x="-13" y="-60" width="6" height="32" rx="2" fill="#B71C1C"/>
+        <!-- Number 7 -->
+        <text x="3" y="-40" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#FFD700">7</text>
         <!-- Shorts -->
-        <rect x="-9" y="-40" width="18" height="10" rx="2" fill="#1D4ED8"/>
-        <!-- Arms -->
-        <g class="arm-l" style="transform-origin:−8px -58px">
-          <line x1="-8" y1="-58" x2="-18" y2="-42" stroke="#FBBF24" stroke-width="3.5" stroke-linecap="round"/>
+        <rect x="-11" y="-28" width="22" height="14" rx="4" fill="#1565C0"/>
+        <!-- LEFT ARM -->
+        <g class="run-arm-l" style="transform:translate(−11px,−54px)">
+          <g transform="translate(-11,-54)">
+            <line x1="0" y1="0" x2="-10" y2="14" stroke="#C62828" stroke-width="5" stroke-linecap="round"/>
+            <line x1="-10" y1="14" x2="-12" y2="22" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/>
+          </g>
         </g>
-        <g class="arm-r" style="transform-origin:8px -58px">
-          <line x1="8" y1="-58" x2="18" y2="-42" stroke="#FBBF24" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- RIGHT ARM -->
+        <g class="run-arm-r" style="transform:translate(11px,−54px)">
+          <g transform="translate(11,-54)">
+            <line x1="0" y1="0" x2="10" y2="14" stroke="#C62828" stroke-width="5" stroke-linecap="round"/>
+            <line x1="10" y1="14" x2="12" y2="22" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/>
+          </g>
         </g>
-        <!-- Legs -->
-        <g class="leg-l" id="ron-leg-l" style="transform-origin:−4px -30px">
-          <line x1="-4" y1="-30" x2="-8" y2="-10" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
-          <!-- boot -->
-          <ellipse cx="-9" cy="-8" rx="6" ry="3.5" fill="#1a1a1a" transform="rotate(-10,-9,-8)"/>
-        </g>
-        <g class="leg-r" id="ron-leg-r" style="transform-origin:4px -30px">
-          <line x1="4" y1="-30" x2="8" y2="-10" stroke="#FBBF24" stroke-width="4" stroke-linecap="round"/>
-          <ellipse cx="9" cy="-8" rx="6" ry="3.5" fill="#1a1a1a" transform="rotate(10,9,-8)"/>
-        </g>
-        <!-- ball at foot when kicking -->
-        <circle id="ron-ball" cx="14" cy="-6" r="7" fill="white" stroke="#333" stroke-width="1" opacity="0"/>
+        <!-- NECK -->
+        <rect x="-4" y="-64" width="8" height="6" rx="2" fill="#D4A574"/>
+        <!-- HEAD — proper Ronaldo face -->
+        <circle cx="0" cy="-74" r="13" fill="#D4A574"/>
+        <!-- Hair — dark swept back -->
+        <ellipse cx="0" cy="-85" rx="12" ry="6" fill="#1a1a1a"/>
+        <ellipse cx="-6" cy="-80" rx="6" ry="5" fill="#1a1a1a"/>
+        <ellipse cx="6" cy="-80" rx="5" ry="4" fill="#1a1a1a"/>
+        <!-- Eyes -->
+        <ellipse cx="-5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/>
+        <ellipse cx="5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/>
+        <circle cx="-5" cy="-75" r="1.5" fill="#3E2723"/>
+        <circle cx="5" cy="-75" r="1.5" fill="#3E2723"/>
+        <!-- Eyebrows -->
+        <line x1="-7.5" y1="-78.5" x2="-2.5" y2="-78" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2.5" y1="-78" x2="7.5" y2="-78.5" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Nose -->
+        <ellipse cx="0" cy="-72" rx="1.5" ry="1" fill="#C4956A"/>
+        <!-- Smile -->
+        <path d="M -4 -68 Q 0 -65 4 -68" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Ear -->
+        <ellipse cx="-13" cy="-74" rx="2.5" ry="3.5" fill="#D4A574"/>
+        <ellipse cx="13" cy="-74" rx="2.5" ry="3.5" fill="#D4A574"/>
+        <!-- Kick ball (hidden normally) -->
+        <circle id="ron-ball" cx="18" cy="-10" r="8" fill="white" stroke="#333" stroke-width="1.5" opacity="0"/>
+        <!-- Star sparkle when kicking -->
+        <text id="kick-star" x="22" y="-20" font-size="10" opacity="0">⭐</text>
       </g>
     </svg>
   </div>
 
-  <!-- MBAPPE — SVG stick figure facing LEFT (mirrored) -->
+  <!-- ══ MBAPPE — facing forward ══ -->
   <div class="char-wrap" id="mbappe-wrap">
-    <div class="char-label" style="color:#60A5FA">MBAPPE ⭐10</div>
-    <svg class="char-svg" id="mba-svg" viewBox="-32 -80 64 90" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
-      <g id="mba-body-g">
-        <!-- Head -->
-        <circle cx="0" cy="-72" r="10" fill="#92400E" stroke="#78350F" stroke-width="1.5"/>
-        <!-- Hair short -->
-        <ellipse cx="0" cy="-80" rx="8" ry="3" fill="#111"/>
-        <!-- Jersey - France blue -->
-        <rect x="-10" y="-62" width="20" height="22" rx="3" fill="#1E3A8A"/>
-        <text x="0" y="-47" text-anchor="middle" font-size="8" font-weight="bold" fill="#fff" font-family="Arial">10</text>
+    <div class="char-label" style="color:#60A5FA">MBAPPE ⭐</div>
+    <svg class="char-svg" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
+      <g id="mba-all" class="bobbingM">
+        <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.25)"/>
+        <!-- LEFT LEG -->
+        <g class="run-leg-lm" style="transform:translate(−4px,−30px)">
+          <g transform="translate(-4,-30)">
+            <line x1="0" y1="0" x2="-3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/>
+            <line x1="-3" y1="18" x2="-2" y2="30" stroke="#8D6748" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="-1" cy="32" rx="7" ry="4" fill="#111" transform="rotate(-5,-1,32)"/>
+          </g>
+        </g>
+        <!-- RIGHT LEG -->
+        <g class="run-leg-rm" style="transform:translate(4px,−30px)">
+          <g transform="translate(4,-30)">
+            <line x1="0" y1="0" x2="3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/>
+            <line x1="3" y1="18" x2="4" y2="30" stroke="#8D6748" stroke-width="5" stroke-linecap="round"/>
+            <ellipse cx="5" cy="32" rx="7" ry="4" fill="#111" transform="rotate(5,5,32)"/>
+          </g>
+        </g>
+        <!-- BODY — France blue jersey -->
+        <rect x="-13" y="-60" width="26" height="32" rx="5" fill="#1565C0"/>
+        <text x="0" y="-40" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="12" fill="#fff">10</text>
         <!-- Shorts -->
-        <rect x="-9" y="-40" width="18" height="10" rx="2" fill="#111"/>
-        <!-- Arms -->
-        <g class="arm-lm" style="transform-origin:-8px -58px">
-          <line x1="-8" y1="-58" x2="-18" y2="-42" stroke="#92400E" stroke-width="3.5" stroke-linecap="round"/>
+        <rect x="-11" y="-28" width="22" height="14" rx="4" fill="#111"/>
+        <!-- LEFT ARM -->
+        <g class="run-arm-lm" style="transform:translate(−11px,−54px)">
+          <g transform="translate(-11,-54)">
+            <line x1="0" y1="0" x2="-10" y2="14" stroke="#1565C0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="-10" y1="14" x2="-12" y2="22" stroke="#8D6748" stroke-width="4" stroke-linecap="round"/>
+          </g>
         </g>
-        <g class="arm-rm" style="transform-origin:8px -58px">
-          <line x1="8" y1="-58" x2="18" y2="-42" stroke="#92400E" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- RIGHT ARM -->
+        <g class="run-arm-rm" style="transform:translate(11px,−54px)">
+          <g transform="translate(11,-54)">
+            <line x1="0" y1="0" x2="10" y2="14" stroke="#1565C0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="10" y1="14" x2="12" y2="22" stroke="#8D6748" stroke-width="4" stroke-linecap="round"/>
+          </g>
         </g>
-        <!-- Legs -->
-        <g class="leg-lm" style="transform-origin:-4px -30px">
-          <line x1="-4" y1="-30" x2="-8" y2="-10" stroke="#92400E" stroke-width="4" stroke-linecap="round"/>
-          <ellipse cx="-9" cy="-8" rx="6" ry="3.5" fill="#1a1a1a" transform="rotate(-10,-9,-8)"/>
-        </g>
-        <g class="leg-rm" style="transform-origin:4px -30px">
-          <line x1="4" y1="-30" x2="8" y2="-10" stroke="#92400E" stroke-width="4" stroke-linecap="round"/>
-          <ellipse cx="9" cy="-8" rx="6" ry="3.5" fill="#1a1a1a" transform="rotate(10,9,-8)"/>
-        </g>
+        <!-- NECK -->
+        <rect x="-4" y="-64" width="8" height="6" rx="2" fill="#8D6748"/>
+        <!-- HEAD -->
+        <circle cx="0" cy="-74" r="13" fill="#8D6748"/>
+        <!-- Hair short -->
+        <ellipse cx="0" cy="-86" rx="11" ry="5" fill="#111"/>
+        <ellipse cx="-5" cy="-82" rx="7" ry="5" fill="#111"/>
+        <ellipse cx="5" cy="-82" rx="6" ry="4" fill="#111"/>
+        <!-- Eyes -->
+        <ellipse cx="-5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/>
+        <ellipse cx="5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/>
+        <circle cx="-5" cy="-75" r="1.5" fill="#1a1a1a"/>
+        <circle cx="5" cy="-75" r="1.5" fill="#1a1a1a"/>
+        <line x1="-7.5" y1="-78.5" x2="-2.5" y2="-78" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="2.5" y1="-78" x2="7.5" y2="-78.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="0" cy="-72" rx="1.5" ry="1" fill="#7A5C3A"/>
+        <path d="M -4 -68 Q 0 -65 4 -68" stroke="#5C3A1E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-13" cy="-74" rx="2.5" ry="3.5" fill="#8D6748"/>
+        <ellipse cx="13" cy="-74" rx="2.5" ry="3.5" fill="#8D6748"/>
       </g>
     </svg>
   </div>
 
   <div id="bubble" style="opacity:0;left:200px">CHICKENS!!</div>
-  <div id="kick-flash" style="bottom:260px;left:80px">🦵⚽</div>
   <button id="catch-btn" onclick="pressCatch()">🍗 CATCH!</button>
 
-  <!-- Start -->
   <div class="screen" id="start-screen">
-    <div style="font-size:72px;margin-bottom:4px">🐔🐔🐔🐔🐔</div>
+    <div style="font-size:72px;margin-bottom:6px">🐔🐔🐔🐔🐔</div>
     <h1>RONALDO<br>CHICKEN GAME</h1>
-    <p>Ronaldo & Mbappe have moving legs!<br>Catch chickens and watch Ronaldo do a <b style="color:gold">BICYCLE KICK! 🦵⚽</b><br><br>Tap <b style="color:gold">🍗 CATCH</b> when chickens appear!</p>
+    <p>Ronaldo & Mbappe run forward!<br>When Mbappe spots chickens — tap <b style="color:gold">🍗 CATCH</b>!<br>Watch Ronaldo do a <b style="color:#60A5FA">BICYCLE KICK 🦵⚽</b> every time!</p>
     <button class="btn" onclick="startGame()">SIUUUU! 🚀</button>
   </div>
 
-  <!-- End -->
   <div class="screen" id="end-screen" style="display:none">
     <div style="font-size:64px">🏆</div>
     <h1>FULL TIME!</h1>
@@ -199,89 +259,77 @@ function sfxChicken(){
     ()=>{tone(800,'sawtooth',0.05,0.45);tone(300,'sawtooth',0.12,0.4,0.06);tone(700,'sawtooth',0.05,0.3,0.18);},
     ()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(200,AC.currentTime);o.frequency.linearRampToValueAtTime(900,AC.currentTime+0.25);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.3);o.start();o.stop(AC.currentTime+0.35);},
     ()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(600,AC.currentTime);o.frequency.exponentialRampToValueAtTime(100,AC.currentTime+0.3);g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.35);o.start();o.stop(AC.currentTime+0.4);},
-    ()=>{tone(660,'square',0.07,0.35);tone(880,'square',0.07,0.35,0.08);tone(1100,'square',0.09,0.3,0.16);tone(500,'sawtooth',0.12,0.3,0.28);tone(300,'sawtooth',0.1,0.25,0.36);},
-    ()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sawtooth';o.frequency.setValueAtTime(400,AC.currentTime);o.frequency.setValueAtTime(600,AC.currentTime+0.05);o.frequency.setValueAtTime(350,AC.currentTime+0.1);o.frequency.setValueAtTime(550,AC.currentTime+0.15);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.28);o.start();o.stop(AC.currentTime+0.3);},
-    ()=>{tone(150,'sawtooth',0.08,0.45);tone(130,'sawtooth',0.1,0.4,0.07);tone(160,'sawtooth',0.08,0.35,0.15);},
+    ()=>{tone(660,'square',0.07,0.35);tone(880,'square',0.07,0.35,0.08);tone(1100,'square',0.09,0.3,0.16);tone(500,'sawtooth',0.12,0.3,0.28);},
     ()=>{[0,0.07,0.14,0.21].forEach((d,i)=>tone(500+i*80,'square',0.05,0.35,d));},
+    ()=>{tone(150,'sawtooth',0.08,0.45);tone(130,'sawtooth',0.1,0.4,0.07);tone(160,'sawtooth',0.08,0.35,0.15);},
   ];
   sounds[Math.floor(Math.random()*sounds.length)]();
 }
 
 function sfxBikeKick(){
-  // Whoosh + thwack
   const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
-  o.type='sawtooth';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.linearRampToValueAtTime(80,AC.currentTime+0.18);
-  g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.22);
-  o.start();o.stop(AC.currentTime+0.25);
-  tone(200,'square',0.08,0.4,0.2);
-  tone(150,'square',0.06,0.3,0.28);
+  o.type='sawtooth';o.frequency.setValueAtTime(320,AC.currentTime);o.frequency.linearRampToValueAtTime(60,AC.currentTime+0.2);
+  g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.25);
+  o.start();o.stop(AC.currentTime+0.28);
+  tone(180,'square',0.07,0.35,0.22);
 }
-
-const funnyTexts=['BAWK! 🐔','SQUAWK!!','GOT IT! 😂','SIUU! 🎉','YUMMY! 🍗','BAWK BAWK!','FEATHERS! 🪶','CLUCK! 😆','CR7 EATS! 😋','BOINGG! 🐔','BWAAAK!!'];
 function sfxCall(){tone(700,'sine',0.07,0.3);tone(900,'sine',0.07,0.3,0.08);tone(1100,'sine',0.1,0.25,0.16);}
 function sfxMiss(){tone(220,'sawtooth',0.1,0.2);tone(160,'sawtooth',0.08,0.15,0.1);}
 function sfxStart(){[523,659,784,1047].forEach((f,i)=>tone(f,'square',0.12,0.3,i*0.12));}
 function sfxAllCaught(){[523,659,784,880,1047].forEach((f,i)=>tone(f,'square',0.1,0.35,i*0.08));}
+
+const funnyTexts=['BAWK! 🐔','SQUAWK!!','GOT IT! 😂','SIUU! 🎉','YUMMY! 🍗','BAWK BAWK!','FEATHERS! 🪶','CLUCK! 😆','CR7 EATS! 😋','BOINGG! 🐔','BWAAAK!!'];
 
 const GW=680;
 let score=0,timeLeft=60,running=false;
 let ronX=60,mbappeX=180;
 let chickens=[],bgEls=[];
 let loopId,timerIntv,callTimer,callSchedTimer;
-let callActive=false;
-let isKicking=false;
+let callActive=false,isKicking=false;
 
 const ronWrap=document.getElementById('ronaldo-wrap');
 const mbaWrap=document.getElementById('mbappe-wrap');
-const ronSvg=document.getElementById('ron-svg');
+const ronSvgAll=document.getElementById('ron-all');
 const ronBall=document.getElementById('ron-ball');
-const kickFlash=document.getElementById('kick-flash');
+const kickStar=document.getElementById('kick-star');
 const scoreEl=document.getElementById('score');
 const timerEl=document.getElementById('timer');
 const bubbleEl=document.getElementById('bubble');
 const statusEl=document.getElementById('status');
 const gameEl=document.getElementById('game');
 
-// Background
 for(let i=0;i<8;i++){const el=document.createElement('div');el.className='bg-el';el.textContent=['🌿','🌳','🏟️','🌲','🌿','🌳'][Math.floor(Math.random()*6)];el.style.left=(i*90)+'px';el.dataset.spd=(1.2+Math.random()*1.5).toString();gameEl.appendChild(el);bgEls.push(el);}
 
 function showStatus(msg,dur=1800){statusEl.textContent=msg;statusEl.style.opacity='1';clearTimeout(statusEl._t);statusEl._t=setTimeout(()=>statusEl.style.opacity='0',dur);}
 function showBubble(txt){const gw=gameEl.offsetWidth||680;bubbleEl.textContent=txt;bubbleEl.style.left=Math.min((mbappeX/GW)*gw+10,gw-200)+'px';bubbleEl.style.opacity='1';clearTimeout(bubbleEl._t);bubbleEl._t=setTimeout(()=>bubbleEl.style.opacity='0',2200);}
 
 function doBicycleKick(){
-  if(isKicking) return;
+  if(isKicking)return;
   isKicking=true;
   sfxBikeKick();
-  // Show ball
   ronBall.setAttribute('opacity','1');
-  // Kick animation on whole SVG
-  ronSvg.style.animation='none';
-  void ronSvg.offsetWidth;
-  ronSvg.style.animation='bikeKick 0.55s ease-out forwards';
-  // Flash emoji
-  const gw=gameEl.offsetWidth||680;
-  kickFlash.style.left=((ronX/GW)*gw+30)+'px';
-  kickFlash.style.opacity='1';
-  showStatus('🦵 BICYCLE KICK!! ⚽',1000);
+  kickStar.setAttribute('opacity','1');
+  ronSvgAll.classList.add('kicking');
+  showStatus('🦵 BICYCLE KICK!! ⚽',900);
   setTimeout(()=>{
-    ronSvg.style.animation='';
+    ronSvgAll.classList.remove('kicking');
     ronBall.setAttribute('opacity','0');
-    kickFlash.style.opacity='0';
+    kickStar.setAttribute('opacity','0');
     isKicking=false;
-  },600);
+  },650);
 }
 
 function spawnChickens(){
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];
   const count=15+Math.floor(Math.random()*8);
   const gw=gameEl.offsetWidth||680;
-  const rows=[220,260,300,340];
+  const rows=[220,255,295,335];
   for(let i=0;i<count;i++){
     const el=document.createElement('div');el.className='chicken show';
     el.textContent=['🐔','🐓'][Math.floor(Math.random()*2)];
     el.style.left=(30+Math.random()*(gw-80))+'px';
     el.style.bottom=rows[Math.floor(Math.random()*rows.length)]+'px';
-    el.style.fontSize=(40+Math.random()*18)+'px';
+    el.style.fontSize=(40+Math.random()*16)+'px';
     el.style.zIndex=12;
     gameEl.appendChild(el);chickens.push({el,alive:true});
   }
@@ -306,7 +354,6 @@ function spawnFunnyText(x,y){
 function pressCatch(){
   if(!running)return;
   AC.resume();
-  // Always do bicycle kick on catch press!
   doBicycleKick();
   const alive=chickens.filter(c=>c.alive);
   if(alive.length>0){
@@ -332,14 +379,10 @@ function showScorePop(txt){const p=document.createElement('div');p.className='sc
 
 function gameFrame(){
   const gw=gameEl.offsetWidth||680;const scale=gw/GW;
-  ronX+=2.5;if(ronX>GW+20)ronX=-60;
-  mbappeX=ronX+120;
+  ronX+=2.5;if(ronX>GW+20)ronX=-70;
+  mbappeX=ronX+130;
   ronWrap.style.left=(ronX*scale)+'px';
   mbaWrap.style.left=(mbappeX*scale)+'px';
-  // body bob
-  const t=Date.now();
-  document.getElementById('ron-body-g').style.transform=`translateY(${Math.sin(t/100)*2}px)`;
-  document.getElementById('mba-body-g').style.transform=`translateY(${Math.sin(t/85)*2.5}px)`;
   bgEls.forEach(el=>{let x=parseFloat(el.style.left);x-=parseFloat(el.dataset.spd)*2;if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];}el.style.left=x+'px';});
 }
 
@@ -351,7 +394,8 @@ function startGame(){
   document.getElementById('end-screen').style.display='none';
   score=0;timeLeft=60;running=true;isKicking=false;
   scoreEl.textContent=0;timerEl.textContent=60;
-  ronX=60;mbappeX=180;clearChickens();sfxStart();
+  ronX=60;mbappeX=190;
+  clearChickens();sfxStart();
   clearInterval(loopId);clearInterval(timerIntv);clearTimeout(callTimer);clearTimeout(callSchedTimer);
   loopId=setInterval(gameFrame,16);
   timerIntv=setInterval(()=>{timeLeft--;timerEl.textContent=timeLeft;if(timeLeft<=0)endGame();},1000);

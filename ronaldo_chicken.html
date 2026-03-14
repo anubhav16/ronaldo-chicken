@@ -5,450 +5,530 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka+One&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#1a1a2e;overflow:hidden;font-family:'Fredoka One',cursive}
-#game{position:relative;width:100%;height:560px;overflow:hidden}
-#sky{position:absolute;inset:0;background:linear-gradient(180deg,#0d1b4b 0%,#1a3a6e 55%,#2d6a4f 55%,#1a4d35 100%)}
-.light{position:absolute;top:0;width:6px;height:44px;background:linear-gradient(180deg,#fffbe0,transparent);border-radius:0 0 4px 4px;opacity:0.7}
-#ui{position:absolute;top:0;left:0;right:0;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;z-index:30;background:linear-gradient(180deg,rgba(0,0,0,0.6),transparent)}
-.ui-pill{background:rgba(0,0,0,0.5);border:2px solid;border-radius:20px;padding:4px 12px;font-family:'Bangers',cursive;font-size:18px;letter-spacing:1px}
-#score-pill{border-color:gold;color:gold}
-#timer-pill{border-color:#ff6b6b;color:#ff9090}
-#title-pill{border-color:rgba(255,255,255,0.3);color:#fff;font-size:12px}
-
-.char-wrap{position:absolute;bottom:215px;z-index:15;display:flex;flex-direction:column;align-items:center}
-.char-label{font-family:'Bangers',cursive;font-size:13px;letter-spacing:1px;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:2px;white-space:nowrap}
-.char-svg{width:70px;height:90px;overflow:visible}
-
-@keyframes legSwingL{0%,100%{transform:rotate(-30deg)}50%{transform:rotate(30deg)}}
-@keyframes legSwingR{0%,100%{transform:rotate(30deg)}50%{transform:rotate(-30deg)}}
-@keyframes armSwingL{0%,100%{transform:rotate(25deg)}50%{transform:rotate(-25deg)}}
-@keyframes armSwingR{0%,100%{transform:rotate(-25deg)}50%{transform:rotate(25deg)}}
-.run-leg-l{transform-origin:0 0;animation:legSwingL 0.28s linear infinite}
-.run-leg-r{transform-origin:0 0;animation:legSwingR 0.28s linear infinite}
-.run-arm-l{transform-origin:0 0;animation:armSwingL 0.28s linear infinite}
-.run-arm-r{transform-origin:0 0;animation:armSwingR 0.28s linear infinite}
-.run-leg-lm{transform-origin:0 0;animation:legSwingL 0.22s linear infinite}
-.run-leg-rm{transform-origin:0 0;animation:legSwingR 0.22s linear infinite}
-.run-arm-lm{transform-origin:0 0;animation:armSwingL 0.22s linear infinite}
-.run-arm-rm{transform-origin:0 0;animation:armSwingR 0.22s linear infinite}
-@keyframes bikeKick{0%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-20px) rotate(-45deg)}55%{transform:translateY(-24px) rotate(20deg)}80%{transform:translateY(-8px) rotate(-10deg)}100%{transform:translateY(0) rotate(0deg)}}
-.kicking{animation:bikeKick 0.6s ease-out forwards!important}
-@keyframes bodyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-.bobbing{animation:bodyBob 0.28s linear infinite}
-.bobbingM{animation:bodyBob 0.22s linear infinite}
-
-.chicken{position:absolute;z-index:12;font-size:46px;line-height:1;pointer-events:none}
-.chicken.show{animation:pop 0.3s ease-out forwards}
-.chicken.caught{animation:gone 0.35s ease-in forwards!important}
-@keyframes pop{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.4)}100%{transform:scale(1)}}
-@keyframes gone{0%{transform:scale(1)}30%{transform:scale(1.8) rotate(15deg)}100%{transform:scale(0) translateY(-80px);opacity:0}}
-
-#catch-btn{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;background:linear-gradient(135deg,gold,orange);color:#1a1a2e;font-family:'Bangers',cursive;font-size:30px;letter-spacing:2px;border:none;padding:14px 56px;border-radius:50px;cursor:pointer;box-shadow:0 4px 28px rgba(255,165,0,0.8);user-select:none;-webkit-tap-highlight-color:transparent}
-#catch-btn:active{transform:translateX(-50%) scale(0.93)}
-#status{position:absolute;top:64px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:26px;color:#fff;text-shadow:0 0 14px gold;z-index:25;text-align:center;pointer-events:none;transition:opacity 0.3s;white-space:nowrap}
-#bubble{position:absolute;z-index:35;background:#fff;border-radius:14px;padding:5px 12px;font-size:14px;font-weight:700;color:#1a1a2e;pointer-events:none;transition:opacity 0.25s;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.4);bottom:340px}
-#bubble::after{content:'';position:absolute;bottom:-9px;left:14px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
-.particle{position:absolute;pointer-events:none;font-size:30px;animation:floatPart 1s ease-out forwards;z-index:28}
-@keyframes floatPart{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-100px) scale(0.3);opacity:0}}
-.score-pop{position:absolute;font-family:'Bangers',cursive;font-size:36px;color:gold;text-shadow:0 0 12px gold;pointer-events:none;animation:scorePop 0.8s ease-out forwards;z-index:29}
-@keyframes scorePop{0%{transform:translateY(0) scale(0.5);opacity:1}100%{transform:translateY(-80px) scale(1.4);opacity:0}}
-.funny-pop{position:absolute;font-family:'Bangers',cursive;font-size:28px;pointer-events:none;animation:funnyFloat 1.2s ease-out forwards;z-index:30}
-@keyframes funnyFloat{0%{transform:translateY(0) scale(0.5) rotate(-5deg);opacity:1}40%{transform:translateY(-40px) scale(1.2) rotate(5deg);opacity:1}100%{transform:translateY(-100px) scale(0.8);opacity:0}}
-.bg-el{position:absolute;bottom:220px;font-size:34px;z-index:6;opacity:0.4}
-
-/* ── SCREENS ── */
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;background:rgba(5,5,20,0.94)}
-.screen h1{font-family:'Bangers',cursive;font-size:50px;color:gold;letter-spacing:3px;text-shadow:0 0 30px gold;margin-bottom:6px;text-align:center}
-.screen p{color:#ccc;font-size:14px;text-align:center;max-width:300px;margin-bottom:16px;line-height:1.7}
-.btn{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;font-family:'Bangers',cursive;font-size:24px;letter-spacing:2px;border:none;padding:12px 44px;border-radius:40px;cursor:pointer;box-shadow:0 4px 20px rgba(255,165,0,0.5);margin:4px}
+body{background:#0a0a1a;overflow:hidden;font-family:'Fredoka One',cursive}
+#game{position:relative;width:100%;height:580px;overflow:hidden;cursor:none}
+#sky{position:absolute;inset:0;background:linear-gradient(180deg,#050d2e 0%,#0f2559 50%,#1a4d35 50%,#0d3320 100%)}
+/* Stars */
+#stars-layer{position:absolute;top:0;left:0;right:0;height:50%}
+/* Ground */
+#ground{position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(180deg,#1a4d35,#0d3320)}
+.ground-line{position:absolute;top:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.15)}
+/* UI */
+#ui{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:stretch;background:rgba(0,0,0,0.7);border-bottom:2px solid rgba(255,255,255,0.1)}
+.p-panel{display:flex;flex-direction:column;padding:6px 10px;min-width:130px}
+.p-name{font-family:'Bangers',cursive;font-size:15px;letter-spacing:1px}
+.p-score{font-family:'Bangers',cursive;font-size:22px}
+.p-lives{font-size:14px;letter-spacing:2px}
+.p-hurt{animation:hurtFlash 0.3s linear infinite}
+@keyframes hurtFlash{0%,100%{opacity:1}50%{opacity:0.2}}
+#center-ui{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 10px}
+#timer-big{font-family:'Bangers',cursive;font-size:28px;color:#fff;text-shadow:0 0 10px rgba(255,255,255,0.5)}
+#center-title{font-family:'Bangers',cursive;font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:1px}
+/* Characters */
+.char{position:absolute;z-index:20;display:flex;flex-direction:column;align-items:center;bottom:160px}
+.char svg{overflow:visible}
+.char-name-tag{font-family:'Bangers',cursive;font-size:14px;letter-spacing:1px;text-shadow:0 2px 6px rgba(0,0,0,1);margin-bottom:2px;white-space:nowrap}
+/* Jump */
+@keyframes legSwingL{0%,100%{transform:rotate(-32deg)}50%{transform:rotate(32deg)}}
+@keyframes legSwingR{0%,100%{transform:rotate(32deg)}50%{transform:rotate(-32deg)}}
+@keyframes armSwingL{0%,100%{transform:rotate(28deg)}50%{transform:rotate(-28deg)}}
+@keyframes armSwingR{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(28deg)}}
+.rl{transform-origin:0 0;animation:legSwingL 0.25s linear infinite}
+.rr{transform-origin:0 0;animation:legSwingR 0.25s linear infinite}
+.al{transform-origin:0 0;animation:armSwingL 0.25s linear infinite}
+.ar{transform-origin:0 0;animation:armSwingR 0.25s linear infinite}
+@keyframes bikeKick{0%{transform:rotate(0deg)}30%{transform:rotate(-50deg) translateY(-15px)}60%{transform:rotate(25deg)}100%{transform:rotate(0deg)}}
+.kicking-anim{animation:bikeKick 0.5s ease-out}
+/* Flying chickens */
+.fchicken{position:absolute;z-index:15;font-size:44px;line-height:1;pointer-events:none;transition:left 0.05s linear}
+.fchicken.caught-anim{animation:chickenPoof 0.4s ease-out forwards}
+@keyframes chickenPoof{0%{transform:scale(1)}50%{transform:scale(2) rotate(20deg)}100%{transform:scale(0);opacity:0}}
+/* Crabs on ground */
+.crab{position:absolute;z-index:16;font-size:40px;line-height:1;pointer-events:none;bottom:160px}
+.crab-hurt-zone{position:absolute;bottom:160px;height:50px;width:60px;z-index:14}
+/* Hurt overlay */
+.char.hurt-state svg{filter:drop-shadow(0 0 12px red)}
+/* Score popup */
+.spop{position:absolute;font-family:'Bangers',cursive;font-size:32px;pointer-events:none;animation:spopAnim 0.9s ease-out forwards;z-index:35;text-shadow:0 2px 8px rgba(0,0,0,0.8)}
+@keyframes spopAnim{0%{transform:translateY(0) scale(0.5);opacity:1}100%{transform:translateY(-70px) scale(1.2);opacity:0}}
+.funny-pop{position:absolute;font-family:'Bangers',cursive;font-size:26px;pointer-events:none;animation:funnyAnim 1s ease-out forwards;z-index:35}
+@keyframes funnyAnim{0%{transform:translateY(0) scale(0.6);opacity:1}100%{transform:translateY(-80px) scale(1);opacity:0}}
+/* Status */
+#status{position:absolute;top:72px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:24px;color:#fff;text-shadow:0 0 14px gold;z-index:30;text-align:center;pointer-events:none;transition:opacity 0.3s;white-space:nowrap}
+/* Screens */
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:60;background:rgba(3,5,18,0.95)}
+.screen h1{font-family:'Bangers',cursive;font-size:46px;color:gold;letter-spacing:3px;text-shadow:0 0 24px gold;margin-bottom:4px;text-align:center}
+.screen p{color:#ccc;font-size:13px;text-align:center;max-width:340px;margin-bottom:14px;line-height:1.6}
+.controls-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;width:300px}
+.ctrl-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:8px;text-align:center}
+.ctrl-box h3{font-family:'Bangers',cursive;font-size:16px;letter-spacing:1px;margin-bottom:4px}
+.ctrl-box p{font-size:11px;color:#aaa;line-height:1.5;margin:0}
+.btn{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a1a2e;font-family:'Bangers',cursive;font-size:22px;letter-spacing:2px;border:none;padding:11px 40px;border-radius:40px;cursor:pointer;margin:3px}
+.btn-blue{background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff}
 .btn:active{transform:scale(0.96)}
-.btn-blue{background:linear-gradient(135deg,#3B82F6,#1D4ED8);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.5)}
-#final-score{font-family:'Bangers',cursive;font-size:44px;color:#fff;margin-bottom:4px}
-
-/* ── REPLAY ── */
-#replay-screen{position:absolute;inset:0;z-index:60;background:#000;display:none;flex-direction:column;align-items:center;justify-content:flex-start}
-#replay-canvas{width:100%;max-height:420px;background:#1a1a2e}
-#replay-bar{width:100%;padding:8px 12px;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.8)}
-#replay-progress{flex:1;height:6px;background:#333;border-radius:4px;cursor:pointer;position:relative}
-#replay-fill{height:100%;background:gold;border-radius:4px;width:0%}
-#replay-time{color:gold;font-family:'Bangers',cursive;font-size:16px;min-width:60px}
-.rbtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:'Bangers',cursive;font-size:14px;padding:5px 12px;border-radius:8px;cursor:pointer}
+#final-scores{font-family:'Bangers',cursive;font-size:34px;color:#fff;margin-bottom:6px;text-align:center}
+/* Replay */
+#replay-screen{position:absolute;inset:0;z-index:70;background:#000;display:none;flex-direction:column;align-items:center}
+#replay-canvas{width:100%;max-height:460px;background:#050d2e}
+#replay-bar{width:100%;padding:6px 10px;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.9)}
+#rp-prog{flex:1;height:6px;background:#333;border-radius:4px;cursor:pointer;position:relative}
+#rp-fill{height:100%;background:gold;border-radius:4px;width:0%}
+#rp-time{color:gold;font-family:'Bangers',cursive;font-size:15px;min-width:50px}
+.rbtn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:'Fredoka One',cursive;font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer}
 .rbtn:hover{background:rgba(255,255,255,0.2)}
-#replay-label{color:rgba(255,255,255,0.5);font-size:12px;font-family:'Fredoka One',cursive;padding:2px 8px}
-
-/* ── CREDITS ── */
-#credits{position:absolute;bottom:0;left:0;right:0;z-index:20;text-align:center;padding:2px 0 4px;background:linear-gradient(0deg,rgba(0,0,0,0.7),transparent);font-size:10px;color:rgba(255,255,255,0.5);font-family:'Fredoka One',cursive;pointer-events:none}
-#credits span{color:rgba(255,215,0,0.7)}
+/* Credits */
+#credits{position:absolute;bottom:2px;left:0;right:0;z-index:25;text-align:center;font-size:10px;color:rgba(255,215,0,0.5);font-family:'Fredoka One',cursive;pointer-events:none}
 </style>
 </head>
 <body>
 <div id="game">
   <div id="sky"></div>
-  <div class="light" style="left:8%"></div><div class="light" style="left:50%"></div><div class="light" style="left:92%"></div>
+  <div id="stars-layer"></div>
+  <div id="ground"><div class="ground-line"></div></div>
 
+  <!-- UI -->
   <div id="ui">
-    <div class="ui-pill" id="score-pill">🍗 <span id="score">0</span></div>
-    <div class="ui-pill" id="title-pill">⚽ RONALDO CHICKEN GAME</div>
-    <div class="ui-pill" id="timer-pill">⏱ <span id="timer">60</span>s</div>
+    <div class="p-panel" id="p1-panel">
+      <div class="p-name" style="color:#FFD700">⚽ CR7 (P1)</div>
+      <div class="p-score" style="color:#FFD700">🍗 <span id="p1-score">0</span></div>
+      <div class="p-lives" id="p1-lives">❤️❤️❤️</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:1px">WASD • W=jump high • S=catch</div>
+    </div>
+    <div id="center-ui">
+      <div id="center-title">⚽ RONALDO CHICKEN GAME</div>
+      <div id="timer-big">60s</div>
+    </div>
+    <div class="p-panel" id="p2-panel" style="align-items:flex-end">
+      <div class="p-name" style="color:#60A5FA">🏆 MBAPPE (P2)</div>
+      <div class="p-score" style="color:#60A5FA"><span id="p2-score">0</span> 🍗</div>
+      <div class="p-lives" id="p2-lives">❤️❤️❤️</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:1px">↑↓←→ • ↑↑=jump high • ↓=catch</div>
+    </div>
   </div>
+
   <div id="status" style="opacity:0"></div>
 
-  <!-- RONALDO -->
-  <div class="char-wrap" id="ronaldo-wrap">
-    <div class="char-label" style="color:#FFD700">CR7 ⭐</div>
-    <svg class="char-svg" id="ron-svg" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
-      <g id="ron-all" class="bobbing">
-        <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.25)"/>
-        <g class="run-leg-l"><g transform="translate(-4,-30)"><line x1="0" y1="0" x2="-3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/><line x1="-3" y1="18" x2="-2" y2="30" stroke="#D4A574" stroke-width="5" stroke-linecap="round"/><ellipse cx="-1" cy="32" rx="7" ry="4" fill="#111" transform="rotate(-5,-1,32)"/></g></g>
-        <g class="run-leg-r"><g transform="translate(4,-30)"><line x1="0" y1="0" x2="3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/><line x1="3" y1="18" x2="4" y2="30" stroke="#D4A574" stroke-width="5" stroke-linecap="round"/><ellipse cx="5" cy="32" rx="7" ry="4" fill="#111" transform="rotate(5,5,32)"/></g></g>
-        <rect x="-13" y="-60" width="26" height="32" rx="5" fill="#C62828"/>
-        <rect x="-13" y="-60" width="6" height="32" rx="2" fill="#B71C1C"/>
-        <text x="3" y="-40" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="13" fill="#FFD700">7</text>
-        <rect x="-11" y="-28" width="22" height="14" rx="4" fill="#1565C0"/>
-        <g class="run-arm-l"><g transform="translate(-11,-54)"><line x1="0" y1="0" x2="-10" y2="14" stroke="#C62828" stroke-width="5" stroke-linecap="round"/><line x1="-10" y1="14" x2="-12" y2="22" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/></g></g>
-        <g class="run-arm-r"><g transform="translate(11,-54)"><line x1="0" y1="0" x2="10" y2="14" stroke="#C62828" stroke-width="5" stroke-linecap="round"/><line x1="10" y1="14" x2="12" y2="22" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/></g></g>
-        <rect x="-4" y="-64" width="8" height="6" rx="2" fill="#D4A574"/>
-        <circle cx="0" cy="-74" r="13" fill="#D4A574"/>
-        <ellipse cx="0" cy="-85" rx="12" ry="6" fill="#1a1a1a"/>
-        <ellipse cx="-6" cy="-80" rx="6" ry="5" fill="#1a1a1a"/>
-        <ellipse cx="6" cy="-80" rx="5" ry="4" fill="#1a1a1a"/>
-        <ellipse cx="-5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/><ellipse cx="5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/>
-        <circle cx="-5" cy="-75" r="1.5" fill="#3E2723"/><circle cx="5" cy="-75" r="1.5" fill="#3E2723"/>
-        <line x1="-7.5" y1="-78.5" x2="-2.5" y2="-78" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="2.5" y1="-78" x2="7.5" y2="-78.5" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
-        <ellipse cx="0" cy="-72" rx="1.5" ry="1" fill="#C4956A"/>
-        <path d="M -4 -68 Q 0 -65 4 -68" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="-13" cy="-74" rx="2.5" ry="3.5" fill="#D4A574"/><ellipse cx="13" cy="-74" rx="2.5" ry="3.5" fill="#D4A574"/>
-        <circle id="ron-ball" cx="18" cy="-10" r="8" fill="white" stroke="#333" stroke-width="1.5" opacity="0"/>
+  <!-- P1 RONALDO -->
+  <div class="char" id="p1-char" style="left:80px">
+    <div class="char-name-tag" style="color:#FFD700">CR7 #7</div>
+    <svg id="p1-svg" width="80" height="100" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
+      <g id="p1-body">
+        <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.3)"/>
+        <g class="rl"><g transform="translate(-4,-30)"><line x1="0" y1="0" x2="-3" y2="18" stroke="#1a237e" stroke-width="7" stroke-linecap="round"/><line x1="-3" y1="18" x2="-2" y2="30" stroke="#D4A574" stroke-width="5" stroke-linecap="round"/><ellipse cx="-1" cy="32" rx="8" ry="4.5" fill="#111" transform="rotate(-5,-1,32)"/></g></g>
+        <g class="rr"><g transform="translate(4,-30)"><line x1="0" y1="0" x2="3" y2="18" stroke="#1a237e" stroke-width="7" stroke-linecap="round"/><line x1="3" y1="18" x2="4" y2="30" stroke="#D4A574" stroke-width="5" stroke-linecap="round"/><ellipse cx="5" cy="32" rx="8" ry="4.5" fill="#111" transform="rotate(5,5,32)"/></g></g>
+        <rect x="-14" y="-62" width="28" height="34" rx="5" fill="#C62828"/>
+        <rect x="-14" y="-62" width="7" height="34" rx="2" fill="#B71C1C"/>
+        <text x="4" y="-40" text-anchor="middle" font-family="Arial Black" font-weight="900" font-size="14" fill="#FFD700">7</text>
+        <rect x="-12" y="-28" width="24" height="15" rx="4" fill="#1565C0"/>
+        <g class="al"><g transform="translate(-12,-56)"><line x1="0" y1="0" x2="-11" y2="15" stroke="#C62828" stroke-width="6" stroke-linecap="round"/><line x1="-11" y1="15" x2="-13" y2="24" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/></g></g>
+        <g class="ar"><g transform="translate(12,-56)"><line x1="0" y1="0" x2="11" y2="15" stroke="#C62828" stroke-width="6" stroke-linecap="round"/><line x1="11" y1="15" x2="13" y2="24" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/></g></g>
+        <rect x="-4" y="-65" width="8" height="7" rx="2" fill="#D4A574"/>
+        <circle cx="0" cy="-76" r="14" fill="#D4A574"/>
+        <ellipse cx="0" cy="-88" rx="13" ry="7" fill="#1a1a1a"/>
+        <ellipse cx="-6" cy="-83" rx="7" ry="5" fill="#1a1a1a"/><ellipse cx="6" cy="-83" rx="6" ry="5" fill="#1a1a1a"/>
+        <ellipse cx="-5.5" cy="-77" rx="3" ry="3" fill="#fff"/><ellipse cx="5.5" cy="-77" rx="3" ry="3" fill="#fff"/>
+        <circle cx="-5.5" cy="-77" r="1.8" fill="#3E2723"/><circle cx="5.5" cy="-77" r="1.8" fill="#3E2723"/>
+        <line x1="-8" y1="-81" x2="-3" y2="-80.5" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="3" y1="-80.5" x2="8" y2="-81" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
+        <ellipse cx="0" cy="-73" rx="1.5" ry="1" fill="#C4956A"/>
+        <path d="M -4.5 -69 Q 0 -66 4.5 -69" stroke="#8B4513" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-14" cy="-76" rx="3" ry="4" fill="#D4A574"/><ellipse cx="14" cy="-76" rx="3" ry="4" fill="#D4A574"/>
+        <circle id="p1-ball" cx="20" cy="-10" r="9" fill="white" stroke="#333" stroke-width="1.5" opacity="0"/>
       </g>
     </svg>
   </div>
 
-  <!-- MBAPPE -->
-  <div class="char-wrap" id="mbappe-wrap">
-    <div class="char-label" style="color:#60A5FA">MBAPPE ⭐</div>
-    <svg class="char-svg" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
-      <g id="mba-all" class="bobbingM">
-        <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.25)"/>
-        <g class="run-leg-lm"><g transform="translate(-4,-30)"><line x1="0" y1="0" x2="-3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/><line x1="-3" y1="18" x2="-2" y2="30" stroke="#8D6748" stroke-width="5" stroke-linecap="round"/><ellipse cx="-1" cy="32" rx="7" ry="4" fill="#111" transform="rotate(-5,-1,32)"/></g></g>
-        <g class="run-leg-rm"><g transform="translate(4,-30)"><line x1="0" y1="0" x2="3" y2="18" stroke="#1a237e" stroke-width="6" stroke-linecap="round"/><line x1="3" y1="18" x2="4" y2="30" stroke="#8D6748" stroke-width="5" stroke-linecap="round"/><ellipse cx="5" cy="32" rx="7" ry="4" fill="#111" transform="rotate(5,5,32)"/></g></g>
-        <rect x="-13" y="-60" width="26" height="32" rx="5" fill="#1565C0"/>
-        <text x="0" y="-40" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="12" fill="#fff">10</text>
-        <rect x="-11" y="-28" width="22" height="14" rx="4" fill="#111"/>
-        <g class="run-arm-lm"><g transform="translate(-11,-54)"><line x1="0" y1="0" x2="-10" y2="14" stroke="#1565C0" stroke-width="5" stroke-linecap="round"/><line x1="-10" y1="14" x2="-12" y2="22" stroke="#8D6748" stroke-width="4" stroke-linecap="round"/></g></g>
-        <g class="run-arm-rm"><g transform="translate(11,-54)"><line x1="0" y1="0" x2="10" y2="14" stroke="#1565C0" stroke-width="5" stroke-linecap="round"/><line x1="10" y1="14" x2="12" y2="22" stroke="#8D6748" stroke-width="4" stroke-linecap="round"/></g></g>
-        <rect x="-4" y="-64" width="8" height="6" rx="2" fill="#8D6748"/>
-        <circle cx="0" cy="-74" r="13" fill="#8D6748"/>
-        <ellipse cx="0" cy="-86" rx="11" ry="5" fill="#111"/><ellipse cx="-5" cy="-82" rx="7" ry="5" fill="#111"/><ellipse cx="5" cy="-82" rx="6" ry="4" fill="#111"/>
-        <ellipse cx="-5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/><ellipse cx="5" cy="-75" rx="2.5" ry="2.5" fill="#fff"/>
-        <circle cx="-5" cy="-75" r="1.5" fill="#1a1a1a"/><circle cx="5" cy="-75" r="1.5" fill="#1a1a1a"/>
-        <line x1="-7.5" y1="-78.5" x2="-2.5" y2="-78" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="2.5" y1="-78" x2="7.5" y2="-78.5" stroke="#111" stroke-width="1.5" stroke-linecap="round"/>
-        <ellipse cx="0" cy="-72" rx="1.5" ry="1" fill="#7A5C3A"/>
-        <path d="M -4 -68 Q 0 -65 4 -68" stroke="#5C3A1E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <ellipse cx="-13" cy="-74" rx="2.5" ry="3.5" fill="#8D6748"/><ellipse cx="13" cy="-74" rx="2.5" ry="3.5" fill="#8D6748"/>
+  <!-- P2 MBAPPE -->
+  <div class="char" id="p2-char" style="left:200px">
+    <div class="char-name-tag" style="color:#60A5FA">MBAPPE #10</div>
+    <svg id="p2-svg" width="80" height="100" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
+      <g id="p2-body">
+        <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.3)"/>
+        <g class="rl"><g transform="translate(-4,-30)"><line x1="0" y1="0" x2="-3" y2="18" stroke="#0d1b4b" stroke-width="7" stroke-linecap="round"/><line x1="-3" y1="18" x2="-2" y2="30" stroke="#8D6748" stroke-width="5" stroke-linecap="round"/><ellipse cx="-1" cy="32" rx="8" ry="4.5" fill="#222" transform="rotate(-5,-1,32)"/></g></g>
+        <g class="rr"><g transform="translate(4,-30)"><line x1="0" y1="0" x2="3" y2="18" stroke="#0d1b4b" stroke-width="7" stroke-linecap="round"/><line x1="3" y1="18" x2="4" y2="30" stroke="#8D6748" stroke-width="5" stroke-linecap="round"/><ellipse cx="5" cy="32" rx="8" ry="4.5" fill="#222" transform="rotate(5,5,32)"/></g></g>
+        <rect x="-14" y="-62" width="28" height="34" rx="5" fill="#1565C0"/>
+        <text x="0" y="-40" text-anchor="middle" font-family="Arial Black" font-weight="900" font-size="13" fill="#fff">10</text>
+        <rect x="-12" y="-28" width="24" height="15" rx="4" fill="#111"/>
+        <g class="al"><g transform="translate(-12,-56)"><line x1="0" y1="0" x2="-11" y2="15" stroke="#1565C0" stroke-width="6" stroke-linecap="round"/><line x1="-11" y1="15" x2="-13" y2="24" stroke="#8D6748" stroke-width="4" stroke-linecap="round"/></g></g>
+        <g class="ar"><g transform="translate(12,-56)"><line x1="0" y1="0" x2="11" y2="15" stroke="#1565C0" stroke-width="6" stroke-linecap="round"/><line x1="11" y1="15" x2="13" y2="24" stroke="#8D6748" stroke-width="4" stroke-linecap="round"/></g></g>
+        <rect x="-4" y="-65" width="8" height="7" rx="2" fill="#8D6748"/>
+        <circle cx="0" cy="-76" r="14" fill="#8D6748"/>
+        <ellipse cx="0" cy="-88" rx="12" ry="6" fill="#111"/><ellipse cx="-5" cy="-84" rx="8" ry="5" fill="#111"/><ellipse cx="5" cy="-84" rx="7" ry="4" fill="#111"/>
+        <ellipse cx="-5.5" cy="-77" rx="3" ry="3" fill="#fff"/><ellipse cx="5.5" cy="-77" rx="3" ry="3" fill="#fff"/>
+        <circle cx="-5.5" cy="-77" r="1.8" fill="#111"/><circle cx="5.5" cy="-77" r="1.8" fill="#111"/>
+        <line x1="-8" y1="-81" x2="-3" y2="-80.5" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="3" y1="-80.5" x2="8" y2="-81" stroke="#111" stroke-width="1.8" stroke-linecap="round"/>
+        <ellipse cx="0" cy="-73" rx="1.5" ry="1" fill="#7A5C3A"/>
+        <path d="M -4.5 -69 Q 0 -66 4.5 -69" stroke="#5C3A1E" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-14" cy="-76" rx="3" ry="4" fill="#8D6748"/><ellipse cx="14" cy="-76" rx="3" ry="4" fill="#8D6748"/>
       </g>
     </svg>
   </div>
 
-  <div id="bubble" style="opacity:0;left:200px">CHICKENS!!</div>
-  <button id="catch-btn" onclick="pressCatch()">🍗 CATCH!</button>
+  <div id="credits">Game Designer: <span style="color:gold">Arush</span> &nbsp;|&nbsp; Assistant: <span style="color:gold">Daddy</span></div>
 
-  <!-- Credits always visible -->
-  <div id="credits">Game Designer: <span>Arush</span> &nbsp;|&nbsp; Assistant: <span>Daddy</span></div>
-
-  <!-- Start -->
+  <!-- START SCREEN -->
   <div class="screen" id="start-screen">
-    <div style="font-size:68px;margin-bottom:4px">🐔🐔🐔🐔🐔</div>
-    <h1>RONALDO<br>CHICKEN GAME</h1>
-    <p>Catch chickens when Mbappe calls!<br>After the game, watch the <b style="color:gold">REPLAY! 🎬</b></p>
-    <button class="btn" onclick="startGame()">SIUUUU! 🚀</button>
-    <div style="color:rgba(255,215,0,0.6);font-size:11px;margin-top:10px;font-family:'Fredoka One',cursive">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
+    <div style="font-size:60px;margin-bottom:4px">🐔✈️🦀⚽</div>
+    <h1>RONALDO CHICKEN GAME<br><span style="font-size:28px;color:#60A5FA">2 PLAYER MODE!</span></h1>
+    <div class="controls-grid">
+      <div class="ctrl-box"><h3 style="color:#FFD700">⚽ CR7 (P1)</h3><p>A/D = Move<br>W = Jump<br>W+W = Jump HIGH!<br>S = Catch chicken</p></div>
+      <div class="ctrl-box"><h3 style="color:#60A5FA">🏆 MBAPPE (P2)</h3><p>← → = Move<br>↑ = Jump<br>↑+↑ = Jump HIGH!<br>↓ = Catch chicken</p></div>
+    </div>
+    <p>🐔 Chickens FLY overhead — jump to catch!<br>🦀 Crabs on ground hurt you for 5 seconds!<br>Most chickens wins! 🏆</p>
+    <button class="btn" onclick="startGame()">SIUUUU! LET'S GO! 🚀</button>
+    <div style="color:rgba(255,215,0,0.5);font-size:11px;margin-top:10px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
   </div>
 
-  <!-- End -->
+  <!-- END SCREEN -->
   <div class="screen" id="end-screen" style="display:none">
-    <div style="font-size:56px">🏆</div>
-    <h1>FULL TIME!</h1>
-    <div id="final-score">0 chickens!</div>
-    <p id="end-msg"></p>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+    <div style="font-size:56px" id="winner-emoji">🏆</div>
+    <h1 id="winner-text">WINNER!</h1>
+    <div id="final-scores"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px">
       <button class="btn" onclick="startGame()">PLAY AGAIN ⚽</button>
       <button class="btn btn-blue" onclick="showReplay()">🎬 WATCH REPLAY</button>
     </div>
-    <div style="color:rgba(255,215,0,0.5);font-size:11px;margin-top:12px;font-family:'Fredoka One',cursive">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
+    <div style="color:rgba(255,215,0,0.5);font-size:11px;margin-top:10px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
   </div>
 </div>
 
-<!-- REPLAY SCREEN -->
+<!-- REPLAY -->
 <div id="replay-screen">
-  <canvas id="replay-canvas" width="680" height="420"></canvas>
+  <canvas id="replay-canvas" width="680" height="460"></canvas>
   <div id="replay-bar">
-    <button class="rbtn" id="replay-play-btn" onclick="toggleReplayPlay()">⏸ Pause</button>
-    <div id="replay-progress" onclick="scrubReplay(event)">
-      <div id="replay-fill"></div>
-    </div>
-    <div id="replay-time">0s</div>
-    <select id="replay-speed" onchange="setReplaySpeed(this.value)" style="background:#222;color:#fff;border:1px solid #444;border-radius:6px;padding:4px 6px;font-family:'Fredoka One',cursive;font-size:12px">
-      <option value="0.5">0.5x</option>
-      <option value="1" selected>1x</option>
-      <option value="2">2x</option>
+    <button class="rbtn" id="rp-play-btn" onclick="toggleRP()">⏸</button>
+    <div id="rp-prog" onclick="scrubRP(event)"><div id="rp-fill"></div></div>
+    <div id="rp-time">0s</div>
+    <select id="rp-speed" onchange="rpSpeed=parseFloat(this.value)" style="background:#222;color:#fff;border:1px solid #444;border-radius:4px;padding:3px;font-size:11px">
+      <option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option>
     </select>
-    <div id="replay-label">🎬 REPLAY</div>
-    <button class="rbtn" onclick="closeReplay()">✕ Close</button>
+    <span style="color:rgba(255,255,255,0.4);font-size:11px">🎬 REPLAY</span>
+    <button class="rbtn" onclick="closeRP()">✕</button>
   </div>
-  <div style="color:rgba(255,215,0,0.5);font-size:11px;padding:4px;font-family:'Fredoka One',cursive;text-align:center">Game Designer: <span style="color:gold">Arush</span> &nbsp;|&nbsp; Assistant: <span style="color:gold">Daddy</span></div>
+  <div style="color:rgba(255,215,0,0.4);font-size:10px;padding:3px;text-align:center;font-family:'Fredoka One',cursive">Game Designer: <span style="color:gold">Arush</span> &nbsp;|&nbsp; Assistant: <span style="color:gold">Daddy</span></div>
 </div>
 
 <script>
+// ── Audio ──
 const AC=new(window.AudioContext||window.webkitAudioContext)();
 function tone(f,t,dur,v=0.3,d=0){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type=t;o.frequency.setValueAtTime(f,AC.currentTime+d);g.gain.setValueAtTime(0,AC.currentTime+d);g.gain.linearRampToValueAtTime(v,AC.currentTime+d+0.01);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+d+dur);o.start(AC.currentTime+d);o.stop(AC.currentTime+d+dur+0.05);}
-function sfxChicken(){const s=[()=>{tone(400,'sawtooth',0.06,0.4);tone(600,'sawtooth',0.08,0.4,0.07);tone(350,'sawtooth',0.06,0.35,0.16);},()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(200,AC.currentTime);o.frequency.linearRampToValueAtTime(900,AC.currentTime+0.25);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.3);o.start();o.stop(AC.currentTime+0.35);},()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(600,AC.currentTime);o.frequency.exponentialRampToValueAtTime(100,AC.currentTime+0.3);g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.35);o.start();o.stop(AC.currentTime+0.4);},()=>{tone(660,'square',0.07,0.35);tone(880,'square',0.07,0.35,0.08);tone(1100,'square',0.09,0.3,0.16);tone(500,'sawtooth',0.12,0.3,0.28);},()=>{[0,0.07,0.14,0.21].forEach((d,i)=>tone(500+i*80,'square',0.05,0.35,d));},()=>{tone(150,'sawtooth',0.08,0.45);tone(130,'sawtooth',0.1,0.4,0.07);}];s[Math.floor(Math.random()*s.length)]();}
-function sfxBikeKick(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sawtooth';o.frequency.setValueAtTime(320,AC.currentTime);o.frequency.linearRampToValueAtTime(60,AC.currentTime+0.2);g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.25);o.start();o.stop(AC.currentTime+0.28);tone(180,'square',0.07,0.35,0.22);}
-function sfxCall(){tone(700,'sine',0.07,0.3);tone(900,'sine',0.07,0.3,0.08);tone(1100,'sine',0.1,0.25,0.16);}
-function sfxMiss(){tone(220,'sawtooth',0.1,0.2);tone(160,'sawtooth',0.08,0.15,0.1);}
+function sfxCatch(){const s=[()=>{tone(400,'sawtooth',0.06,0.4);tone(600,'sawtooth',0.08,0.4,0.07);tone(350,'sawtooth',0.06,0.35,0.16);},()=>{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(200,AC.currentTime);o.frequency.linearRampToValueAtTime(900,AC.currentTime+0.22);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.26);o.start();o.stop(AC.currentTime+0.3);},()=>{tone(660,'square',0.07,0.35);tone(880,'square',0.07,0.35,0.08);tone(1100,'square',0.09,0.3,0.16);},()=>{[0,0.07,0.14].forEach((d,i)=>tone(500+i*100,'square',0.05,0.35,d));}];s[Math.floor(Math.random()*s.length)]();}
+function sfxHurt(){tone(150,'sawtooth',0.15,0.5);tone(100,'sawtooth',0.15,0.4,0.1);}
+function sfxJump(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.linearRampToValueAtTime(600,AC.currentTime+0.12);g.gain.setValueAtTime(0.2,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.15);o.start();o.stop(AC.currentTime+0.18);}
+function sfxHighJump(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.linearRampToValueAtTime(900,AC.currentTime+0.2);g.gain.setValueAtTime(0.3,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.24);o.start();o.stop(AC.currentTime+0.26);}
 function sfxStart(){[523,659,784,1047].forEach((f,i)=>tone(f,'square',0.12,0.3,i*0.12));}
-function sfxAllCaught(){[523,659,784,880,1047].forEach((f,i)=>tone(f,'square',0.1,0.35,i*0.08));}
 
-const funnyTexts=['BAWK! 🐔','SQUAWK!!','SIUU! 🎉','YUMMY! 🍗','BAWK BAWK!','CLUCK! 😆','CR7 EATS! 😋','BWAAAK!!'];
-const GW=680;
-let score=0,timeLeft=60,running=false;
-let ronX=60,mbappeX=190;
-let chickens=[],bgEls=[];
-let loopId,timerIntv,callTimer,callSchedTimer;
-let callActive=false,isKicking=false;
+const GW=680,GROUND=160;
+const funnyTexts=['BAWK! 🐔','SQUAWK!!','SIUU! 🎉','YUMMY! 🍗','FEATHERS! 🪶','CLUCK! 😆','BWAAAK!!','GOT IT! 😂'];
 
-// ── REPLAY RECORDING ──
-let replayFrames=[];
-let replayEvents=[];
-let replayTick=0;
-const REPLAY_FPS=12; // record every ~83ms
-let replayRecTimer=null;
+// ── Player state ──
+function makePlayer(id,x,col){
+  return {id,x,y:0,vy:0,score:0,lives:3,hurt:false,hurtTimer:0,onGround:true,
+    jumpCount:0,kicking:false,el:document.getElementById(`p${id}-char`),
+    svgBody:document.getElementById(`p${id}-body`),ball:document.getElementById(`p${id}-ball`),
+    col,panel:document.getElementById(`p${id}-panel`)};
+}
+let p1,p2,chickens=[],crabs=[],bgEls=[];
+let running=false,timeLeft=60,loopId,timerIntv,chickenSpawnTimer,crabSpawnTimer;
+const gameEl=document.getElementById('game');
+const statusEl=document.getElementById('status');
 
-function recordFrame(){
-  replayFrames.push({
-    ronX, mbappeX,
-    chickens: chickens.filter(c=>c.alive).map(c=>({x:parseFloat(c.el.style.left),y:parseFloat(c.el.style.bottom),emoji:c.el.textContent,size:c.el.style.fontSize})),
-    score, timeLeft
+// Stars
+const starsLayer=document.getElementById('stars-layer');
+for(let i=0;i<50;i++){const s=document.createElement('div');s.style.cssText=`position:absolute;background:#fff;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*100}%;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;opacity:${0.3+Math.random()*0.7}`;starsLayer.appendChild(s);}
+// BG
+for(let i=0;i<8;i++){const el=document.createElement('div');el.style.cssText=`position:absolute;bottom:160px;font-size:32px;z-index:8;opacity:0.35`;el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];el.style.left=(i*100)+'px';el.dataset.spd=(0.8+Math.random()*0.8).toString();gameEl.appendChild(el);bgEls.push(el);}
+
+function showStatus(msg,dur=1800){statusEl.textContent=msg;statusEl.style.opacity='1';clearTimeout(statusEl._t);statusEl._t=setTimeout(()=>statusEl.style.opacity='0',dur);}
+
+// ── Input ──
+const keys={};
+document.addEventListener('keydown',e=>{
+  if(!running)return;
+  const k=e.key;keys[k]=true;
+  // P1 jump: W
+  if(k==='w'||k==='W'){
+    e.preventDefault();
+    if(p1.onGround){doJump(p1,false);} 
+    else if(p1.jumpCount<2){doJump(p1,true);}
+  }
+  // P1 catch: S
+  if(k==='s'||k==='S'){e.preventDefault();doCatch(p1);}
+  // P2 jump: ArrowUp
+  if(k==='ArrowUp'){
+    e.preventDefault();
+    if(p2.onGround){doJump(p2,false);}
+    else if(p2.jumpCount<2){doJump(p2,true);}
+  }
+  // P2 catch: ArrowDown
+  if(k==='ArrowDown'){e.preventDefault();doCatch(p2);}
+});
+document.addEventListener('keyup',e=>{keys[e.key]=false;});
+
+function doJump(p,high){
+  AC.resume();
+  if(high){p.vy=22;p.jumpCount=2;sfxHighJump();}
+  else{p.vy=15;p.jumpCount=1;sfxJump();}
+  p.onGround=false;
+}
+
+function doCatch(p){
+  if(!running)return;
+  AC.resume();
+  // Bicycle kick anim
+  p.svgBody.classList.add('kicking-anim');
+  if(p.ball)p.ball.setAttribute('opacity','1');
+  setTimeout(()=>{p.svgBody.classList.remove('kicking-anim');if(p.ball)p.ball.setAttribute('opacity','0');},520);
+  // Check if any flying chicken is near
+  const gw=gameEl.offsetWidth||680;
+  const scale=gw/GW;
+  const pScreenX=p.x*scale;
+  const pScreenY=p.y; // bottom offset above ground
+  let caught=false;
+  chickens.forEach(c=>{
+    if(c.caught)return;
+    const cx=parseFloat(c.el.style.left);
+    const cy=parseFloat(c.el.style.bottom);
+    if(Math.abs(cx-pScreenX)<80&&Math.abs(cy-pScreenY-GROUND)<90){
+      c.caught=true;c.el.classList.add('caught-anim');
+      setTimeout(()=>{try{c.el.remove();}catch(e){}},420);
+      p.score++;updateScoreUI();sfxCatch();
+      spawnPop(pScreenX,pScreenY+GROUND+40,'+1 🍗',p.col);
+      spawnFunny(pScreenX,pScreenY+GROUND+70);
+      caught=true;
+    }
+  });
+  chickens=chickens.filter(c=>!c.caught);
+  if(!caught){tone(220,'sawtooth',0.1,0.2);showStatus('Miss! Jump higher! 🐔',700);}
+}
+
+// ── Chickens flying ──
+function spawnChicken(){
+  if(!running)return;
+  const el=document.createElement('div');el.className='fchicken';
+  el.textContent=['🐔','🐓'][Math.floor(Math.random()*2)];
+  const gw=gameEl.offsetWidth||680;
+  // Start from right, fly left, at different heights
+  const h=GROUND+80+Math.random()*180; // vary height above ground
+  el.style.left=gw+'px';
+  el.style.bottom=h+'px';
+  el.style.fontSize=(38+Math.random()*14)+'px';
+  gameEl.appendChild(el);
+  const speed=2.5+Math.random()*2;
+  chickens.push({el,speed,caught:false,h});
+  // Schedule next
+  chickenSpawnTimer=setTimeout(spawnChicken,1800+Math.random()*1500);
+}
+
+// ── Crabs ──
+function spawnCrab(){
+  if(!running)return;
+  const el=document.createElement('div');el.className='crab';
+  el.textContent='🦀';
+  const gw=gameEl.offsetWidth||680;
+  el.style.left=gw+'px';
+  el.style.bottom=GROUND+'px';
+  el.style.zIndex=16;
+  gameEl.appendChild(el);
+  crabs.push({el,x:gw,speed:1.5+Math.random()*1.5,alive:true});
+  crabSpawnTimer=setTimeout(spawnCrab,4000+Math.random()*3000);
+}
+
+// ── Hurt logic ──
+function checkCrabCollisions(){
+  const gw=gameEl.offsetWidth||680;const scale=gw/GW;
+  crabs.forEach(cr=>{
+    if(!cr.alive)return;
+    [p1,p2].forEach(p=>{
+      if(p.hurt||p.lives<=0)return;
+      if(p.y<60){ // only hurt if on/near ground
+        const psx=p.x*scale;
+        if(Math.abs(cr.x-psx)<55){
+          // Hurt!
+          p.hurt=true;p.lives=Math.max(0,p.lives-1);
+          sfxHurt();updateLivesUI(p);
+          p.el.classList.add('hurt-state');
+          showStatus(`${p.id===1?'CR7':'MBAPPE'} got pinched by a crab! 🦀 5s!`,2000);
+          p.hurtTimer=setTimeout(()=>{p.hurt=false;p.el.classList.remove('hurt-state');},5000);
+        }
+      }
+    });
   });
 }
 
-const ronWrap=document.getElementById('ronaldo-wrap');
-const mbaWrap=document.getElementById('mbappe-wrap');
-const ronAll=document.getElementById('ron-all');
-const ronBall=document.getElementById('ron-ball');
-const scoreEl=document.getElementById('score');
-const timerEl=document.getElementById('timer');
-const bubbleEl=document.getElementById('bubble');
-const statusEl=document.getElementById('status');
-const gameEl=document.getElementById('game');
-
-for(let i=0;i<8;i++){const el=document.createElement('div');el.className='bg-el';el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];el.style.left=(i*90)+'px';el.dataset.spd=(1.2+Math.random()*1.5).toString();gameEl.appendChild(el);bgEls.push(el);}
-
-function showStatus(msg,dur=1800){statusEl.textContent=msg;statusEl.style.opacity='1';clearTimeout(statusEl._t);statusEl._t=setTimeout(()=>statusEl.style.opacity='0',dur);}
-function showBubble(txt){const gw=gameEl.offsetWidth||680;bubbleEl.textContent=txt;bubbleEl.style.left=Math.min((mbappeX/GW)*gw+10,gw-200)+'px';bubbleEl.style.opacity='1';clearTimeout(bubbleEl._t);bubbleEl._t=setTimeout(()=>bubbleEl.style.opacity='0',2200);}
-
-function doBicycleKick(){if(isKicking)return;isKicking=true;sfxBikeKick();ronBall.setAttribute('opacity','1');ronAll.classList.add('kicking');showStatus('🦵 BICYCLE KICK!! ⚽',900);setTimeout(()=>{ronAll.classList.remove('kicking');ronBall.setAttribute('opacity','0');isKicking=false;},650);}
-
-function spawnChickens(){
-  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];
-  const count=15+Math.floor(Math.random()*8);
-  const gw=gameEl.offsetWidth||680;
-  const rows=[220,255,295,335];
-  for(let i=0;i<count;i++){
-    const el=document.createElement('div');el.className='chicken show';
-    const emoji=['🐔','🐓'][Math.floor(Math.random()*2)];
-    el.textContent=emoji;
-    el.style.left=(30+Math.random()*(gw-80))+'px';
-    el.style.bottom=rows[Math.floor(Math.random()*rows.length)]+'px';
-    const fs=(40+Math.random()*16)+'px';
-    el.style.fontSize=fs;
-    el.style.zIndex=12;
-    gameEl.appendChild(el);chickens.push({el,alive:true});
-  }
-  callActive=true;
-  showStatus('🐔🐔🐔 CHICKENS!! TAP CATCH!! 🐔🐔🐔',2800);
-  clearTimeout(callTimer);
-  callTimer=setTimeout(()=>{if(!running)return;clearChickens();showStatus('They ran away! 😅',1500);},7000);
+function updateScoreUI(){
+  document.getElementById('p1-score').textContent=p1.score;
+  document.getElementById('p2-score').textContent=p2.score;
+}
+function updateLivesUI(p){
+  const hearts='❤️'.repeat(p.lives)+'🖤'.repeat(3-p.lives);
+  document.getElementById(`p${p.id}-lives`).textContent=hearts;
 }
 
-function clearChickens(){chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];callActive=false;}
-function mbappeCalls(){if(!running)return;sfxCall();showBubble(['SO MANY CHICKENS! 🐔🐔🐔','CR7!! CHICKENS EVERYWHERE!!','SIUU! CATCH THEM ALL! 🐔','OI! CHICKENS!! ⚽🐔'][Math.floor(Math.random()*4)]);spawnChickens();}
-
-function spawnFunnyText(x,y){const p=document.createElement('div');p.className='funny-pop';p.textContent=funnyTexts[Math.floor(Math.random()*funnyTexts.length)];p.style.left=x+'px';p.style.bottom=y+'px';const colors=['#FFD700','#FF6B6B','#60A5FA','#4ADE80','#F472B6','#FB923C'];p.style.color=colors[Math.floor(Math.random()*colors.length)];gameEl.appendChild(p);setTimeout(()=>p.remove(),1300);}
-
-function pressCatch(){
-  if(!running)return;AC.resume();doBicycleKick();
-  const alive=chickens.filter(c=>c.alive);
-  if(alive.length>0){
-    const c=alive[0];c.alive=false;c.el.classList.add('caught');
-    const cx=parseFloat(c.el.style.left),cy=parseFloat(c.el.style.bottom);
-    setTimeout(()=>{try{c.el.remove();}catch(e){}},380);
-    score++;scoreEl.textContent=score;sfxChicken();
-    spawnParticle(cx,'🍗');spawnParticle(cx+30,'⭐');spawnFunnyText(cx,cy+40);showScorePop('+1');
-    replayEvents.push({frame:replayFrames.length,type:'catch',x:cx,y:cy});
-    const remaining=chickens.filter(c=>c.alive);
-    if(remaining.length===0){clearTimeout(callTimer);callActive=false;sfxAllCaught();showStatus('🏆 ALL CAUGHT!! SIUUUU!!',2000);}
-    else showStatus(`${remaining.length} left! 🐔`,700);
-  } else {sfxMiss();showStatus('No chickens! Wait for Mbappe! 🤔',1000);}
+// ── Replay recording ──
+const RFPS=10;
+let rpFrames=[],rpEvents=[],rpRecTimer=null;
+function recordRF(){
+  if(!running)return;
+  const gw=gameEl.offsetWidth||680;const scale=gw/GW;
+  rpFrames.push({
+    p1x:p1.x*scale,p1y:p1.y,p2x:p2.x*scale,p2y:p2.y,
+    chickens:chickens.map(c=>({x:parseFloat(c.el.style.left),y:parseFloat(c.el.style.bottom)})),
+    crabs:crabs.filter(c=>c.alive).map(c=>({x:c.x})),
+    p1s:p1.score,p2s:p2.score,t:timeLeft
+  });
 }
 
-document.addEventListener('keydown',e=>{if(!running)return;if(e.key===' '||e.key==='ArrowUp'||e.key==='Enter'){e.preventDefault();pressCatch();}});
-
-function spawnParticle(x,emoji){const p=document.createElement('div');p.className='particle';p.textContent=emoji;p.style.left=x+'px';p.style.bottom='260px';gameEl.appendChild(p);setTimeout(()=>p.remove(),1050);}
-function showScorePop(txt){const p=document.createElement('div');p.className='score-pop';p.textContent=txt;const gw=gameEl.offsetWidth||680;p.style.left=((ronX/GW)*gw)+'px';p.style.bottom='250px';gameEl.appendChild(p);setTimeout(()=>p.remove(),900);}
-
+// ── Game loop ──
 function gameFrame(){
   const gw=gameEl.offsetWidth||680;const scale=gw/GW;
-  ronX+=2.5;if(ronX>GW+20)ronX=-70;mbappeX=ronX+130;
-  ronWrap.style.left=(ronX*scale)+'px';mbaWrap.style.left=(mbappeX*scale)+'px';
-  bgEls.forEach(el=>{let x=parseFloat(el.style.left);x-=parseFloat(el.dataset.spd)*2;if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];}el.style.left=x+'px';});
+
+  [p1,p2].forEach(p=>{
+    // Horizontal movement
+    let dx=0;
+    if(p.id===1){if(keys['a']||keys['A'])dx=-3.5;if(keys['d']||keys['D'])dx=3.5;}
+    else{if(keys['ArrowLeft'])dx=-3.5;if(keys['ArrowRight'])dx=3.5;}
+    p.x=Math.max(10,Math.min(p.x+dx,(gw/scale)-60));
+
+    // Gravity
+    if(!p.onGround){
+      p.y+=p.vy;p.vy-=1.1;
+      if(p.y<=0){p.y=0;p.vy=0;p.onGround=true;p.jumpCount=0;}
+    }
+
+    // Apply position
+    p.el.style.left=(p.x*scale)+'px';
+    p.el.style.bottom=(GROUND+p.y)+'px';
+  });
+
+  // Move chickens
+  chickens.forEach(c=>{
+    if(c.caught)return;
+    let x=parseFloat(c.el.style.left);
+    x-=c.speed;
+    c.el.style.left=x+'px';
+    // slight bob
+    const by=parseFloat(c.el.style.bottom);
+    c.el.style.bottom=(c.h+Math.sin(Date.now()/300+c.h)*12)+'px';
+    if(x<-60){c.caught=true;setTimeout(()=>{try{c.el.remove();}catch(e){}},100);}
+  });
+  chickens=chickens.filter(c=>!c.caught||parseFloat(c.el.style.left)>-60);
+
+  // Move crabs
+  crabs.forEach(cr=>{
+    if(!cr.alive)return;
+    cr.x-=cr.speed;
+    cr.el.style.left=cr.x+'px';
+    if(cr.x<-60){cr.alive=false;try{cr.el.remove();}catch(e){}}
+  });
+  crabs=crabs.filter(c=>c.alive);
+
+  // Crab collision
+  checkCrabCollisions();
+
+  // Scroll bg
+  bgEls.forEach(el=>{let x=parseFloat(el.style.left);x-=parseFloat(el.dataset.spd)*1.5;if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲'][Math.floor(Math.random()*4)];}el.style.left=x+'px';});
 }
 
-function scheduleCall(){clearTimeout(callSchedTimer);callSchedTimer=setTimeout(()=>{if(!running)return;if(!callActive)mbappeCalls();scheduleCall();},5000+Math.random()*3000);}
+function spawnPop(x,y,txt,col){const p=document.createElement('div');p.className='spop';p.textContent=txt;p.style.color=col;p.style.left=x+'px';p.style.bottom=y+'px';gameEl.appendChild(p);setTimeout(()=>p.remove(),950);}
+function spawnFunny(x,y){const p=document.createElement('div');p.className='funny-pop';p.textContent=funnyTexts[Math.floor(Math.random()*funnyTexts.length)];const colors=['#FFD700','#FF6B6B','#60A5FA','#4ADE80','#FB923C'];p.style.color=colors[Math.floor(Math.random()*colors.length)];p.style.left=x+'px';p.style.bottom=y+'px';gameEl.appendChild(p);setTimeout(()=>p.remove(),1100);}
 
 function startGame(){
   AC.resume();
   document.getElementById('start-screen').style.display='none';
   document.getElementById('end-screen').style.display='none';
-  score=0;timeLeft=60;running=true;isKicking=false;
-  scoreEl.textContent=0;timerEl.textContent=60;
-  ronX=60;mbappeX=190;
-  replayFrames=[];replayEvents=[];
-  clearChickens();sfxStart();
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(callTimer);clearTimeout(callSchedTimer);clearInterval(replayRecTimer);
-  loopId=setInterval(()=>{gameFrame();},16);
-  replayRecTimer=setInterval(()=>{if(running)recordFrame();},1000/REPLAY_FPS);
-  timerIntv=setInterval(()=>{timeLeft--;timerEl.textContent=timeLeft;if(timeLeft<=0)endGame();},1000);
-  setTimeout(()=>{if(running)mbappeCalls();},1800);scheduleCall();
+  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];
+  crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];
+  p1=makePlayer(1,80,'#FFD700');p2=makePlayer(2,200,'#60A5FA');
+  updateScoreUI();updateLivesUI(p1);updateLivesUI(p2);
+  timeLeft=60;running=true;rpFrames=[];rpEvents=[];
+  document.getElementById('timer-big').textContent='60s';
+  sfxStart();
+  clearInterval(loopId);clearInterval(timerIntv);
+  clearTimeout(chickenSpawnTimer);clearTimeout(crabSpawnTimer);clearInterval(rpRecTimer);
+  loopId=setInterval(gameFrame,16);
+  timerIntv=setInterval(()=>{timeLeft--;document.getElementById('timer-big').textContent=timeLeft+'s';if(timeLeft<=0)endGame();},1000);
+  rpRecTimer=setInterval(recordRF,1000/RFPS);
+  setTimeout(spawnChicken,1000);setTimeout(spawnCrab,3000);
+  showStatus('🐔 Chickens flying! Jump and catch!! 🦀 Avoid crabs!',3000);
 }
 
 function endGame(){
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(callTimer);clearTimeout(callSchedTimer);clearInterval(replayRecTimer);
-  running=false;clearChickens();
-  document.getElementById('final-score').textContent=`${score} chicken${score!==1?'s':''}! 🍗`;
-  const msgs=score>=20?'SIUUUUU!! CR7 IS THE GOAT!! 🐐':score>=12?'Brilliant! Mbappe is proud! 💙':score>=5?'Good run! Try again!':'The chickens escaped!';
-  document.getElementById('end-msg').textContent=msgs;
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chickenSpawnTimer);clearTimeout(crabSpawnTimer);clearInterval(rpRecTimer);
+  running=false;
+  const p1w=p1.score>p2.score,tie=p1.score===p2.score;
+  document.getElementById('winner-emoji').textContent=tie?'🤝':p1w?'⚽':'🏆';
+  document.getElementById('winner-text').textContent=tie?'IT\'S A TIE!':p1w?'CR7 WINS!':'MBAPPE WINS!';
+  document.getElementById('winner-text').style.color=tie?'#fff':p1w?'#FFD700':'#60A5FA';
+  document.getElementById('final-scores').innerHTML=`<span style="color:#FFD700;font-family:Bangers,cursive;font-size:28px">CR7: ${p1.score} 🍗</span>&nbsp;&nbsp;<span style="color:#60A5FA;font-family:Bangers,cursive;font-size:28px">MBAPPE: ${p2.score} 🍗</span>`;
   document.getElementById('end-screen').style.display='flex';
 }
 
-// ══════════════════════════════════════════
-// REPLAY ENGINE
-// ══════════════════════════════════════════
-const replayCvs=document.getElementById('replay-canvas');
-const ctx=replayCvs.getContext('2d');
-let replayPlaying=false,replayFrame=0,replaySpeedMult=1,replayAnimId=null,replayLastT=0;
+// ── Replay ──
+const rpCvs=document.getElementById('replay-canvas');
+const rCtx=rpCvs.getContext('2d');
+let rpPlaying=false,rpFrame=0,rpSpeed=1,rpAnimId=null,rpLastT=0;
 
 function showReplay(){
-  if(replayFrames.length<2){alert('Play a game first to get a replay!');return;}
+  if(rpFrames.length<2){alert('Play first!');return;}
   document.getElementById('end-screen').style.display='none';
-  const rs=document.getElementById('replay-screen');
-  rs.style.display='flex';
-  replayFrame=0;replayPlaying=true;replayLastT=0;
-  document.getElementById('replay-play-btn').textContent='⏸ Pause';
-  requestAnimationFrame(replayLoop);
+  document.getElementById('replay-screen').style.display='flex';
+  rpFrame=0;rpPlaying=true;rpLastT=0;
+  document.getElementById('rp-play-btn').textContent='⏸';
+  requestAnimationFrame(rpLoop);
 }
-
-function replayLoop(t){
-  if(!replayPlaying){replayAnimId=null;return;}
-  if(replayLastT===0)replayLastT=t;
-  const dt=(t-replayLastT)/1000;
-  replayLastT=t;
-  replayFrame+=dt*REPLAY_FPS*replaySpeedMult;
-  if(replayFrame>=replayFrames.length){replayFrame=replayFrames.length-1;replayPlaying=false;document.getElementById('replay-play-btn').textContent='▶ Play';}
-  drawReplayFrame(Math.floor(replayFrame));
-  updateReplayUI();
-  replayAnimId=requestAnimationFrame(replayLoop);
+function rpLoop(t){
+  if(!rpPlaying){rpAnimId=null;return;}
+  if(rpLastT===0)rpLastT=t;
+  const dt=(t-rpLastT)/1000;rpLastT=t;
+  rpFrame+=dt*RFPS*rpSpeed;
+  if(rpFrame>=rpFrames.length){rpFrame=rpFrames.length-1;rpPlaying=false;document.getElementById('rp-play-btn').textContent='▶';}
+  drawRPFrame(Math.floor(rpFrame));
+  const pct=rpFrames.length>1?(rpFrame/(rpFrames.length-1))*100:0;
+  document.getElementById('rp-fill').style.width=pct+'%';
+  document.getElementById('rp-time').textContent=Math.floor(rpFrame/RFPS)+'s';
+  rpAnimId=requestAnimationFrame(rpLoop);
 }
-
-function drawReplayFrame(fi){
-  const f=replayFrames[Math.min(fi,replayFrames.length-1)];
-  if(!f)return;
-  const W=replayCvs.width,H=replayCvs.height;
-  ctx.clearRect(0,0,W,H);
-  // Sky
-  const skyGrad=ctx.createLinearGradient(0,0,0,H);
-  skyGrad.addColorStop(0,'#0d1b4b');skyGrad.addColorStop(0.55,'#1a3a6e');skyGrad.addColorStop(0.55,'#2d6a4f');skyGrad.addColorStop(1,'#1a4d35');
-  ctx.fillStyle=skyGrad;ctx.fillRect(0,0,W,H);
-  // Ground line
-  ctx.fillStyle='rgba(255,255,255,0.1)';ctx.fillRect(0,H-220,W,2);
-  // Score & timer overlay
-  ctx.fillStyle='rgba(0,0,0,0.5)';ctx.fillRect(0,0,W,36);
-  ctx.font='bold 18px Bangers,cursive';
-  ctx.fillStyle='gold';ctx.fillText(`🍗 ${f.score}`,12,24);
-  ctx.fillStyle='#ff9090';ctx.fillText(`⏱ ${f.timeLeft}s`,W-70,24);
-  ctx.fillStyle='rgba(255,255,255,0.6)';ctx.font='14px Fredoka One,cursive';ctx.fillText('⚽ RONALDO CHICKEN GAME',W/2-110,24);
+function drawRPFrame(fi){
+  const f=rpFrames[Math.min(fi,rpFrames.length-1)];if(!f)return;
+  const W=rpCvs.width,H=rpCvs.height;
+  rCtx.clearRect(0,0,W,H);
+  const sg=rCtx.createLinearGradient(0,0,0,H);sg.addColorStop(0,'#050d2e');sg.addColorStop(0.5,'#0f2559');sg.addColorStop(0.5,'#1a4d35');sg.addColorStop(1,'#0d3320');
+  rCtx.fillStyle=sg;rCtx.fillRect(0,0,W,H);
+  rCtx.fillStyle='rgba(255,255,255,0.12)';rCtx.fillRect(0,H-GROUND,W,2);
   // Chickens
-  ctx.font='36px serif';
-  f.chickens.forEach(c=>{
-    ctx.fillText(c.emoji,c.x,H-c.y-10);
-  });
-  // Catch events near this frame
-  replayEvents.forEach(ev=>{
-    if(Math.abs(ev.frame-fi)<REPLAY_FPS*0.4){
-      ctx.font='28px serif';ctx.fillText('✨🍗',ev.x,H-ev.y-30);
-    }
-  });
-  // Ronaldo (simplified for canvas)
-  const rX=Math.min((f.ronX/GW)*W+10,W-30);
-  const rY=H-215;
-  // Body
-  ctx.fillStyle='#C62828';ctx.beginPath();ctx.roundRect(rX-13,rY-60,26,32,5);ctx.fill();
-  ctx.fillStyle='#FFD700';ctx.font='bold 13px Arial Black,Arial';ctx.fillText('7',rX-3,rY-40);
-  ctx.fillStyle='#1565C0';ctx.beginPath();ctx.roundRect(rX-11,rY-28,22,14,4);ctx.fill();
-  ctx.fillStyle='#D4A574';ctx.beginPath();ctx.arc(rX,rY-74,13,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.ellipse(rX,rY-85,12,6,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(rX-5,rY-75,2.5,2.5,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(rX+5,rY-75,2.5,2.5,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#3E2723';ctx.beginPath();ctx.arc(rX-5,rY-75,1.5,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#3E2723';ctx.beginPath();ctx.arc(rX+5,rY-75,1.5,0,Math.PI*2);ctx.fill();
-  // Name label
-  ctx.fillStyle='#FFD700';ctx.font='bold 11px Bangers,cursive';ctx.fillText('CR7',rX-8,rY-96);
-  // Mbappe
-  const mX=Math.min(((f.mbappeX)/GW)*W+10,W-30);
-  ctx.fillStyle='#1565C0';ctx.beginPath();ctx.roundRect(mX-13,rY-60,26,32,5);ctx.fill();
-  ctx.fillStyle='#fff';ctx.font='bold 12px Arial Black,Arial';ctx.fillText('10',mX-7,rY-40);
-  ctx.fillStyle='#111';ctx.beginPath();ctx.roundRect(mX-11,rY-28,22,14,4);ctx.fill();
-  ctx.fillStyle='#8D6748';ctx.beginPath();ctx.arc(mX,rY-74,13,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#111';ctx.beginPath();ctx.ellipse(mX,rY-86,11,5,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(mX-5,rY-75,2.5,2.5,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(mX+5,rY-75,2.5,2.5,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(mX-5,rY-75,1.5,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#1a1a1a';ctx.beginPath();ctx.arc(mX+5,rY-75,1.5,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle='#60A5FA';ctx.font='bold 11px Bangers,cursive';ctx.fillText('MBAPPE',mX-16,rY-96);
-  // REPLAY watermark
-  ctx.fillStyle='rgba(255,255,255,0.15)';ctx.font='bold 22px Bangers,cursive';ctx.fillText('🎬 REPLAY',W/2-50,H-12);
-  // Credits
-  ctx.fillStyle='rgba(255,215,0,0.4)';ctx.font='10px Fredoka One,cursive';ctx.fillText('Game Designer: Arush  |  Assistant: Daddy',W/2-100,H-28);
-}
-
-function updateReplayUI(){
-  const pct=replayFrames.length>1?(replayFrame/(replayFrames.length-1))*100:0;
-  document.getElementById('replay-fill').style.width=pct+'%';
-  const sec=Math.floor(replayFrame/REPLAY_FPS);
-  document.getElementById('replay-time').textContent=`${sec}s`;
-}
-
-function toggleReplayPlay(){
-  replayPlaying=!replayPlaying;
-  document.getElementById('replay-play-btn').textContent=replayPlaying?'⏸ Pause':'▶ Play';
-  if(replayPlaying){
-    if(replayFrame>=replayFrames.length-1)replayFrame=0;
-    replayLastT=0;requestAnimationFrame(replayLoop);
+  rCtx.font='32px serif';
+  f.chickens.forEach(c=>{rCtx.fillText('🐔',c.x,H-c.y+20);});
+  // Crabs
+  rCtx.font='28px serif';
+  f.crabs.forEach(c=>{rCtx.fillText('🦀',c.x,H-GROUND+5);});
+  // P1 - draw simple person
+  function drawChar(x,y,col,num,skinCol){
+    const gy=H-GROUND-y-90;
+    rCtx.fillStyle=col;rCtx.beginPath();rCtx.roundRect(x-13,gy+28,26,34,5);rCtx.fill();
+    rCtx.fillStyle='#FFD700';rCtx.font='bold 13px Arial Black';rCtx.fillText(num,x-6,gy+52);
+    rCtx.fillStyle='#111';rCtx.beginPath();rCtx.roundRect(x-11,gy+62,22,14,4);rCtx.fill();
+    rCtx.fillStyle=skinCol;rCtx.beginPath();rCtx.arc(x,gy+14,13,0,Math.PI*2);rCtx.fill();
+    rCtx.fillStyle='#111';rCtx.beginPath();rCtx.ellipse(x,gy+3,11,6,0,0,Math.PI*2);rCtx.fill();
+    rCtx.fillStyle='#fff';rCtx.beginPath();rCtx.arc(x-5,gy+14,2.5,0,Math.PI*2);rCtx.fill();
+    rCtx.beginPath();rCtx.arc(x+5,gy+14,2.5,0,Math.PI*2);rCtx.fill();
+    rCtx.fillStyle='#333';rCtx.beginPath();rCtx.arc(x-5,gy+14,1.5,0,Math.PI*2);rCtx.fill();
+    rCtx.beginPath();rCtx.arc(x+5,gy+14,1.5,0,Math.PI*2);rCtx.fill();
   }
+  drawChar(f.p1x,''+f.p1y,'#C62828','7','#D4A574');
+  drawChar(f.p2x,''+f.p2y,'#1565C0','10','#8D6748');
+  // Scores
+  rCtx.fillStyle='rgba(0,0,0,0.6)';rCtx.fillRect(0,0,W,34);
+  rCtx.fillStyle='#FFD700';rCtx.font='bold 16px Bangers,cursive';rCtx.fillText(`⚽ CR7: ${f.p1s} 🍗`,8,22);
+  rCtx.fillStyle='#60A5FA';rCtx.font='bold 16px Bangers,cursive';rCtx.fillText(`MBAPPE: ${f.p2s} 🍗`,W-150,22);
+  rCtx.fillStyle='#fff';rCtx.font='14px Bangers,cursive';rCtx.fillText(`⏱ ${f.t}s`,W/2-16,22);
+  rCtx.fillStyle='rgba(255,255,255,0.12)';rCtx.font='bold 20px Bangers,cursive';rCtx.fillText('🎬 REPLAY',W/2-44,H-10);
+  rCtx.fillStyle='rgba(255,215,0,0.35)';rCtx.font='9px Fredoka One,cursive';rCtx.fillText('Game Designer: Arush  |  Assistant: Daddy',W/2-96,H-24);
 }
-function setReplaySpeed(v){replaySpeedMult=parseFloat(v);}
-function scrubReplay(e){
-  const rect=document.getElementById('replay-progress').getBoundingClientRect();
-  const pct=(e.clientX-rect.left)/rect.width;
-  replayFrame=Math.floor(pct*(replayFrames.length-1));
-  drawReplayFrame(Math.floor(replayFrame));updateReplayUI();
-}
-function closeReplay(){
-  document.getElementById('replay-screen').style.display='none';
-  document.getElementById('end-screen').style.display='flex';
-  replayPlaying=false;if(replayAnimId)cancelAnimationFrame(replayAnimId);
-}
+function toggleRP(){rpPlaying=!rpPlaying;document.getElementById('rp-play-btn').textContent=rpPlaying?'⏸':'▶';if(rpPlaying){if(rpFrame>=rpFrames.length-1)rpFrame=0;rpLastT=0;requestAnimationFrame(rpLoop);}}
+function scrubRP(e){const r=document.getElementById('rp-prog').getBoundingClientRect();rpFrame=Math.floor(((e.clientX-r.left)/r.width)*(rpFrames.length-1));drawRPFrame(Math.floor(rpFrame));}
+function closeRP(){document.getElementById('replay-screen').style.display='none';document.getElementById('end-screen').style.display='flex';rpPlaying=false;if(rpAnimId)cancelAnimationFrame(rpAnimId);}
 </script>
 </body>
 </html>

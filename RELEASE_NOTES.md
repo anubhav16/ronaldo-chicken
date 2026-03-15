@@ -28,6 +28,31 @@
 | v3.3.1 | 2026-03-15 | Patch | Remove session replay feature — low quality canvas playback |
 | v3.4.0 | 2026-03-15 | Minor | Code readability overhaul — annotations, comments, and formatting |
 | v4.0.0 | 2026-03-15 | Major | Egg mechanic, high scores, player states, performance fixes, UX overhaul |
+| v5.0.0 | 2026-03-15 | Major | Fart kills chickens, pause, multi-snake, player identity, respawn fixes |
+
+---
+
+## v5.0.0 — Fart Combat, Pause, Multi-Snake & Player Identity (Mar 15)
+
+Major update adding fart-based chicken kills, spacebar pause/resume, progressive multi-snake difficulty, and player recognition improvements.
+
+### New Features
+- **Fart smoke kills flying chickens** — when player farts (egg on cooldown), rising smoke clouds (💨/🌫️/☁️) float upward for 2.5s; any flying chicken that touches the smoke dies with a spinning fall animation and descending squawk sound. No points awarded for fart kills — purely tactical crowd control.
+- **Spacebar pause/resume** — press SPACE during gameplay to pause the game loop and timer; press again to resume. All player input blocked while paused. "SPACE = pause" hint in scoreboard.
+- **Progressive multi-snake system** — snake difficulty scales in two phases:
+  - L1-3: Speed increases (1.6 → 2.4 → 3.2), single snake
+  - L4: 2 snakes introduced (speed 3.8, 200px min gap)
+  - L5: 2 snakes faster (speed 4.5, 180px min gap)
+  - L6: 3 snakes (speed 5.2, 160px min gap)
+  - Minimum gap enforced every frame — snakes are pushed apart if too close, guaranteeing players can always jump over one and land safely before the next arrives
+  - Snakes alternate entry direction and stagger positions to prevent clumping
+  - Individual snake respawn on egg-kill (doesn't reset all snakes)
+- **Player identity** — country flag icons (🇵🇹 Ronaldo, 🇫🇷 Mbappe) on both character name tags and scoreboard panels for easy recognition
+- **Respawn positions** — WASD player (Mbappe) always respawns on left side, Arrow key player (Ronaldo) on right side
+
+### Bug Fixes
+- Fixed input not blocked during pause state
+- Pause state properly reset on game start
 
 ---
 

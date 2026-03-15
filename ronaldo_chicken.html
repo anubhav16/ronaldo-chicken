@@ -48,7 +48,8 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 .char.out { opacity: 0.2; }
 .char svg { overflow: visible; }
 .char.idle .rl, .char.idle .rr, .char.idle .al, .char.idle .ar { animation: none; }
-.ctag     { font-family: 'Bangers', cursive; font-size: 13px; letter-spacing: 1px; text-shadow: 0 2px 8px #000; margin-bottom: 1px; white-space: nowrap; }
+.ctag     { font-family: 'Bangers', cursive; font-size: 13px; letter-spacing: 1px; text-shadow: 0 2px 8px #000; margin-bottom: 1px; white-space: nowrap; display: flex; align-items: center; gap: 4px; justify-content: center; }
+.ctag .player-photo { width: 24px; height: 24px; border-radius: 50%; border: 2px solid currentColor; object-fit: cover; background: #222; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
 
 /* === CHARACTER ANIMATIONS === */
 
@@ -105,6 +106,11 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 @keyframes elimPop { 0% { transform: scale(0.4); opacity: 1; } 20% { transform: scale(1.3); } 80% { opacity: 1; } 100% { transform: scale(1.1) translateY(-30px); opacity: 0; } }
 .sad-emoji { position: absolute; font-size: 24px; animation: sadFloat 0.7s ease-out forwards; pointer-events: none; z-index: 35; }
 @keyframes sadFloat { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-80px) scale(1.2); opacity: 0; } }
+
+/* Fart smoke rising */
+.fart-smoke { position: absolute; pointer-events: none; z-index: 18; font-size: 30px; opacity: 0.8; }
+@keyframes chickenDie { 0% { transform: rotate(0); } 30% { transform: rotate(180deg); } 100% { transform: rotate(360deg) translateY(200px); opacity: 0; } }
+.chk.dying { animation: chickenDie 0.8s ease-in forwards !important; }
 
 /* Level-up announcement */
 #lvl-ann { position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%); z-index: 55; pointer-events: none; opacity: 0; text-align: center; }
@@ -239,7 +245,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
   <div id="ui">
     <!-- Mbappe (P2) — left -->
     <div class="ppanel">
-      <div class="pname" style="color:#60A5FA">🏆 MBAPPE (P2) <span id="p2eggcd" class="egg-cd ready">🥚</span></div>
+      <div class="pname" style="color:#60A5FA">🇫🇷 MBAPPE (P2) <span id="p2eggcd" class="egg-cd ready">🥚</span></div>
       <div class="pscore" style="color:#60A5FA">🍗 <span id="p2s">0</span></div>
       <div class="phi" style="font-family:'Bangers',cursive;font-size:13px;color:rgba(255,179,71,0.7);letter-spacing:1px">HI: <span id="p2hi">0</span>🍗</div>
       <div class="plives" id="p2lv">❤️❤️❤️</div>
@@ -248,11 +254,12 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
     </div>
     <div id="center-ui">
       <div style="font-family:'Bangers',cursive;font-size:11px;color:#ff6fd8;letter-spacing:1px">🐔 CHICKEN GAME 🐔</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.35)">SPACE = pause</div>
       <div id="level-badge">⭐ LEVEL 1 ⭐</div>
     </div>
     <!-- Ronaldo (P1) — right -->
     <div class="ppanel" style="align-items:flex-end">
-      <div class="pname" style="color:#FFD700">⚽ CRISTIANO RONALDO (P1) <span id="p1eggcd" class="egg-cd ready">🥚</span></div>
+      <div class="pname" style="color:#FFD700">🇵🇹 RONALDO (P1) <span id="p1eggcd" class="egg-cd ready">🥚</span></div>
       <div class="pscore" style="color:#FFD700"><span id="p1s">0</span> 🍗</div>
       <div class="phi" style="font-family:'Bangers',cursive;font-size:13px;color:rgba(255,179,71,0.7);letter-spacing:1px;text-align:right">HI: <span id="p1hi">0</span>🍗</div>
       <div class="plives" id="p1lv">❤️❤️❤️</div>
@@ -263,7 +270,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
 
   <!-- ========== P1: RONALDO (red #7) ========== -->
   <div class="char" id="p1c" style="left:80px">
-    <div class="ctag" style="color:#FFD700">RONALDO #7 ⚽</div>
+    <div class="ctag" style="color:#FFD700"><span class="player-photo">🇵🇹</span> RONALDO #7 ⚽</div>
     <svg width="80" height="100" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
       <g id="p1g">
         <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.35)"/><!-- shadow -->
@@ -295,7 +302,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
 
   <!-- ========== P2: MBAPPE (blue #10) ========== -->
   <div class="char" id="p2c" style="left:260px">
-    <div class="ctag" style="color:#60A5FA">MBAPPE #10</div>
+    <div class="ctag" style="color:#60A5FA"><span class="player-photo">🇫🇷</span> MBAPPE #10 🏆</div>
     <svg width="80" height="100" viewBox="-22 -88 44 95" xmlns="http://www.w3.org/2000/svg">
       <g id="p2g">
         <ellipse cx="0" cy="4" rx="14" ry="4" fill="rgba(0,0,0,0.35)"/>
@@ -437,13 +444,15 @@ const comboLabels=['','','DOUBLE! 🔥','TRIPLE! 🔥🔥','MEGA!! 🔥🔥🔥'
 const SNAKE_PALETTES=[{head:'#FF2222',body:'#FF6666'},{head:'#FF8C00',body:'#FFD700'},{head:'#00C8FF',body:'#0060FF'},{head:'#FF00FF',body:'#FF80FF'},{head:'#00FF80',body:'#00CC60'},{head:'#FF4500',body:'#FF9900'}];
 
 // Level config: speed, spawnMs, simultaneous chickens, heights, crab interval, snake speed
+// [2026-03-15] snakeCount: number of snakes on screen. Gradually increase speed first, then count.
+// minSnakeGap: minimum px distance between snakes so players can jump and land safely.
 const LEVEL_CFG=[
-  {speed:2.5,spawnMs:1400,sim:1,heights:[GROUND+65,GROUND+120,GROUND+170],crabMs:4500,snakeSpeed:1.6,label:"Let's go!"},
-  {speed:3.3,spawnMs:1150,sim:2,heights:[GROUND+65,GROUND+120,GROUND+170,GROUND+230],crabMs:4000,snakeSpeed:2.2,label:"Snake's faster! 🐍"},
-  {speed:4.1,spawnMs:950,sim:2,heights:[GROUND+65,GROUND+120,GROUND+180,GROUND+250,GROUND+310],crabMs:3500,snakeSpeed:2.9,label:"Woah!! 🔥"},
-  {speed:5.0,spawnMs:780,sim:3,heights:[GROUND+65,GROUND+110,GROUND+170,GROUND+240,GROUND+310,GROUND+360],crabMs:3000,snakeSpeed:3.6,label:"FAST SNAKE!! 🚀"},
-  {speed:6.0,spawnMs:620,sim:3,heights:[GROUND+65,GROUND+100,GROUND+150,GROUND+210,GROUND+280,GROUND+350,GROUND+400],crabMs:2500,snakeSpeed:4.4,label:"INSANE!! 🌟"},
-  {speed:7.2,spawnMs:480,sim:4,heights:[GROUND+65,GROUND+100,GROUND+145,GROUND+200,GROUND+260,GROUND+330,GROUND+400,GROUND+440],crabMs:2000,snakeSpeed:5.2,label:"LEGENDARY!! 👑"},
+  {speed:2.5,spawnMs:1400,sim:1,heights:[GROUND+65,GROUND+120,GROUND+170],crabMs:4500,snakeSpeed:1.6,snakeCount:1,minSnakeGap:0,label:"Let's go!"},
+  {speed:3.3,spawnMs:1150,sim:2,heights:[GROUND+65,GROUND+120,GROUND+170,GROUND+230],crabMs:4000,snakeSpeed:2.4,snakeCount:1,minSnakeGap:0,label:"Snake's faster! 🐍"},
+  {speed:4.1,spawnMs:950,sim:2,heights:[GROUND+65,GROUND+120,GROUND+180,GROUND+250,GROUND+310],crabMs:3500,snakeSpeed:3.2,snakeCount:1,minSnakeGap:0,label:"FAST SNAKE! 🔥"},
+  {speed:5.0,spawnMs:780,sim:3,heights:[GROUND+65,GROUND+110,GROUND+170,GROUND+240,GROUND+310,GROUND+360],crabMs:3000,snakeSpeed:3.8,snakeCount:2,minSnakeGap:200,label:"2 SNAKES!! 🐍🐍"},
+  {speed:6.0,spawnMs:620,sim:3,heights:[GROUND+65,GROUND+100,GROUND+150,GROUND+210,GROUND+280,GROUND+350,GROUND+400],crabMs:2500,snakeSpeed:4.5,snakeCount:2,minSnakeGap:180,label:"INSANE!! 🌟"},
+  {speed:7.2,spawnMs:480,sim:4,heights:[GROUND+65,GROUND+100,GROUND+145,GROUND+200,GROUND+260,GROUND+330,GROUND+400,GROUND+440],crabMs:2000,snakeSpeed:5.2,snakeCount:3,minSnakeGap:160,label:"LEGENDARY!! 👑"},
 ];
 const SKY_CLASSES=['','lv2','lv3','lv4','lv5','lv5'];
 function getCfg(lv){return LEVEL_CFG[Math.min(lv-1,LEVEL_CFG.length-1)];}
@@ -453,6 +462,7 @@ function getCfg(lv){return LEVEL_CFG[Math.min(lv-1,LEVEL_CFG.length-1)];}
 //  GAME STATE
 // ================================================================
 let p1,p2,chickens=[],crabs=[],snakes=[],running=false,timeLeft=TOTAL_TIME,level=1;
+let fartClouds=[]; // [2026-03-15] Rising fart smoke that kills flying chickens on contact
 let loopId,timerIntv,chkTimer,crabTimer;
 const statusEl=document.getElementById('status'),lvlAnn=document.getElementById('lvl-ann');
 
@@ -547,7 +557,7 @@ function spawnSad(x,y){const el=document.createElement('div');el.className='sad-
 // ================================================================
 const keys={};
 let eggs=[];
-document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running)return;AC.resume();
+document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running||paused)return;AC.resume();
   if(e.key==='ArrowUp')handleJump(p1);
   if(e.key==='ArrowDown'){if(p1.eggCooldown)doFart(p1);else layEgg(p1);}
   if(e.key==='w'||e.key==='W')handleJump(p2);
@@ -565,15 +575,21 @@ function doFart(p){
   p.mouth.setAttribute('d','M -4 -68 Q 0 -72 4 -68');p.sweat.setAttribute('opacity','0.6');
   // Fart sound — low rumbling noise
   sfxFart();
-  // Spawn gas cloud
+  // [2026-03-15] Spawn rising fart smoke clouds that kill flying chickens on contact
   const gw=gameEl.offsetWidth||680;const sc=gw/GW;const px=p.x*sc+38;
-  const gasTexts=['💨','💨💨','🌫️','💨'];
+  const smokeEmojis=['💨','🌫️','☁️'];
   for(let i=0;i<3;i++){
     setTimeout(()=>{
-      const g=document.createElement('div');g.className='spop';
-      g.textContent=gasTexts[Math.floor(Math.random()*gasTexts.length)];
-      g.style.cssText=`color:rgba(180,200,100,0.7);font-size:${18+Math.random()*14}px;left:${px-20+Math.random()*40}px;bottom:${GROUND+10+Math.random()*20}px`;
-      gameEl.appendChild(g);setTimeout(()=>g.remove(),1000);
+      const g=document.createElement('div');g.className='fart-smoke';
+      g.textContent=smokeEmojis[Math.floor(Math.random()*smokeEmojis.length)];
+      const sx=px-25+Math.random()*50;
+      const sy=GROUND+10+Math.random()*20;
+      g.style.left=sx+'px';g.style.bottom=sy+'px';
+      g.style.fontSize=(28+Math.random()*16)+'px';
+      gameEl.appendChild(g);
+      const cloud={el:g,x:sx,y:sy-GROUND,vy:3+Math.random()*2,vx:(Math.random()-0.5)*1.5,owner:p.id,alive:true,age:0};
+      fartClouds.push(cloud);
+      setTimeout(()=>{cloud.alive=false;try{g.remove();}catch(e){}},2500);
     },i*150);
   }
   showStatus(`${p.id===1?'RONALDO':'MBAPPE'}: No egg yet... 💨`,1200);
@@ -597,6 +613,11 @@ function sfxFart(){
   o.start();o.stop(AC.currentTime+0.5);
   // Add some noise for texture
   try{const buf=AC.createBuffer(1,AC.sampleRate*0.3,AC.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(AC.sampleRate*0.15));const s=AC.createBufferSource(),g2=AC.createGain(),f2=AC.createBiquadFilter();s.buffer=buf;f2.type='lowpass';f2.frequency.value=300;s.connect(f2);f2.connect(g2);g2.connect(AC.destination);g2.gain.setValueAtTime(0.15,AC.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.35);s.start();s.stop(AC.currentTime+0.4);}catch(e){}
+}
+
+// [2026-03-15] Chicken dies from fart smoke — descending squawk
+function sfxChickenDie(){
+  tone(900,'square',0.12,0.3);tone(600,'sawtooth',0.15,0.25,0.05);tone(300,'square',0.2,0.2,0.12);tone(150,'sawtooth',0.25,0.15,0.2);
 }
 
 /** Lay egg at player's current position — works on ground or mid-air */
@@ -671,13 +692,39 @@ function scheduleChickens(cfg){if(!running)return;if(chickens.length>20){chkTime
 /** Schedule crabs */
 function scheduleCrabs(cfg){if(!running)return;const el=document.createElement('div');el.className='crab';el.textContent='🦀';const gw=gameEl.offsetWidth||680;const fromRight=Math.random()>0.5;el.style.left=(fromRight?gw:-60)+'px';gameEl.appendChild(el);crabs.push({el,x:fromRight?gw:-60,fromRight,speed:(1.3+Math.random()*1.2)*(fromRight?-1:1),alive:true});crabTimer=setTimeout(()=>scheduleCrabs(getCfg(level)),cfg.crabMs);}
 
-/** Spawn snake (removes old, bounces left↔right) */
+/** [2026-03-15] Spawn snakes — count increases with level, enforces min gap for jumpability */
 function spawnSnake(cfg){
   snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];
-  const gw=gameEl.offsetWidth||680;const goRight=Math.random()>0.5;
+  const gw=gameEl.offsetWidth||680;
+  const count=cfg.snakeCount||1;
+  const gap=cfg.minSnakeGap||160;
+  // Distribute starting positions across the width with guaranteed gap
+  const usedPalettes=[];
+  for(let i=0;i<count;i++){
+    let palette;do{palette=SNAKE_PALETTES[Math.floor(Math.random()*SNAKE_PALETTES.length)];}while(usedPalettes.includes(palette)&&usedPalettes.length<SNAKE_PALETTES.length);
+    usedPalettes.push(palette);
+    const goRight=i%2===0; // alternate directions so snakes don't stack
+    const el=buildSnakeEl(palette,goRight);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
+    // Stagger start positions so they enter with spacing
+    const startX=goRight?-80-(i*120):gw+10+(i*120);
+    el.style.left=startX+'px';gameEl.appendChild(el);
+    el.classList.add('warning');setTimeout((e=>()=>e.classList.remove('warning'))(el),1600);
+    snakes.push({el,x:startX,speed:cfg.snakeSpeed*(goRight?1:-1),alive:true,palette});
+    if(i===0)sfxSnakeWarn();
+  }
+}
+/** Respawn a single dead snake after delay, maintaining gap from living snakes */
+function respawnOneSnake(cfg){
+  if(!running)return;
+  const gw=gameEl.offsetWidth||680;
+  const targetCount=cfg.snakeCount||1;
+  if(snakes.filter(s=>s.alive).length>=targetCount)return;
+  const gap=cfg.minSnakeGap||160;
+  const goRight=Math.random()>0.5;
   const palette=SNAKE_PALETTES[Math.floor(Math.random()*SNAKE_PALETTES.length)];
   const el=buildSnakeEl(palette,goRight);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
-  const startX=goRight?-80:gw+10;el.style.left=startX+'px';gameEl.appendChild(el);
+  const startX=goRight?-80:gw+10;
+  el.style.left=startX+'px';gameEl.appendChild(el);
   el.classList.add('warning');setTimeout(()=>el.classList.remove('warning'),1600);sfxSnakeWarn();
   snakes.push({el,x:startX,speed:cfg.snakeSpeed*(goRight?1:-1),alive:true,palette});
 }
@@ -754,7 +801,7 @@ function gameFrame(){
         sn.alive=false;sn.el.style.animation='snakeEat 0.6s ease-out forwards';setTimeout(()=>{try{sn.el.remove();}catch(e){}},700);
         showStatus(`${thrower.id===1?'RONALDO':'MBAPPE'} fed the snake! 🐍🥚 +5 PTS!`,2500);
         spawnPop(sn.x+30,GROUND+40,'+5 🐍🥚',thrower.col,36);burstConfetti(sn.x+30,GROUND+50,25);
-        setTimeout(()=>{if(running)spawnSnake(getCfg(level));},3000);break;
+        setTimeout(()=>{if(running)respawnOneSnake(getCfg(level));},3000);break;
       }
     }
   }
@@ -769,6 +816,48 @@ function gameFrame(){
     if(sn.x>gw-90){sn.x=gw-90;sn.speed=-Math.abs(sn.speed);sn.el.style.flexDirection='row-reverse';
       if(!sn._wt||Date.now()-sn._wt>1000){sn._wt=Date.now();sn.el.classList.add('warning');setTimeout(()=>sn.el.classList.remove('warning'),800);sfxSnakeWarn();}}
     sn.el.style.left=sn.x+'px';});
+  // [2026-03-15] Enforce minimum gap between snakes so players can jump and land safely
+  const aliveSnakes=snakes.filter(s=>s.alive);
+  if(aliveSnakes.length>1){
+    const gap=(getCfg(level).minSnakeGap)||160;
+    for(let i=0;i<aliveSnakes.length;i++){
+      for(let j=i+1;j<aliveSnakes.length;j++){
+        const d=aliveSnakes[j].x-aliveSnakes[i].x;
+        if(Math.abs(d)<gap){
+          // Push them apart — nudge each away by half the deficit
+          const nudge=(gap-Math.abs(d))/2;
+          if(d>=0){aliveSnakes[i].x-=nudge;aliveSnakes[j].x+=nudge;}
+          else{aliveSnakes[i].x+=nudge;aliveSnakes[j].x-=nudge;}
+          // If pushed to wall, bounce
+          if(aliveSnakes[i].x<-10){aliveSnakes[i].x=-10;aliveSnakes[i].speed=Math.abs(aliveSnakes[i].speed);}
+          if(aliveSnakes[j].x>gw-90){aliveSnakes[j].x=gw-90;aliveSnakes[j].speed=-Math.abs(aliveSnakes[j].speed);}
+          aliveSnakes[i].el.style.left=aliveSnakes[i].x+'px';
+          aliveSnakes[j].el.style.left=aliveSnakes[j].x+'px';
+        }
+      }
+    }
+  }
+  // [2026-03-15] Move fart smoke upward and check collision with flying chickens
+  for(let i=fartClouds.length-1;i>=0;i--){
+    const fc=fartClouds[i];if(!fc.alive){fartClouds.splice(i,1);continue;}
+    fc.y+=fc.vy;fc.x+=fc.vx;fc.age++;
+    fc.el.style.bottom=(GROUND+fc.y)+'px';fc.el.style.left=fc.x+'px';
+    fc.el.style.opacity=Math.max(0,0.8-fc.age*0.012);
+    // Check collision with chickens
+    for(let j=chickens.length-1;j>=0;j--){
+      const c=chickens[j];if(c.gone)continue;
+      const cx=parseFloat(c.el.style.left)+22,cy=parseFloat(c.el.style.bottom)+22;
+      if(Math.abs(cx-fc.x)<60&&Math.abs(cy-(GROUND+fc.y))<60){
+        c.gone=true;sfxChickenDie();
+        c.el.classList.remove('poof');c.el.classList.add('dying');
+        // [2026-03-15] No points for fart kills — just visual/audio feedback
+        spawnPop(cx,cy,'💀💨','#aaa',28);
+        setTimeout(()=>{try{c.el.remove();}catch(e){}},800);
+        break;
+      }
+    }
+  }
+  chickens=chickens.filter(c=>!c.gone);
   // Collisions
   checkChickens();checkCrabs();checkSnakes();
   // Parallax scroll
@@ -800,9 +889,9 @@ let lastLevelReached=1;
 /** Start game (default: resume from lastLevel - 1) */
 function startGame(startLevel){
   if(typeof startLevel==='undefined')startLevel=Math.max(1,lastLevelReached-1);
-  AC.resume();onScreen=false;
+  AC.resume();onScreen=false;paused=false;
   document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';
-  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];
+  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];fartClouds.forEach(f=>{try{f.el.remove();}catch(e){}});fartClouds=[];
   Object.keys(keys).forEach(k=>keys[k]=false);
   p1=makePlayer(1,550,'#FFD700');p2=makePlayer(2,80,'#60A5FA');
   document.getElementById('p1eggcd').className='egg-cd ready';document.getElementById('p2eggcd').className='egg-cd ready';
@@ -854,8 +943,26 @@ function showEndScreen(){
 //  SCREEN INPUT — any key starts/restarts
 // ================================================================
 let onScreen=true;
+// [2026-03-15] Spacebar pause/resume
+let paused=false;
+function togglePause(){
+  if(!running&&!paused)return;
+  paused=!paused;
+  if(paused){
+    clearInterval(loopId);clearInterval(timerIntv);
+    showStatus('⏸️ PAUSED — Press SPACE to resume',99999);
+  } else {
+    loopId=setInterval(gameFrame,16);
+    timerIntv=setInterval(()=>{timeLeft++;if(timeLeft%10===0)doLevelUp();if(p1.eliminated&&p2.eliminated)endGame('both_eliminated');},1000);
+    showStatus('▶️ RESUMED!',1000);
+  }
+}
 function handleAnyKeyStart(e){
-  if(!onScreen)return;
+  if(!onScreen){
+    // [2026-03-15] Spacebar pause/resume during gameplay
+    if(e.key===' '&&(running||paused)){e.preventDefault();togglePause();return;}
+    return;
+  }
   if(['Shift','Control','Alt','Meta','CapsLock','Tab','Escape'].includes(e.key))return;
   e.preventDefault();
   startGame();

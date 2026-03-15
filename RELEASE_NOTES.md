@@ -25,6 +25,7 @@
 | v3.1.0 | 2026-03-15 | Minor | Mixpanel analytics integration |
 | v3.2.0 | 2026-03-15 | Minor | Session replay system with full game recording |
 | v3.3.0 | 2026-03-15 | Minor | Mixpanel fix: direct HTTP API tracking, full-height game, user profiles |
+| v3.3.1 | 2026-03-15 | Patch | Remove session replay feature — low quality canvas playback |
 
 ---
 
@@ -324,3 +325,13 @@ New endgame mode with player elimination.
 - **User profiles via `/engage` API** — tracks lifetime stats per player (total_games, total_score, total_time_playing)
 - **Session timing** — `session_end` event with duration fired on page unload
 - **Events tracked:** game_loaded, game_started, game_ended (with scores/winner/time), snake_bite, crab_sting, player_eliminated, level_up, session_end
+
+---
+
+## v3.3.1 — Remove Session Replay (Mar 15)
+**File:** `ronaldo_chicken.html`
+
+### Changes
+- **Removed session replay feature entirely** — canvas-based playback at 10fps produced low-quality results that didn't match the actual game rendering
+- Removed replay button from end screen, replay player UI, all recording/playback code
+- Cleaned up related CSS, HTML, and JS (~46 lines removed)

@@ -101,12 +101,6 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 .log-date{color:#ff6fd8;font-size:11px;font-family:'Bangers',cursive;letter-spacing:1px}
 .log-result{font-family:'Bangers',cursive;font-size:20px;margin:2px 0}
 .log-detail{color:#aaa;font-size:11px}
-#rp-screen{position:absolute;inset:0;z-index:70;background:#000;display:none;flex-direction:column;align-items:center}
-#rp-canvas{width:100%;max-height:448px;background:#1a0050}
-#rp-bar{width:100%;padding:6px 10px;display:flex;align-items:center;gap:8px;background:rgba(20,0,60,0.95);border-top:2px solid #ff6fd8}
-#rp-prog{flex:1;height:7px;background:#333;border-radius:4px;cursor:pointer}
-#rp-fill{height:100%;background:linear-gradient(90deg,#ff6fd8,#ffb347);border-radius:4px;width:0%}
-#rp-time{color:#ffb347;font-family:'Bangers',cursive;font-size:15px;min-width:44px}
 .rbtn{background:rgba(255,111,216,0.15);border:1px solid rgba(255,111,216,0.4);color:#ff6fd8;font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer}
 #credits-bar{position:absolute;bottom:1px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,179,71,0.5);pointer-events:none;z-index:25}
 </style>
@@ -191,7 +185,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
   <div id="lvl-ann"><span class="lnum" id="lnum">LEVEL 2</span><span class="lsub" id="lsub">FASTER!</span></div>
   <div id="win-ann"><h2 id="win-txt">CR7 WINS!</h2><p id="win-sub">SURVIVED!</p></div>
   <div id="status" style="opacity:0"></div>
-  <div id="analytics-badge" style="display:none">📊 Mixpanel Analytics<br>🎬 Session Replay ON</div>
+  <div id="analytics-badge" style="display:none">📊 Mixpanel Analytics</div>
 
   <div id="ui">
     <div class="ppanel">
@@ -306,7 +300,6 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
     <div id="reached-level" style="font-family:'Bangers',cursive;font-size:16px;color:#ffb347;margin-bottom:8px"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px">
       <button class="btn btn-gold" id="again-btn">PLAY AGAIN ⚽</button>
-      <button class="btn btn-blue" id="replay-btn">🎬 REPLAY</button>
       <button class="btn btn-green" id="logs-btn2">📋 Game Logs</button>
     </div>
     <div style="color:rgba(255,179,71,0.45);font-size:10px;margin-top:8px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
@@ -316,21 +309,6 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
 <div id="logs-panel">
   <div id="logs-header"><h2>📋 GAME LOGS</h2><button class="rbtn" id="logs-close-btn">✕ Close</button></div>
   <div id="logs-body"></div>
-</div>
-
-<div id="rp-screen">
-  <canvas id="rp-canvas" width="680" height="448"></canvas>
-  <div id="rp-bar">
-    <button class="rbtn" id="rp-play-btn">⏸</button>
-    <div id="rp-prog"><div id="rp-fill"></div></div>
-    <div id="rp-time">0s</div>
-    <select id="rp-spd-sel" style="background:#1a0050;color:#ffb347;border:1px solid #ff6fd8;border-radius:4px;padding:3px;font-size:11px">
-      <option value="0.5">0.5x</option><option value="1" selected>1x</option><option value="2">2x</option>
-    </select>
-    <span style="color:rgba(255,111,216,0.5);font-size:11px">🎬 REPLAY</span>
-    <button class="rbtn" id="rp-close-btn">✕</button>
-  </div>
-  <div style="color:rgba(255,179,71,0.35);font-size:10px;padding:2px;text-align:center">Game Designer: <span style="color:#ffb347">Arush</span> &nbsp;|&nbsp; Assistant: <span style="color:#ffb347">Daddy</span></div>
 </div>
 
 <script>
@@ -480,8 +458,6 @@ function gameFrame(){
 function spawnPop(x,y,txt,col,sz=24){const p=document.createElement('div');p.className='spop';p.textContent=txt;p.style.cssText=`color:${col};font-size:${sz}px;left:${x}px;bottom:${y}px`;gameEl.appendChild(p);setTimeout(()=>p.remove(),1050);}
 function spawnFunny(x,y){const p=document.createElement('div');p.style.cssText=`position:absolute;font-family:Bangers,cursive;font-size:22px;pointer-events:none;animation:spopA 1s ease-out forwards;z-index:35;left:${x}px;bottom:${y}px`;const cols=['#FFD700','#ff6fd8','#4ade80','#60A5FA','#fb923c'];p.style.color=cols[Math.floor(Math.random()*cols.length)];p.textContent=funnyTexts[Math.floor(Math.random()*funnyTexts.length)];gameEl.appendChild(p);setTimeout(()=>p.remove(),1100);}
 
-const RFPS=10;let rpFrames=[],rpEvents=[],rpRecT=null;
-function recordRF(){if(!running)return;const gw=gameEl.offsetWidth||680;const sc=gw/GW;rpFrames.push({p1x:p1.x*sc,p1y:p1.y,p2x:p2.x*sc,p2y:p2.y,p1e:p1.eliminated,p2e:p2.eliminated,chks:chickens.map(c=>({x:parseFloat(c.el.style.left),y:parseFloat(c.el.style.bottom)})),crabs:crabs.filter(c=>c.alive).map(c=>({x:c.x})),snakes:snakes.filter(s=>s.alive).map(s=>({x:s.x,col:s.palette.head})),p1s:p1.score,p2s:p2.score,t:timeLeft,lv:level});}
 
 let gameLogs=[];
 function saveLog(){try{const n=new Date();gameLogs.unshift({date:n.toLocaleDateString('en-IN',{day:'numeric',month:'short'}),time:n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),p1s:p1.score,p2s:p2.score,level,winner:p1.eliminated&&!p2.eliminated?'MBAPPE':p2.eliminated&&!p1.eliminated?'CR7':p1.score>p2.score?'CR7':p2.score>p1.score?'MBAPPE':'TIE',dur:TOTAL_TIME-timeLeft,p1e:p1.eliminated,p2e:p2.eliminated});if(gameLogs.length>10)gameLogs.pop();}catch(e){}}
@@ -493,14 +469,14 @@ function startGame(){
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];
   Object.keys(keys).forEach(k=>keys[k]=false);
   p1=makePlayer(1,80,'#FFD700');p2=makePlayer(2,260,'#60A5FA');
-  level=1;timeLeft=TOTAL_TIME;running=true;rpFrames=[];rpEvents=[];
+  level=1;timeLeft=TOTAL_TIME;running=true;
   skyEl.className='';
   document.getElementById('timer-big').textContent=TOTAL_TIME+'s';
   document.getElementById('level-badge').textContent='⭐ LEVEL 1 ⭐';
   document.getElementById('win-timer').textContent='Survive to win!';
   updateUI();updateLives(p1);updateLives(p2);sfxStart();
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
-  loopId=setInterval(gameFrame,16);rpRecT=setInterval(recordRF,1000/RFPS);
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);
+  loopId=setInterval(gameFrame,16);
   timerIntv=setInterval(()=>{timeLeft--;document.getElementById('timer-big').textContent=timeLeft+'s';document.getElementById('win-timer').textContent=timeLeft>0?`Survive ${timeLeft}s!`:'';if(timeLeft%10===0&&timeLeft>0&&timeLeft<TOTAL_TIME)doLevelUp();if(timeLeft<=0){triggerWin();return;}if(p1.eliminated&&p2.eliminated)endGame('both_eliminated');},1000);
   const cfg=getCfg(1);setTimeout(()=>scheduleChickens(cfg),700);setTimeout(()=>scheduleCrabs(cfg),3200);setTimeout(()=>{if(running)spawnSnake(getCfg(level));},5000);
   showStatus('🐔 Catch chickens! 🐍 JUMP OVER the snake! 🦀 Dodge crabs!',3500);
@@ -509,8 +485,7 @@ function startGame(){
 }
 
 function triggerWin(){
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
-  running=false;saveLog();sfxWin();mpTrackGameEnd('time_survived');
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);  running=false;saveLog();sfxWin();mpTrackGameEnd('time_survived');
   const winAnn=document.getElementById('win-ann');
   const p1a=!p1.eliminated,p2a=!p2.eliminated;const tie=p1a&&p2a&&p1.score===p2.score;const p1w=(p1a&&!p2a)||(p1a&&p2a&&p1.score>p2.score);
   document.getElementById('win-txt').textContent=tie?'🤝 TIE!':p1w?'⚽ CR7 WINS!':'🏆 MBAPPE WINS!';
@@ -520,8 +495,7 @@ function triggerWin(){
 }
 
 function endGame(reason='manual'){
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
-  running=false;try{saveLog();}catch(e){}mpTrackGameEnd(reason);showEndScreen();
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);  running=false;try{saveLog();}catch(e){}mpTrackGameEnd(reason);showEndScreen();
 }
 
 function showEndScreen(){
@@ -534,27 +508,13 @@ function showEndScreen(){
   document.getElementById('es').style.display='flex';
 }
 
-const rpCvs=document.getElementById('rp-canvas');const rCtx=rpCvs.getContext('2d');
-let rpPlaying=false,rpFi=0,rpSpd=1,rpAnimId=null,rpLastT=0;
-function showReplay(){if(rpFrames.length<2){alert('Play a game first!');return;}document.getElementById('es').style.display='none';document.getElementById('rp-screen').style.display='flex';rpFi=0;rpPlaying=true;rpLastT=0;document.getElementById('rp-play-btn').textContent='⏸';requestAnimationFrame(rpLoop);}
-function rpLoop(t){if(!rpPlaying){rpAnimId=null;return;}if(rpLastT===0)rpLastT=t;const dt=(t-rpLastT)/1000;rpLastT=t;rpFi+=dt*RFPS*rpSpd;if(rpFi>=rpFrames.length){rpFi=rpFrames.length-1;rpPlaying=false;document.getElementById('rp-play-btn').textContent='▶';}drawRPF(Math.floor(rpFi));const pct=rpFrames.length>1?(rpFi/(rpFrames.length-1))*100:0;document.getElementById('rp-fill').style.width=pct+'%';document.getElementById('rp-time').textContent=Math.floor(rpFi/RFPS)+'s';rpAnimId=requestAnimationFrame(rpLoop);}
-function drawRPF(fi){const f=rpFrames[Math.min(fi,rpFrames.length-1)];if(!f)return;const W=rpCvs.width,H=rpCvs.height;rCtx.clearRect(0,0,W,H);const sg=rCtx.createLinearGradient(0,0,0,H);sg.addColorStop(0,'#1a0050');sg.addColorStop(0.45,'#7b2ff7');sg.addColorStop(0.5,'#ff6fd8');sg.addColorStop(0.55,'#ffb347');sg.addColorStop(0.6,'#52b788');sg.addColorStop(1,'#2d6a4f');rCtx.fillStyle=sg;rCtx.fillRect(0,0,W,H);rCtx.fillStyle='rgba(255,255,255,0.18)';rCtx.fillRect(0,H-GROUND,W,4);rCtx.font='26px serif';f.chks.forEach(c=>rCtx.fillText('🐔',c.x,H-c.y+14));rCtx.font='22px serif';f.crabs.forEach(c=>rCtx.fillText('🦀',c.x,H-GROUND+8));(f.snakes||[]).forEach(s=>{rCtx.fillStyle=s.col||'#FF2222';rCtx.beginPath();rCtx.roundRect(s.x,H-GROUND-22,55,18,9);rCtx.fill();rCtx.fillStyle='rgba(255,255,255,0.9)';rCtx.beginPath();rCtx.arc(s.x+48,H-GROUND-14,5,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#111';rCtx.beginPath();rCtx.arc(s.x+48,H-GROUND-14,2.5,0,Math.PI*2);rCtx.fill();});rpEvents.forEach(ev=>{if(Math.abs(ev.fi-fi)<RFPS*0.5){rCtx.font='16px serif';rCtx.fillText('✨',ev.px,H-ev.py+8);}});
-function drawP(x,y,col,num,skin,elim){if(elim)rCtx.globalAlpha=0.25;const bx=x,by=H-GROUND-y-85;rCtx.fillStyle=col;rCtx.beginPath();rCtx.roundRect(bx-13,by+28,26,32,5);rCtx.fill();rCtx.fillStyle='#fff';rCtx.font='bold 12px Arial Black';rCtx.fillText(num,bx-6,by+51);rCtx.fillStyle='#1565C0';rCtx.beginPath();rCtx.roundRect(bx-11,by+60,22,12,3);rCtx.fill();rCtx.fillStyle=skin;rCtx.beginPath();rCtx.arc(bx,by+14,13,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#111';rCtx.beginPath();rCtx.ellipse(bx,by+3,11,5,0,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#fff';rCtx.beginPath();rCtx.arc(bx-5,by+14,2.5,0,Math.PI*2);rCtx.fill();rCtx.beginPath();rCtx.arc(bx+5,by+14,2.5,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#333';rCtx.beginPath();rCtx.arc(bx-5,by+14,1.5,0,Math.PI*2);rCtx.fill();rCtx.beginPath();rCtx.arc(bx+5,by+14,1.5,0,Math.PI*2);rCtx.fill();if(elim){rCtx.globalAlpha=1;rCtx.font='16px serif';rCtx.fillText('💀',bx-8,by+5);}}
-drawP(f.p1x,f.p1y,'#E53935','7','#D4A574',f.p1e);drawP(f.p2x,f.p2y,'#1565C0','10','#8D6748',f.p2e);
-rCtx.fillStyle='rgba(0,0,0,0.65)';rCtx.fillRect(0,0,W,30);rCtx.fillStyle='#60A5FA';rCtx.font='bold 14px Bangers,cursive';rCtx.fillText(`MBAPPE: ${f.p2s}🍗`,8,20);rCtx.fillStyle='#FFD700';rCtx.font='bold 14px Bangers,cursive';rCtx.fillText(`CR7: ${f.p1s}🍗`,W-110,20);rCtx.fillStyle='#ffb347';rCtx.font='bold 13px Bangers,cursive';rCtx.fillText(`LV${f.lv}`,W/2-12,20);rCtx.fillStyle='#fff';rCtx.font='12px Bangers,cursive';rCtx.fillText(`⏱${f.t}s`,W/2+18,20);}
-function toggleRP(){rpPlaying=!rpPlaying;document.getElementById('rp-play-btn').textContent=rpPlaying?'⏸':'▶';if(rpPlaying){if(rpFi>=rpFrames.length-1)rpFi=0;rpLastT=0;requestAnimationFrame(rpLoop);}}
 
 window.addEventListener('load',()=>{
   document.getElementById('start-btn').addEventListener('click',startGame);
   document.getElementById('logs-btn').addEventListener('click',()=>{renderLogs();document.getElementById('logs-panel').style.display='flex';});
   document.getElementById('again-btn').addEventListener('click',startGame);
-  document.getElementById('replay-btn').addEventListener('click',showReplay);
   document.getElementById('logs-btn2').addEventListener('click',()=>{renderLogs();document.getElementById('logs-panel').style.display='flex';});
   document.getElementById('logs-close-btn').addEventListener('click',()=>document.getElementById('logs-panel').style.display='none');
-  document.getElementById('rp-play-btn').addEventListener('click',toggleRP);
-  document.getElementById('rp-close-btn').addEventListener('click',()=>{document.getElementById('rp-screen').style.display='none';document.getElementById('es').style.display='flex';rpPlaying=false;if(rpAnimId)cancelAnimationFrame(rpAnimId);});
-  document.getElementById('rp-spd-sel').addEventListener('change',e=>rpSpd=parseFloat(e.target.value));
-  document.getElementById('rp-prog').addEventListener('click',e=>{const r=document.getElementById('rp-prog').getBoundingClientRect();rpFi=Math.floor(((e.clientX-r.left)/r.width)*(rpFrames.length-1));drawRPF(Math.floor(rpFi));});
   mpTrack('game_loaded');
 });
 </script>

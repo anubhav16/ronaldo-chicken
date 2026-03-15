@@ -7,25 +7,16 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 #game{position:relative;width:100%;height:580px;overflow:hidden}
-
-/* ── BRIGHT KID-FRIENDLY SKY ── */
 #sky{position:absolute;inset:0;background:linear-gradient(180deg,#1a0050 0%,#4a0080 25%,#7b2ff7 45%,#ff6fd8 50%,#ffb347 55%,#52b788 60%,#2d6a4f 100%)}
-/* Floating clouds */
 .cloud{position:absolute;border-radius:50px;background:rgba(255,255,255,0.18);pointer-events:none}
-/* Confetti when catching */
 .confetti{position:absolute;width:10px;height:10px;border-radius:2px;pointer-events:none;animation:confettiFall 1s ease-out forwards;z-index:50}
-@keyframes confettiFall{0%{transform:translateY(0) rotate(0) scale(1);opacity:1}100%{transform:translateY(-120px) rotate(720deg) scale(0);opacity:0}}
-/* Stars in sky */
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0) scale(1);opacity:1}100%{transform:translateY(-130px) rotate(720deg) scale(0);opacity:0}}
 .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle 2s infinite alternate}
 @keyframes twinkle{0%{opacity:.2}100%{opacity:.9}}
-
-/* ── BRIGHT GROUND ── */
 #ground{position:absolute;bottom:0;left:0;right:0;height:155px;background:linear-gradient(180deg,#52b788 0%,#40916c 40%,#1b4332 100%)}
 .gline{position:absolute;top:0;left:0;right:0;height:4px;background:rgba(255,255,255,0.25)}
-/* Colourful ground dots */
 .gdot{position:absolute;border-radius:50%;bottom:2px;opacity:0.5}
 
-/* ── UI BAR ── */
 #ui{position:absolute;top:0;left:0;right:0;z-index:40;display:flex;justify-content:space-between;align-items:stretch;background:linear-gradient(90deg,rgba(80,0,160,0.9),rgba(30,0,80,0.95),rgba(80,0,160,0.9));border-bottom:3px solid #ff6fd8}
 .ppanel{display:flex;flex-direction:column;padding:5px 10px;min-width:130px}
 .pname{font-family:'Bangers',cursive;font-size:15px;letter-spacing:1px}
@@ -35,12 +26,9 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 #timer-big{font-family:'Bangers',cursive;font-size:28px;color:#fff;text-shadow:0 0 10px #ff6fd8}
 #level-badge{font-family:'Bangers',cursive;font-size:15px;color:#ffb347;letter-spacing:2px;text-shadow:0 0 8px #ff6000}
 
-/* ── CHARACTERS ── */
 .char{position:absolute;z-index:20;display:flex;flex-direction:column;align-items:center;bottom:155px}
 .char svg{overflow:visible}
 .ctag{font-family:'Bangers',cursive;font-size:14px;letter-spacing:1px;text-shadow:0 2px 8px #000,0 0 12px rgba(255,200,0,0.8);margin-bottom:1px;white-space:nowrap}
-
-/* Leg anims */
 @keyframes LL{0%,100%{transform:rotate(-32deg)}50%{transform:rotate(32deg)}}
 @keyframes LR{0%,100%{transform:rotate(32deg)}50%{transform:rotate(-32deg)}}
 @keyframes AL{0%,100%{transform:rotate(28deg)}50%{transform:rotate(-28deg)}}
@@ -49,46 +37,42 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 .rr{transform-origin:0 0;animation:LR 0.25s linear infinite}
 .al{transform-origin:0 0;animation:AL 0.25s linear infinite}
 .ar{transform-origin:0 0;animation:AR 0.25s linear infinite}
-
-/* Bicycle kick */
 @keyframes bkick{0%{transform:rotate(0)}30%{transform:rotate(-55deg) translateY(-14px)}65%{transform:rotate(25deg)}100%{transform:rotate(0)}}
 .kicking{animation:bkick 0.45s ease-out}
-
-/* HAPPY DANCE — jump and spin */
 @keyframes happyDance{0%{transform:scale(1) rotate(0)}20%{transform:scale(1.3) rotate(-15deg) translateY(-10px)}40%{transform:scale(1.3) rotate(15deg) translateY(-14px)}60%{transform:scale(1.2) rotate(-8deg) translateY(-8px)}80%{transform:scale(1.1) rotate(5deg) translateY(-4px)}100%{transform:scale(1) rotate(0)}}
 .happy{animation:happyDance 0.7s ease-out}
-
-/* SUPER HAPPY — bigger for combos */
 @keyframes superHappy{0%{transform:scale(1)}15%{transform:scale(1.5) rotate(-20deg) translateY(-20px)}35%{transform:scale(1.6) rotate(20deg) translateY(-24px)}55%{transform:scale(1.4) rotate(-12deg) translateY(-16px)}75%{transform:scale(1.2) rotate(6deg) translateY(-6px)}100%{transform:scale(1) rotate(0)}}
 .superhappy{animation:superHappy 0.9s ease-out}
-
-/* HURT — lie down / sit sad */
 @keyframes lieDown{0%{transform:rotate(0) translateY(0)}30%{transform:rotate(60deg) translateY(10px)}60%{transform:rotate(88deg) translateY(18px)}100%{transform:rotate(90deg) translateY(22px)}}
 .hurting-anim{animation:lieDown 0.4s ease-out forwards;transform-origin:bottom center}
-/* Sad face overlay */
 .sad-emoji{position:absolute;font-size:22px;animation:sadFloat 0.6s ease-out forwards;pointer-events:none;z-index:35}
 @keyframes sadFloat{0%{transform:translateY(0) scale(0.5);opacity:1}100%{transform:translateY(-60px) scale(1);opacity:0}}
 
-/* Chickens */
 .chk{position:absolute;z-index:15;line-height:1;pointer-events:none}
 .chk.poof{animation:poof 0.4s ease-out forwards!important}
 @keyframes poof{0%{transform:scale(1)}40%{transform:scale(2.5) rotate(30deg)}100%{transform:scale(0);opacity:0}}
-
-/* Crabs */
 .crab{position:absolute;z-index:16;font-size:38px;bottom:155px;pointer-events:none}
 
-/* Score popups */
 .spop{position:absolute;font-family:'Bangers',cursive;pointer-events:none;animation:spopA 1s ease-out forwards;z-index:45;text-shadow:0 2px 8px rgba(0,0,0,0.6)}
 @keyframes spopA{0%{transform:translateY(0) scale(0.4);opacity:1}60%{opacity:1}100%{transform:translateY(-90px) scale(1.4);opacity:0}}
-/* Combo banner */
 .combo-banner{position:absolute;font-family:'Bangers',cursive;font-size:36px;pointer-events:none;z-index:46;animation:comboBoom 1.2s ease-out forwards;text-align:center;text-shadow:0 0 20px currentColor,0 2px 8px #000}
 @keyframes comboBoom{0%{transform:scale(0.3) rotate(-10deg);opacity:1}25%{transform:scale(1.4) rotate(5deg)}50%{transform:scale(1.1) rotate(-2deg)}80%{opacity:1}100%{transform:scale(1.3) translateY(-60px);opacity:0}}
 
-/* Level announce */
-#lvl-ann{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);z-index:55;font-family:'Bangers',cursive;font-size:64px;color:#ffb347;text-shadow:0 0 30px #ff6000,0 0 60px #ffb347;pointer-events:none;opacity:0;transition:opacity 0.3s;text-align:center;white-space:nowrap}
+/* Level announce — big dramatic */
+#lvl-ann{position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);z-index:55;pointer-events:none;opacity:0;text-align:center}
+#lvl-ann .lvl-num{font-family:'Bangers',cursive;font-size:80px;color:#ffb347;text-shadow:0 0 40px #ff6000,0 0 80px #ffb347;display:block;line-height:1}
+#lvl-ann .lvl-sub{font-family:'Bangers',cursive;font-size:22px;color:#ff6fd8;letter-spacing:3px;display:block}
+@keyframes lvlPop{0%{opacity:0;transform:translate(-50%,-50%) scale(0.3)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}40%{transform:translate(-50%,-50%) scale(0.95)}60%{transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1)}}
+.lvl-anim{animation:lvlPop 2s ease-out forwards}
+
 #status{position:absolute;top:68px;left:50%;transform:translateX(-50%);font-family:'Bangers',cursive;font-size:22px;color:#fff;text-shadow:0 0 12px #ff6fd8;z-index:30;pointer-events:none;transition:opacity 0.3s;white-space:nowrap;text-align:center}
 
-/* ── SCREENS ── */
+/* Sky colour changes by level */
+#sky.lv2{background:linear-gradient(180deg,#001a50 0%,#003080 25%,#0060ff 45%,#00c8ff 50%,#ffb347 55%,#52b788 60%,#2d6a4f 100%)}
+#sky.lv3{background:linear-gradient(180deg,#300000 0%,#800000 25%,#ff3000 45%,#ff8000 50%,#ffb347 55%,#52b788 60%,#2d6a4f 100%)}
+#sky.lv4{background:linear-gradient(180deg,#002020 0%,#004040 25%,#00c0a0 45%,#00ffd0 50%,#ffb347 55%,#52b788 60%,#2d6a4f 100%)}
+#sky.lv5{background:linear-gradient(180deg,#1a1a00 0%,#404000 25%,#c0c000 45%,#ffff00 50%,#ff6000 55%,#52b788 60%,#2d6a4f 100%)}
+
 .screen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:60;background:linear-gradient(135deg,#1a0050,#3a0080,#1a0050);overflow-y:auto}
 .screen h1{font-family:'Bangers',cursive;font-size:40px;color:#ffb347;letter-spacing:2px;text-shadow:0 0 20px #ff6000;margin-bottom:4px;text-align:center}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;width:310px}
@@ -99,12 +83,8 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 .btn-gold{background:linear-gradient(135deg,#FFD700,#FFA500);color:#1a0050}
 .btn-blue{background:linear-gradient(135deg,#60A5FA,#1D4ED8);color:#fff}
 .btn-green{background:linear-gradient(135deg,#4ade80,#16a34a);color:#fff}
-.btn-pink{background:linear-gradient(135deg,#f472b6,#be185d);color:#fff}
 .btn:active{transform:scale(0.96)}
-#fscores{font-family:'Bangers',cursive;font-size:26px;text-align:center;margin-bottom:4px}
-#reached-level{font-family:'Bangers',cursive;font-size:18px;color:#ffb347;margin-bottom:8px}
 
-/* LOGS */
 #logs-panel{position:absolute;inset:0;z-index:65;background:linear-gradient(135deg,#1a0050,#3a0080);display:none;flex-direction:column}
 #logs-header{padding:10px 14px;background:rgba(0,0,0,0.5);display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #ff6fd8}
 #logs-header h2{font-family:'Bangers',cursive;font-size:22px;color:#ffb347;letter-spacing:2px}
@@ -114,7 +94,6 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 .log-result{font-family:'Bangers',cursive;font-size:20px;margin:2px 0}
 .log-detail{color:#aaa;font-size:11px}
 
-/* REPLAY */
 #rp-screen{position:absolute;inset:0;z-index:70;background:#000;display:none;flex-direction:column;align-items:center}
 #rp-canvas{width:100%;max-height:448px;background:#1a0050}
 #rp-bar{width:100%;padding:6px 10px;display:flex;align-items:center;gap:8px;background:rgba(20,0,60,0.95);border-top:2px solid #ff6fd8}
@@ -130,16 +109,15 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 <div id="game">
   <div id="sky"></div>
   <div id="ground"><div class="gline"></div></div>
-  <div id="lvl-ann"></div>
+  <div id="lvl-ann"><span class="lvl-num" id="lvl-num-txt">LEVEL 2</span><span class="lvl-sub" id="lvl-sub-txt">FASTER! MORE CHICKENS!</span></div>
   <div id="status" style="opacity:0"></div>
 
-  <!-- UI -->
   <div id="ui">
     <div class="ppanel">
       <div class="pname" style="color:#FFD700">⚽ CR7 (P1)</div>
       <div class="pscore" style="color:#FFD700">🍗 <span id="p1s">0</span></div>
       <div class="plives" id="p1lv">❤️❤️❤️</div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.35)">A/D move · W jump · WW HIGH · S catch</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.35)">A/D · W jump · WW HIGH · S catch</div>
     </div>
     <div id="center-ui">
       <div style="font-family:'Bangers',cursive;font-size:11px;color:#ff6fd8;letter-spacing:1px">🐔 CHICKEN GAME 🐔</div>
@@ -150,7 +128,7 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
       <div class="pname" style="color:#60A5FA">MBAPPE (P2) 🏆</div>
       <div class="pscore" style="color:#60A5FA"><span id="p2s">0</span> 🍗</div>
       <div class="plives" id="p2lv">❤️❤️❤️</div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.35)">←→ move · ↑ jump · ↑↑ HIGH · ↓ catch</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.35)">←→ · ↑ jump · ↑↑ HIGH · ↓ catch</div>
     </div>
   </div>
 
@@ -177,13 +155,10 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
         <line x1="-8" y1="-81" x2="-3" y2="-80" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
         <line x1="3" y1="-80" x2="8" y2="-81" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round"/>
         <ellipse cx="0" cy="-73" rx="1.5" ry="1" fill="#C4956A"/>
-        <!-- Happy mouth (default) -->
         <path id="p1mouth" d="M -4 -69 Q 0 -65 4 -69" stroke="#8B4513" stroke-width="1.8" fill="none" stroke-linecap="round"/>
         <ellipse cx="-14" cy="-76" rx="3" ry="4" fill="#D4A574"/><ellipse cx="14" cy="-76" rx="3" ry="4" fill="#D4A574"/>
-        <!-- Sweat drop (hidden, shows when hurt) -->
         <ellipse id="p1sweat" cx="12" cy="-82" rx="3" ry="4" fill="#60A5FA" opacity="0"/>
         <circle id="p1ball" cx="20" cy="-10" r="8" fill="white" stroke="#444" stroke-width="1.5" opacity="0"/>
-        <!-- Stars around head (hidden, show on combo) -->
         <text id="p1star1" x="-20" y="-90" font-size="12" opacity="0">⭐</text>
         <text id="p1star2" x="14" y="-90" font-size="12" opacity="0">⭐</text>
       </g>
@@ -225,13 +200,13 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 
   <!-- START -->
   <div class="screen" id="ss">
-    <div style="font-size:60px;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(255,200,0,0.8))">🐔✈️🦀⚽🌈</div>
+    <div style="font-size:58px;margin-bottom:6px;filter:drop-shadow(0 0 20px rgba(255,200,0,0.8))">🐔✈️🦀⚽🌈</div>
     <h1>RONALDO CHICKEN GAME<br><span style="font-size:22px;color:#ff6fd8">2 PLAYER DELUXE! 🎮</span></h1>
     <div class="cgrid">
-      <div class="cbox"><h3 style="color:#FFD700">⚽ CR7 (P1)</h3><p>A/D = Move<br>W = Jump · W+W = HIGH!<br>S = Catch<br>Jump INTO chickens!</p></div>
-      <div class="cbox"><h3 style="color:#60A5FA">MBAPPE (P2)</h3><p>← → = Move<br>↑ = Jump · ↑+↑ = HIGH!<br>↓ = Catch<br>Jump INTO chickens!</p></div>
+      <div class="cbox"><h3 style="color:#FFD700">⚽ CR7 (P1)</h3><p>A/D = Move<br>W = Jump · W+W = HIGH!<br>S = Catch</p></div>
+      <div class="cbox"><h3 style="color:#60A5FA">MBAPPE (P2)</h3><p>← → = Move<br>↑ = Jump · ↑+↑ = HIGH!<br>↓ = Catch</p></div>
     </div>
-    <p style="font-size:12px;color:#ddd;text-align:center;margin-bottom:12px">🐔 Chickens fly from both sides — jump to catch!<br>🦀 Crabs hurt and knock you down for 2s!<br>⚡ Speed up every 30 seconds!</p>
+    <p style="font-size:12px;color:#ddd;text-align:center;margin-bottom:12px">🐔 Jump INTO chickens to catch!<br>🦀 Crabs knock you down for 2s!<br>⚡ Level up every 10s — chickens get faster AND more!</p>
     <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
       <button class="btn btn-gold" onclick="startGame()">SIUUUU! 🚀</button>
       <button class="btn btn-green" onclick="showLogs()">📋 Game Logs</button>
@@ -244,7 +219,7 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
     <div style="font-size:52px;margin-bottom:4px" id="wemoji">🏆</div>
     <h1 id="wtxt">WINNER!</h1>
     <div id="fscores"></div>
-    <div id="reached-level"></div>
+    <div id="reached-level" style="font-family:'Bangers',cursive;font-size:18px;color:#ffb347;margin-bottom:8px"></div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:6px">
       <button class="btn btn-gold" onclick="startGame()">PLAY AGAIN ⚽</button>
       <button class="btn btn-blue" onclick="showReplay()">🎬 REPLAY</button>
@@ -256,10 +231,7 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 
 <!-- LOGS -->
 <div id="logs-panel">
-  <div id="logs-header">
-    <h2>📋 GAME LOGS</h2>
-    <button class="rbtn" onclick="hideLogs()">✕ Close</button>
-  </div>
+  <div id="logs-header"><h2>📋 GAME LOGS</h2><button class="rbtn" onclick="hideLogs()">✕ Close</button></div>
   <div id="logs-body"><p style="color:#888;font-size:12px;padding:10px">No games yet! Play first 🎮</p></div>
 </div>
 
@@ -280,10 +252,11 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 </div>
 
 <script>
-// ── Stars + clouds + ground dots ──
+// ── Decorations ──
 const gameEl=document.getElementById('game');
+const skyEl=document.getElementById('sky');
 for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`position:absolute;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*44}%;width:${1+Math.random()*2.5}px;height:${1+Math.random()*2.5}px;animation-delay:${Math.random()*2}s`;gameEl.appendChild(s);}
-for(let i=0;i<4;i++){const c=document.createElement('div');c.className='cloud';c.style.cssText=`position:absolute;top:${8+Math.random()*30}%;left:${i*25+Math.random()*15}%;width:${80+Math.random()*80}px;height:${28+Math.random()*20}px`;gameEl.appendChild(c);}
+for(let i=0;i<4;i++){const c=document.createElement('div');c.className='cloud';c.style.cssText=`position:absolute;top:${8+Math.random()*28}%;left:${i*25+Math.random()*12}%;width:${80+Math.random()*80}px;height:${26+Math.random()*18}px`;gameEl.appendChild(c);}
 for(let i=0;i<16;i++){const d=document.createElement('div');d.className='gdot';const cols=['#FFD700','#ff6fd8','#4ade80','#60A5FA','#fb923c'];d.style.cssText=`left:${i*7+Math.random()*4}%;width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;background:${cols[Math.floor(Math.random()*cols.length)]}`;gameEl.appendChild(d);}
 let bgEls=[];
 for(let i=0;i<8;i++){const el=document.createElement('div');el.style.cssText=`position:absolute;bottom:155px;font-size:30px;z-index:8;opacity:0.45`;el.textContent=['🌿','🌳','🏟️','🌲','🌺','🌸'][Math.floor(Math.random()*6)];el.style.left=(i*100)+'px';el.dataset.spd=(0.6+Math.random()*0.7).toString();gameEl.appendChild(el);bgEls.push(el);}
@@ -291,53 +264,52 @@ for(let i=0;i<8;i++){const el=document.createElement('div');el.style.cssText=`po
 // ── Audio ──
 const AC=new(window.AudioContext||window.webkitAudioContext)();
 function tone(f,t,dur,v=0.3,d=0){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type=t;o.frequency.setValueAtTime(f,AC.currentTime+d);g.gain.setValueAtTime(0,AC.currentTime+d);g.gain.linearRampToValueAtTime(v,AC.currentTime+d+0.01);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+d+dur);o.start(AC.currentTime+d);o.stop(AC.currentTime+d+dur+0.05);}
-
-// Single catch — happy bawk
-function sfxSingle(){tone(400,'sawtooth',0.06,0.38);tone(620,'sawtooth',0.07,0.38,0.07);tone(380,'sawtooth',0.05,0.32,0.15);tone(880,'square',0.07,0.28,0.22);}
-// Double combo — extra excited cluck
+function sfxSingle(){tone(400,'sawtooth',0.06,0.38);tone(620,'sawtooth',0.07,0.38,0.07);tone(880,'square',0.07,0.28,0.22);}
 function sfxDouble(){[0,0.06,0.13,0.21,0.3].forEach((d,i)=>tone(440+i*80,'square',0.07,0.35,d));tone(1200,'sine',0.1,0.3,0.35);}
-// Triple combo — SIUUU fanfare
 function sfxTriple(){[0,0.07,0.14,0.21,0.28,0.35].forEach((d,i)=>tone(523+[0,130,260,392,523,784][i],'square',0.09,0.38,d));tone(1200,'sine',0.15,0.4,0.4);}
-// 4+ mega combo — full celebration
 function sfxMega(){[523,659,784,1047,1318].forEach((f,i)=>{tone(f,'square',0.1,0.4,i*0.07);tone(f*1.5,'sine',0.06,0.2,i*0.07+0.03);});}
-// Hurt — really sorry sound: sad descending wail
-function sfxHurt(){
-  const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);
-  o.type='sine';o.frequency.setValueAtTime(600,AC.currentTime);o.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.7);
-  g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.linearRampToValueAtTime(0.4,AC.currentTime+0.1);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.75);
-  o.start();o.stop(AC.currentTime+0.8);
-  // Sad trombone wobble
-  setTimeout(()=>{tone(300,'sawtooth',0.2,0.3);tone(250,'sawtooth',0.18,0.28,0.12);tone(200,'sawtooth',0.16,0.26,0.25);},100);
-}
+function sfxHurt(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(600,AC.currentTime);o.frequency.exponentialRampToValueAtTime(80,AC.currentTime+0.7);g.gain.setValueAtTime(0.5,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.75);o.start();o.stop(AC.currentTime+0.8);setTimeout(()=>{tone(300,'sawtooth',0.2,0.3);tone(250,'sawtooth',0.18,0.28,0.12);tone(200,'sawtooth',0.16,0.26,0.25);},100);}
 function sfxJump(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(280,AC.currentTime);o.frequency.linearRampToValueAtTime(560,AC.currentTime+0.12);g.gain.setValueAtTime(0.18,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.15);o.start();o.stop(AC.currentTime+0.18);}
 function sfxHighJump(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(280,AC.currentTime);o.frequency.linearRampToValueAtTime(1100,AC.currentTime+0.22);g.gain.setValueAtTime(0.28,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.25);o.start();o.stop(AC.currentTime+0.28);}
-function sfxLevel(){[300,400,500,700,900,1100,1400].forEach((f,i)=>tone(f,'square',0.1,0.32,i*0.07));}
+function sfxLevelUp(){[300,400,600,800,1100,1400,1800].forEach((f,i)=>tone(f,'square',0.1,0.35,i*0.07));}
 function sfxStart(){[523,659,784,1047].forEach((f,i)=>tone(f,'square',0.12,0.3,i*0.12));}
 
-// ── Confetti burst ──
+// ── Confetti ──
 function burstConfetti(x,y,count=12){
   const cols=['#FFD700','#ff6fd8','#60A5FA','#4ade80','#fb923c','#f472b6','#a78bfa'];
-  for(let i=0;i<count;i++){
-    const el=document.createElement('div');el.className='confetti';
-    el.style.background=cols[Math.floor(Math.random()*cols.length)];
-    el.style.left=(x+Math.random()*60-30)+'px';
-    el.style.bottom=(y+Math.random()*40)+'px';
-    el.style.borderRadius=Math.random()>0.5?'50%':'2px';
-    el.style.width=(6+Math.random()*8)+'px';el.style.height=(6+Math.random()*8)+'px';
-    el.style.animationDelay=(Math.random()*0.2)+'s';
-    gameEl.appendChild(el);setTimeout(()=>el.remove(),1200);
-  }
+  for(let i=0;i<count;i++){const el=document.createElement('div');el.className='confetti';el.style.background=cols[Math.floor(Math.random()*cols.length)];el.style.left=(x+Math.random()*60-30)+'px';el.style.bottom=(y+Math.random()*40)+'px';el.style.borderRadius=Math.random()>0.5?'50%':'2px';el.style.width=(6+Math.random()*8)+'px';el.style.height=(6+Math.random()*8)+'px';el.style.animationDelay=(Math.random()*0.2)+'s';gameEl.appendChild(el);setTimeout(()=>el.remove(),1200);}
 }
 
 const GW=680,GROUND=155;
 const funnyTexts=['BAWK! 🐔','SQUAWK!!','SIUU! 🎉','YUMMY! 🍗','FEATHERS!','CLUCK! 😆','BWAAAK!!','GOT IT! ✨'];
 const comboLabels=['','','DOUBLE! 🔥','TRIPLE! 🔥🔥','MEGA!! 🔥🔥🔥','UNSTOPPABLE!! 🌟'];
 
-// ── State ──
-let p1,p2,chickens=[],crabs=[],running=false,timeLeft=60,level=1,chickenSpeed=2.8;
+// ── Level config: speed, spawnInterval, chickenCount, heightVariety ──
+const LEVEL_CONFIG = [
+  // lv1
+  {speed:2.5, spawnMs:1400, simultaneous:1, heights:[GROUND+65, GROUND+120, GROUND+170], crabMs:4500, label:'Let\'s go!'},
+  // lv2
+  {speed:3.3, spawnMs:1150, simultaneous:2, heights:[GROUND+65, GROUND+120, GROUND+170, GROUND+230], crabMs:4000, label:'Faster! 🐔🐔'},
+  // lv3
+  {speed:4.1, spawnMs:950, simultaneous:2, heights:[GROUND+65, GROUND+120, GROUND+180, GROUND+250, GROUND+310], crabMs:3500, label:'So many!! 🔥'},
+  // lv4
+  {speed:5.0, spawnMs:780, simultaneous:3, heights:[GROUND+65, GROUND+110, GROUND+170, GROUND+240, GROUND+310, GROUND+360], crabMs:3000, label:'Crazy speed!! 🚀'},
+  // lv5
+  {speed:6.0, spawnMs:620, simultaneous:3, heights:[GROUND+65, GROUND+100, GROUND+150, GROUND+210, GROUND+280, GROUND+350, GROUND+400], crabMs:2500, label:'INSANE!! 🌟🌟🌟'},
+  // lv6+
+  {speed:7.2, spawnMs:480, simultaneous:4, heights:[GROUND+65, GROUND+100, GROUND+145, GROUND+200, GROUND+260, GROUND+330, GROUND+400, GROUND+440], crabMs:2000, label:'LEGENDARY!! 👑'},
+];
+function getLevelConfig(lv){return LEVEL_CONFIG[Math.min(lv-1, LEVEL_CONFIG.length-1)];}
+
+// Sky themes per level
+const SKY_CLASSES=['','lv2','lv3','lv4','lv5','lv5'];
+
+let p1,p2,chickens=[],crabs=[],running=false,timeLeft=60,level=1;
 let loopId,timerIntv,chkTimer,crabTimer;
 const statusEl=document.getElementById('status');
-const lvlAnn=document.getElementById('level-announce');
+const lvlAnn=document.getElementById('lvl-ann');
+const lvlNumTxt=document.getElementById('lvl-num-txt');
+const lvlSubTxt=document.getElementById('lvl-sub-txt');
 
 function makePlayer(id,x,col){
   return{id,x,y:0,vy:0,score:0,lives:3,hurt:false,hurtTimer:null,combo:0,comboTimer:null,
@@ -348,7 +320,6 @@ function makePlayer(id,x,col){
     sweat:document.getElementById(`p${id}sweat`),
     star1:document.getElementById(`p${id}star1`),
     star2:document.getElementById(`p${id}star2`),
-    ball:document.getElementById(`p${id}ball`),
     col};
 }
 
@@ -356,52 +327,34 @@ function showStatus(msg,dur=1800){statusEl.textContent=msg;statusEl.style.opacit
 function updateUI(){document.getElementById('p1s').textContent=p1.score;document.getElementById('p2s').textContent=p2.score;}
 function updateLives(p){document.getElementById(`p${p.id}lv`).textContent='❤️'.repeat(p.lives)+'🖤'.repeat(Math.max(0,3-p.lives));}
 
-// ── Happy animation ──
 function doHappy(p,combo){
-  p.g.classList.remove('happy','superhappy','kicking');
-  void p.g.offsetWidth;
-  if(combo>=3) p.g.classList.add('superhappy');
-  else p.g.classList.add('happy');
-  // Stars flash
+  p.g.classList.remove('happy','superhappy','kicking');void p.g.offsetWidth;
+  p.g.classList.add(combo>=3?'superhappy':'happy');
   p.star1.setAttribute('opacity','1');p.star2.setAttribute('opacity','1');
   setTimeout(()=>{p.star1.setAttribute('opacity','0');p.star2.setAttribute('opacity','0');},600);
-  // Big mouth smile
   p.mouth.setAttribute('d','M -5 -69 Q 0 -63 5 -69');
   setTimeout(()=>p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69'),800);
-  // Confetti
   const gw=gameEl.offsetWidth||680;
   burstConfetti(p.x*(gw/GW)+10,GROUND+p.y+40,combo>=3?20:10);
 }
 
-// ── Hurt animation — lie down ──
 function doHurtAnim(p){
   p.g.style.animation='none';void p.g.offsetWidth;
   p.g.style.animation='lieDown 0.4s ease-out forwards';
   p.g.style.transformOrigin='bottom center';
-  p.mouth.setAttribute('d','M -4 -66 Q 0 -70 4 -66'); // sad mouth
+  p.mouth.setAttribute('d','M -4 -66 Q 0 -70 4 -66');
   p.sweat.setAttribute('opacity','1');
   p.el.style.filter='drop-shadow(0 0 16px #ff0000)';
-  // Sad emoji float
   const gw=gameEl.offsetWidth||680;
   spawnSad(p.x*(gw/GW)+20,GROUND+p.y+60);
-  // Recover after 2s
   clearTimeout(p.hurtTimer);
   p.hurtTimer=setTimeout(()=>{
-    p.hurt=false;
-    p.g.style.animation='';p.g.style.transformOrigin='';
-    p.el.style.filter='';
-    p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');
-    p.sweat.setAttribute('opacity','0');
+    p.hurt=false;p.g.style.animation='';p.g.style.transformOrigin='';
+    p.el.style.filter='';p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');p.sweat.setAttribute('opacity','0');
   },2000);
 }
 
-function spawnSad(x,y){
-  const sadEmojis=['😢','😭','💫','😵','🤕'];
-  const el=document.createElement('div');el.className='sad-emoji';
-  el.textContent=sadEmojis[Math.floor(Math.random()*sadEmojis.length)];
-  el.style.left=x+'px';el.style.bottom=y+'px';
-  gameEl.appendChild(el);setTimeout(()=>el.remove(),700);
-}
+function spawnSad(x,y){const el=document.createElement('div');el.className='sad-emoji';el.textContent=['😢','😭','💫','😵','🤕'][Math.floor(Math.random()*5)];el.style.left=x+'px';el.style.bottom=y+'px';gameEl.appendChild(el);setTimeout(()=>el.remove(),700);}
 
 // ── Input ──
 const keys={};
@@ -415,31 +368,22 @@ document.addEventListener('keydown',e=>{
   if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
 });
 document.addEventListener('keyup',e=>{keys[e.key]=false;});
-
 function handleJump(p){AC.resume();if(p.hurt)return;if(p.onGround){p.vy=16;p.onGround=false;p.jumpCount=1;sfxJump();}else if(p.jumpCount===1){p.vy=22;p.jumpCount=2;sfxHighJump();}}
-function doCatch(p){if(!running||p.hurt)return;AC.resume();p.g.classList.remove('kicking');void p.g.offsetWidth;p.g.classList.add('kicking');if(p.ball)p.ball.setAttribute('opacity','1');setTimeout(()=>{p.g.classList.remove('kicking');if(p.ball)p.ball.setAttribute('opacity','0');},480);}
+function doCatch(p){if(!running||p.hurt)return;AC.resume();p.g.classList.remove('kicking');void p.g.offsetWidth;p.g.classList.add('kicking');setTimeout(()=>p.g.classList.remove('kicking'),480);}
 
-// ── Catch callback ──
+// ── Catch ──
 function onCatch(p,cx,cy){
   p.score++;updateUI();
-  // Combo
-  p.combo++;clearTimeout(p.comboTimer);
-  p.comboTimer=setTimeout(()=>p.combo=0,1800);
-  // Sound by combo
-  if(p.combo===1)sfxSingle();
-  else if(p.combo===2)sfxDouble();
-  else if(p.combo===3)sfxTriple();
-  else sfxMega();
-  // Happy anim
+  p.combo++;clearTimeout(p.comboTimer);p.comboTimer=setTimeout(()=>p.combo=0,1800);
+  if(p.combo===1)sfxSingle();else if(p.combo===2)sfxDouble();else if(p.combo===3)sfxTriple();else sfxMega();
   doHappy(p,p.combo);
-  // Popups
   const gw=gameEl.offsetWidth||680;const px=p.x*(gw/GW);
   if(p.combo>=2){
-    const label=comboLabels[Math.min(p.combo,comboLabels.length-1)]||(p.combo+'x COMBO!! 🌟');
+    const lbl=comboLabels[Math.min(p.combo,comboLabels.length-1)]||(p.combo+'x COMBO!! 🌟');
     const cb=document.createElement('div');cb.className='combo-banner';
     cb.style.color=p.combo>=4?'#ff6fd8':p.combo===3?'#ffb347':'#FFD700';
     cb.style.fontSize=p.combo>=4?'40px':'34px';
-    cb.textContent=label;cb.style.left=(px-60)+'px';cb.style.bottom=(GROUND+p.y+60)+'px';
+    cb.textContent=lbl;cb.style.left=(px-60)+'px';cb.style.bottom=(GROUND+p.y+60)+'px';
     gameEl.appendChild(cb);setTimeout(()=>cb.remove(),1300);
   }
   spawnPop(cx,cy+GROUND,'+1 🍗',p.col,p.combo>=2?32:24);
@@ -447,13 +391,12 @@ function onCatch(p,cx,cy){
   rpEvents.push({fi:rpFrames.length,px,py:p.y+GROUND,col:p.col});
 }
 
-// ── Chicken collision ──
+// ── Collision checks ──
 function checkChickenCollisions(){
   const gw=gameEl.offsetWidth||680;const scale=gw/GW;
   chickens.forEach(c=>{
     if(c.gone)return;
-    const cx=parseFloat(c.el.style.left)+22;
-    const cy=parseFloat(c.el.style.bottom)+22;
+    const cx=parseFloat(c.el.style.left)+22;const cy=parseFloat(c.el.style.bottom)+22;
     [p1,p2].forEach(p=>{
       if(p.hurt)return;
       const px=p.x*scale+38;const py=p.y+55;
@@ -467,7 +410,6 @@ function checkChickenCollisions(){
   chickens=chickens.filter(c=>!c.gone);
 }
 
-// ── Crab collision ──
 function checkCrabs(){
   const gw=gameEl.offsetWidth||680;const scale=gw/GW;
   crabs.forEach(cr=>{
@@ -478,51 +420,69 @@ function checkCrabs(){
         const px=p.x*scale+38;
         if(Math.abs(cr.x-px)<62){
           p.hurt=true;p.lives=Math.max(0,p.lives-1);updateLives(p);
-          sfxHurt();doHurtAnim(p);
-          showStatus(`${p.id===1?'CR7':'MBAPPE'} got pinched!! 🦀 Ouch!!`,2000);
-          p.combo=0; // reset combo
+          sfxHurt();doHurtAnim(p);p.combo=0;
+          showStatus(`${p.id===1?'CR7':'MBAPPE'} pinched by 🦀! Ouch!!`,2000);
         }
       }
     });
   });
 }
 
-// ── Spawn chickens ──
-function spawnChicken(){
-  if(!running)return;
+// ── Spawn helpers ──
+function spawnOneChicken(cfg){
   const el=document.createElement('div');el.className='chk';
   el.textContent=['🐔','🐓'][Math.floor(Math.random()*2)];
   const gw=gameEl.offsetWidth||680;
   const fromRight=Math.random()>0.5;
-  const h=GROUND+65+Math.random()*190;
+  // Pick height from level config — weighted toward more variety at higher levels
+  const h=cfg.heights[Math.floor(Math.random()*cfg.heights.length)];
   el.style.bottom=h+'px';
-  const sz=38+Math.random()*16;el.style.fontSize=sz+'px';el.style.zIndex=15;
+  const sz=36+Math.random()*16;el.style.fontSize=sz+'px';el.style.zIndex=15;
   el.style.left=(fromRight?gw:-60)+'px';
   gameEl.appendChild(el);
-  chickens.push({el,fromRight,speed:chickenSpeed*(0.85+Math.random()*0.45),gone:false,h,startX:fromRight?gw:-60});
-  chkTimer=setTimeout(spawnChicken,Math.max(500,1300-level*70));
+  const speed=cfg.speed*(0.8+Math.random()*0.5);
+  chickens.push({el,fromRight,speed,gone:false,h,startX:fromRight?gw:-60});
 }
 
-// ── Spawn crabs ──
-function spawnCrab(){
+function scheduleChickens(cfg){
   if(!running)return;
-  const el=document.createElement('div');el.className='crab';
-  el.textContent='🦀';const gw=gameEl.offsetWidth||680;
+  // Spawn `simultaneous` chickens at once, spread across different heights
+  const usedHeights=new Set();
+  for(let i=0;i<cfg.simultaneous;i++){
+    // try to pick a different height each time
+    let h;let attempts=0;
+    do{h=cfg.heights[Math.floor(Math.random()*cfg.heights.length)];attempts++;}while(usedHeights.has(h)&&attempts<8);
+    usedHeights.add(h);
+    // slight stagger so they don't all appear same frame
+    setTimeout(()=>{if(running)spawnOneChicken(cfg);},i*120);
+  }
+  chkTimer=setTimeout(()=>scheduleChickens(getLevelConfig(level)),cfg.spawnMs);
+}
+
+function scheduleCrabs(cfg){
+  if(!running)return;
+  const el=document.createElement('div');el.className='crab';el.textContent='🦀';
+  const gw=gameEl.offsetWidth||680;
   const fromRight=Math.random()>0.5;
   el.style.left=(fromRight?gw:-60)+'px';gameEl.appendChild(el);
   crabs.push({el,x:fromRight?gw:-60,fromRight,speed:(1.3+Math.random()*1.2)*(fromRight?-1:1),alive:true});
-  crabTimer=setTimeout(spawnCrab,Math.max(1800,4000-level*180));
+  crabTimer=setTimeout(()=>scheduleCrabs(getLevelConfig(level)),cfg.crabMs);
 }
 
-// ── Level up ──
+// ── Level up every 10s ──
 function doLevelUp(){
-  level++;chickenSpeed=2.8+level*0.7;
+  level++;
+  const cfg=getLevelConfig(level);
+  // Update sky theme
+  skyEl.className='';
+  if(level<=SKY_CLASSES.length)skyEl.classList.add(SKY_CLASSES[level-1]);
   document.getElementById('level-badge').textContent=`⭐ LEVEL ${level} ⭐`;
-  sfxLevel();
-  const la=document.getElementById('lvl-ann');
-  la.textContent=`LEVEL ${level}! ⚡`;la.style.opacity='1';
-  setTimeout(()=>la.style.opacity='0',2200);
-  showStatus(`⚡ LEVEL ${level}! Chickens going faster!`,2000);
+  sfxLevelUp();
+  lvlNumTxt.textContent=`LEVEL ${level}! ⚡`;
+  lvlSubTxt.textContent=cfg.label;
+  lvlAnn.classList.remove('lvl-anim');void lvlAnn.offsetWidth;lvlAnn.classList.add('lvl-anim');
+  setTimeout(()=>lvlAnn.classList.remove('lvl-anim'),2200);
+  showStatus(`⚡ LEVEL ${level}: ${cfg.label}`,2000);
 }
 
 // ── Game loop ──
@@ -530,26 +490,23 @@ function gameFrame(){
   const gw=gameEl.offsetWidth||680;const scale=gw/GW;
   [p1,p2].forEach(p=>{
     let dx=0;
-    if(!p.hurt){
-      if(p.id===1){if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}
-      else{if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}
-    }
+    if(!p.hurt){if(p.id===1){if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}else{if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}}
     p.x=Math.max(5,Math.min(p.x+dx,(gw/scale)-65));
     if(!p.onGround){p.y+=p.vy;p.vy-=1.05;if(p.y<=0){p.y=0;p.vy=0;p.onGround=true;p.jumpCount=0;}}
     p.el.style.left=(p.x*scale)+'px';p.el.style.bottom=(GROUND+p.y)+'px';
   });
   chickens.forEach(c=>{
     if(c.gone)return;
-    let x=parseFloat(c.el.style.left);
-    x+=c.fromRight?-c.speed:c.speed;
+    let x=parseFloat(c.el.style.left);x+=c.fromRight?-c.speed:c.speed;
     c.el.style.left=x+'px';
-    c.el.style.bottom=(c.h+Math.sin(Date.now()/260+c.startX)*16)+'px';
+    c.el.style.bottom=(c.h+Math.sin(Date.now()/260+c.startX)*14)+'px';
+    const gw=gameEl.offsetWidth||680;
     if((c.fromRight&&x<-70)||(!c.fromRight&&x>(gw+70))){c.gone=true;try{c.el.remove();}catch(e){}}
   });
   chickens=chickens.filter(c=>!c.gone);
   crabs.forEach(cr=>{
-    if(!cr.alive)return;
-    cr.x-=cr.speed;cr.el.style.left=cr.x+'px';
+    if(!cr.alive)return;cr.x-=cr.speed;cr.el.style.left=cr.x+'px';
+    const gw=gameEl.offsetWidth||680;
     if(cr.x<-70||cr.x>gw+70){cr.alive=false;try{cr.el.remove();}catch(e){}}
   });
   crabs=crabs.filter(c=>c.alive);
@@ -564,10 +521,10 @@ function spawnFunny(x,y){const p=document.createElement('div');p.className='fpop
 const RFPS=10;let rpFrames=[],rpEvents=[],rpRecT=null;
 function recordRF(){if(!running)return;const gw=gameEl.offsetWidth||680;const sc=gw/GW;rpFrames.push({p1x:p1.x*sc,p1y:p1.y,p2x:p2.x*sc,p2y:p2.y,chks:chickens.map(c=>({x:parseFloat(c.el.style.left),y:parseFloat(c.el.style.bottom)})),crabs:crabs.filter(c=>c.alive).map(c=>({x:c.x})),p1s:p1.score,p2s:p2.score,t:timeLeft,lv:level});}
 
-// ── Game logs ──
+// ── Logs ──
 let gameLogs=[];
 function saveLog(){const n=new Date();gameLogs.unshift({date:n.toLocaleDateString('en-IN',{day:'numeric',month:'short'}),time:n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),p1s:p1.score,p2s:p2.score,level,winner:p1.score>p2.score?'CR7':p2.score>p1.score?'MBAPPE':'TIE',dur:60-timeLeft});if(gameLogs.length>10)gameLogs.pop();}
-function renderLogs(){const b=document.getElementById('logs-body');if(!gameLogs.length){b.innerHTML='<p style="color:#666;font-size:12px;padding:10px">No games yet!</p>';return;}b.innerHTML=gameLogs.map((l,i)=>`<div class="log-entry"><div class="log-date">#${gameLogs.length-i} &nbsp;${l.date} ${l.time} &nbsp;⏱ ${l.dur}s</div><div class="log-result" style="color:${l.winner==='CR7'?'#FFD700':l.winner==='MBAPPE'?'#60A5FA':'#aaa'}">${l.winner==='TIE'?'🤝 TIE':l.winner+' WINS! 🏆'}</div><div class="log-detail"><span style="color:#FFD700">CR7: ${l.p1s}🍗</span> &nbsp; <span style="color:#60A5FA">Mbappe: ${l.p2s}🍗</span> &nbsp; Lvl ${l.level}</div></div>`).join('');}
+function renderLogs(){const b=document.getElementById('logs-body');if(!gameLogs.length){b.innerHTML='<p style="color:#888;font-size:12px;padding:10px">No games yet!</p>';return;}b.innerHTML=gameLogs.map((l,i)=>`<div class="log-entry"><div class="log-date">#${gameLogs.length-i} &nbsp;${l.date} ${l.time} &nbsp;⏱ ${l.dur}s</div><div class="log-result" style="color:${l.winner==='CR7'?'#FFD700':l.winner==='MBAPPE'?'#60A5FA':'#aaa'}">${l.winner==='TIE'?'🤝 TIE':l.winner+' WINS! 🏆'}</div><div class="log-detail"><span style="color:#FFD700">CR7: ${l.p1s}🍗</span> &nbsp;<span style="color:#60A5FA">Mbappe: ${l.p2s}🍗</span> &nbsp;Reached Lvl ${l.level}</div></div>`).join('');}
 function showLogs(){renderLogs();document.getElementById('logs-panel').style.display='flex';}
 function hideLogs(){document.getElementById('logs-panel').style.display='none';}
 
@@ -578,7 +535,8 @@ function startGame(){
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];
   crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];
   p1=makePlayer(1,80,'#FFD700');p2=makePlayer(2,260,'#60A5FA');
-  level=1;chickenSpeed=2.8;timeLeft=60;running=true;rpFrames=[];rpEvents=[];
+  level=1;timeLeft=60;running=true;rpFrames=[];rpEvents=[];
+  skyEl.className='';
   document.getElementById('timer-big').textContent='60s';
   document.getElementById('level-badge').textContent='⭐ LEVEL 1 ⭐';
   updateUI();updateLives(p1);updateLives(p2);
@@ -586,9 +544,18 @@ function startGame(){
   clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
   loopId=setInterval(gameFrame,16);
   rpRecT=setInterval(recordRF,1000/RFPS);
-  timerIntv=setInterval(()=>{timeLeft--;document.getElementById('timer-big').textContent=timeLeft+'s';if(timeLeft===30)doLevelUp();if(timeLeft<=0)endGame();},1000);
-  setTimeout(spawnChicken,700);setTimeout(spawnCrab,3200);
-  showStatus('🐔 Jump INTO chickens to catch! 🦀 Dodge crabs!',3000);
+  // Timer — level up every 10s
+  timerIntv=setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer-big').textContent=timeLeft+'s';
+    // Level up at 50s, 40s, 30s, 20s, 10s remaining (every 10s)
+    if(timeLeft%10===0&&timeLeft>0&&timeLeft<60) doLevelUp();
+    if(timeLeft<=0) endGame();
+  },1000);
+  const cfg=getLevelConfig(1);
+  setTimeout(()=>scheduleChickens(cfg),700);
+  setTimeout(()=>scheduleCrabs(cfg),3200);
+  showStatus('🐔 Jump INTO chickens! ⚡ Level up every 10s!',3000);
 }
 
 function endGame(){
@@ -603,29 +570,14 @@ function endGame(){
   document.getElementById('es').style.display='flex';
 }
 
-// ── Replay engine ──
+// ── Replay ──
 const rpCvs=document.getElementById('rp-canvas');const rCtx=rpCvs.getContext('2d');
 let rpPlaying=false,rpFi=0,rpSpd=1,rpAnimId=null,rpLastT=0;
 function showReplay(){if(rpFrames.length<2){alert('Play a game first!');return;}document.getElementById('es').style.display='none';document.getElementById('rp-screen').style.display='flex';rpFi=0;rpPlaying=true;rpLastT=0;document.getElementById('rp-play-btn').textContent='⏸';requestAnimationFrame(rpLoop);}
 function rpLoop(t){if(!rpPlaying){rpAnimId=null;return;}if(rpLastT===0)rpLastT=t;const dt=(t-rpLastT)/1000;rpLastT=t;rpFi+=dt*RFPS*rpSpd;if(rpFi>=rpFrames.length){rpFi=rpFrames.length-1;rpPlaying=false;document.getElementById('rp-play-btn').textContent='▶';}drawRPF(Math.floor(rpFi));const pct=rpFrames.length>1?(rpFi/(rpFrames.length-1))*100:0;document.getElementById('rp-fill').style.width=pct+'%';document.getElementById('rp-time').textContent=Math.floor(rpFi/RFPS)+'s';rpAnimId=requestAnimationFrame(rpLoop);}
-function drawRPF(fi){
-  const f=rpFrames[Math.min(fi,rpFrames.length-1)];if(!f)return;
-  const W=rpCvs.width,H=rpCvs.height;rCtx.clearRect(0,0,W,H);
-  const sg=rCtx.createLinearGradient(0,0,0,H);sg.addColorStop(0,'#1a0050');sg.addColorStop(0.45,'#7b2ff7');sg.addColorStop(0.5,'#ff6fd8');sg.addColorStop(0.55,'#ffb347');sg.addColorStop(0.6,'#52b788');sg.addColorStop(1,'#2d6a4f');rCtx.fillStyle=sg;rCtx.fillRect(0,0,W,H);
-  rCtx.fillStyle='rgba(255,255,255,0.18)';rCtx.fillRect(0,H-GROUND,W,4);
-  rCtx.font='28px serif';f.chks.forEach(c=>rCtx.fillText('🐔',c.x,H-c.y+14));
-  rCtx.font='24px serif';f.crabs.forEach(c=>rCtx.fillText('🦀',c.x,H-GROUND+8));
-  rpEvents.forEach(ev=>{if(Math.abs(ev.fi-fi)<RFPS*0.5){rCtx.font='18px serif';rCtx.fillText('✨',ev.px,H-ev.py+8);}});
-  function drawP(x,y,col,num,skin){const bx=x,by=H-GROUND-y-85;rCtx.fillStyle=col;rCtx.beginPath();rCtx.roundRect(bx-13,by+28,26,32,5);rCtx.fill();rCtx.fillStyle='#fff';rCtx.font='bold 12px Arial Black';rCtx.fillText(num,bx-6,by+51);rCtx.fillStyle='#1565C0';rCtx.beginPath();rCtx.roundRect(bx-11,by+60,22,12,3);rCtx.fill();rCtx.fillStyle=skin;rCtx.beginPath();rCtx.arc(bx,by+14,13,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#111';rCtx.beginPath();rCtx.ellipse(bx,by+3,11,5,0,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#fff';rCtx.beginPath();rCtx.arc(bx-5,by+14,2.5,0,Math.PI*2);rCtx.fill();rCtx.beginPath();rCtx.arc(bx+5,by+14,2.5,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#333';rCtx.beginPath();rCtx.arc(bx-5,by+14,1.5,0,Math.PI*2);rCtx.fill();rCtx.beginPath();rCtx.arc(bx+5,by+14,1.5,0,Math.PI*2);rCtx.fill();}
-  drawP(f.p1x,f.p1y,'#E53935','7','#D4A574');drawP(f.p2x,f.p2y,'#1565C0','10','#8D6748');
-  rCtx.fillStyle='rgba(0,0,0,0.6)';rCtx.fillRect(0,0,W,30);
-  rCtx.fillStyle='#FFD700';rCtx.font='bold 14px Bangers,cursive';rCtx.fillText(`⚽CR7: ${f.p1s}🍗`,8,20);
-  rCtx.fillStyle='#60A5FA';rCtx.font='bold 14px Bangers,cursive';rCtx.fillText(`MBAPPE: ${f.p2s}🍗`,W-148,20);
-  rCtx.fillStyle='#ffb347';rCtx.font='bold 13px Bangers,cursive';rCtx.fillText(`LV${f.lv}`,W/2-12,20);
-  rCtx.fillStyle='#fff';rCtx.font='12px Bangers,cursive';rCtx.fillText(`⏱${f.t}s`,W/2+18,20);
-  rCtx.fillStyle='rgba(255,111,216,0.12)';rCtx.font='18px Bangers,cursive';rCtx.fillText('🎬 REPLAY',W/2-44,H-8);
-  rCtx.fillStyle='rgba(255,179,71,0.3)';rCtx.font='9px sans-serif';rCtx.fillText('Game Designer: Arush  |  Assistant: Daddy',W/2-94,H-22);
-}
+function drawRPF(fi){const f=rpFrames[Math.min(fi,rpFrames.length-1)];if(!f)return;const W=rpCvs.width,H=rpCvs.height;rCtx.clearRect(0,0,W,H);const sg=rCtx.createLinearGradient(0,0,0,H);sg.addColorStop(0,'#1a0050');sg.addColorStop(0.45,'#7b2ff7');sg.addColorStop(0.5,'#ff6fd8');sg.addColorStop(0.55,'#ffb347');sg.addColorStop(0.6,'#52b788');sg.addColorStop(1,'#2d6a4f');rCtx.fillStyle=sg;rCtx.fillRect(0,0,W,H);rCtx.fillStyle='rgba(255,255,255,0.18)';rCtx.fillRect(0,H-GROUND,W,4);rCtx.font='28px serif';f.chks.forEach(c=>rCtx.fillText('🐔',c.x,H-c.y+14));rCtx.font='24px serif';f.crabs.forEach(c=>rCtx.fillText('🦀',c.x,H-GROUND+8));rpEvents.forEach(ev=>{if(Math.abs(ev.fi-fi)<RFPS*0.5){rCtx.font='18px serif';rCtx.fillText('✨',ev.px,H-ev.py+8);}});function drawP(x,y,col,num,skin){const bx=x,by=H-GROUND-y-85;rCtx.fillStyle=col;rCtx.beginPath();rCtx.roundRect(bx-13,by+28,26,32,5);rCtx.fill();rCtx.fillStyle='#fff';rCtx.font='bold 12px Arial Black';rCtx.fillText(num,bx-6,by+51);rCtx.fillStyle='#1565C0';rCtx.beginPath();rCtx.roundRect(bx-11,by+60,22,12,3);rCtx.fill();rCtx.fillStyle=skin;rCtx.beginPath();rCtx.arc(bx,by+14,13,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#111';rCtx.beginPath();rCtx.ellipse(bx,by+3,11,5,0,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#fff';rCtx.beginPath();rCtx.arc(bx-5,by+14,2.5,0,Math.PI*2);rCtx.fill();rCtx.beginPath();rCtx.arc(bx+5,by+14,2.5,0,Math.PI*2);rCtx.fill();rCtx.fillStyle='#333';rCtx.beginPath();rCtx.arc(bx-5,by+14,1.5,0,Math.PI*2);rCtx.fill();rCtx.beginPath();rCtx.arc(bx+5,by+14,1.5,0,Math.PI*2);rCtx.fill();}
+drawP(f.p1x,f.p1y,'#E53935','7','#D4A574');drawP(f.p2x,f.p2y,'#1565C0','10','#8D6748');
+rCtx.fillStyle='rgba(0,0,0,0.65)';rCtx.fillRect(0,0,W,30);rCtx.fillStyle='#FFD700';rCtx.font='bold 14px Bangers,cursive';rCtx.fillText(`⚽CR7: ${f.p1s}🍗`,8,20);rCtx.fillStyle='#60A5FA';rCtx.font='bold 14px Bangers,cursive';rCtx.fillText(`MBAPPE: ${f.p2s}🍗`,W-148,20);rCtx.fillStyle='#ffb347';rCtx.font='bold 13px Bangers,cursive';rCtx.fillText(`LV${f.lv}`,W/2-12,20);rCtx.fillStyle='#fff';rCtx.font='12px Bangers,cursive';rCtx.fillText(`⏱${f.t}s`,W/2+18,20);rCtx.fillStyle='rgba(255,111,216,0.12)';rCtx.font='18px Bangers,cursive';rCtx.fillText('🎬 REPLAY',W/2-44,H-8);rCtx.fillStyle='rgba(255,179,71,0.3)';rCtx.font='9px sans-serif';rCtx.fillText('Game Designer: Arush  |  Assistant: Daddy',W/2-94,H-22);}
 function toggleRP(){rpPlaying=!rpPlaying;document.getElementById('rp-play-btn').textContent=rpPlaying?'⏸':'▶';if(rpPlaying){if(rpFi>=rpFrames.length-1)rpFi=0;rpLastT=0;requestAnimationFrame(rpLoop);}}
 function scrubRP(e){const r=document.getElementById('rp-prog').getBoundingClientRect();rpFi=Math.floor(((e.clientX-r.left)/r.width)*(rpFrames.length-1));drawRPF(Math.floor(rpFi));}
 function closeRP(){document.getElementById('rp-screen').style.display='none';document.getElementById('es').style.display='flex';rpPlaying=false;if(rpAnimId)cancelAnimationFrame(rpAnimId);}

@@ -6,7 +6,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@700;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
-#game{position:relative;width:100%;height:580px;overflow:hidden}
+#game{position:relative;width:100%;height:100vh;overflow:hidden}
 #sky{position:absolute;inset:0;background:linear-gradient(180deg,#1a0050 0%,#4a0080 25%,#7b2ff7 45%,#ff6fd8 50%,#ffb347 55%,#52b788 60%,#2d6a4f 100%)}
 .cloud{position:absolute;border-radius:50px;background:rgba(255,255,255,0.18);pointer-events:none}
 .confetti{position:absolute;border-radius:2px;pointer-events:none;animation:confettiFall 1s ease-out forwards;z-index:50}
@@ -92,8 +92,7 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 .btn-green{background:linear-gradient(135deg,#4ade80,#16a34a);color:#fff}
 .btn:hover{transform:scale(1.04)}
 .btn:active{transform:scale(0.96)!important}
-/* Analytics badge */
-#analytics-badge{position:absolute;bottom:18px;right:10px;z-index:30;background:rgba(0,0,0,0.4);border:1px solid rgba(255,179,71,0.3);border-radius:8px;padding:3px 8px;font-size:9px;color:rgba(255,179,71,0.6);pointer-events:none}
+#analytics-badge{position:absolute;bottom:18px;right:8px;z-index:30;background:rgba(0,0,0,0.45);border:1px solid rgba(255,179,71,0.3);border-radius:8px;padding:3px 8px;font-size:9px;color:rgba(255,179,71,0.65);pointer-events:none;line-height:1.5}
 #logs-panel{position:absolute;inset:0;z-index:65;background:linear-gradient(135deg,#1a0050,#3a0080);display:none;flex-direction:column}
 #logs-header{padding:10px 14px;background:rgba(0,0,0,0.5);display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #ff6fd8}
 #logs-header h2{font-family:'Bangers',cursive;font-size:22px;color:#ffb347;letter-spacing:2px}
@@ -114,18 +113,81 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 </head>
 <body>
 
-<!-- ── MIXPANEL SDK ── -->
+<!-- ══════════════════════════════════════════════
+     MIXPANEL SDK — v2.50.0+ (required for Session Replay)
+     REPLACE 'YOUR_MIXPANEL_TOKEN_HERE' with your token.
+
+     SESSION REPLAY is enabled via:
+       record_sessions_percent: 100   ← records every session (lower for production)
+       record_block_class: 'mp-block' ← add class="mp-block" to any element to mask it
+       record_mask_text_selector: ''  ← no extra text masking needed for a game
+
+     View replays in Mixpanel → Activity → Session Replay
+     Replays are linked to all your tracked events automatically.
+════════════════════════════════════════════════ -->
 <script>
 (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable time_event track track_pageview track_links track_forms register register_once unregister identify name_tag set_config reset people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
 
-// ── REPLACE THIS WITH YOUR MIXPANEL PROJECT TOKEN ──
-const MIXPANEL_TOKEN = 'YOUR_MIXPANEL_TOKEN_HERE';
+// ── YOUR TOKEN HERE ──
+const MIXPANEL_TOKEN = 'f312eb9fc449831d9161f0682e3c6f64';
 
 mixpanel.init(MIXPANEL_TOKEN, {
   persistence: 'localStorage',
-  track_pageview: false,  // we'll track manually
-  debug: false
+  track_pageview: false,
+  api_host: 'https://api-eu.mixpanel.com',
+  autocapture: true,
+
+  // ── SESSION REPLAY CONFIG ──
+  record_sessions_percent: 100,
+  record_block_class: 'mp-block',
+  record_mask_text_selector: '',
+  record_idle_timeout_ms: 1800000,
 });
+
+// Identify this device consistently across sessions
+const DEVICE_ID = (()=>{
+  let id = localStorage.getItem('rcg_device_id');
+  if(!id){id='device_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);localStorage.setItem('rcg_device_id',id);}
+  return id;
+})();
+mixpanel.identify(DEVICE_ID);
+mixpanel.people.set({'$name': 'Game Player', 'game': 'Ronaldo Chicken Game'});
+
+const SESSION_ID=(()=>{let id=sessionStorage.getItem('rcg_session');if(!id){id='sess_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);sessionStorage.setItem('rcg_session',id);}return id;})();
+let gameCount=parseInt(sessionStorage.getItem('rcg_count')||'0');
+
+function mpTrack(event,props={}){
+  try{
+    // Attach $mp_replay_id so every event is linked to the correct Session Replay
+    const replayId = (typeof mixpanel.get_session_recording_properties === 'function')
+      ? (mixpanel.get_session_recording_properties()||{}).$mp_replay_id
+      : undefined;
+    mixpanel.track(event,{
+      session_id:SESSION_ID,
+      game_count:gameCount,
+      game_title:'Ronaldo Chicken Game',
+      game_version:'v2.1',
+      ...(replayId ? {$mp_replay_id: replayId} : {}),
+      ...props
+    });
+  }catch(e){console.warn('[Mixpanel]',e.message);}
+}
+
+function mpTrackGameEnd(reason){
+  const dur=TOTAL_TIME-timeLeft;
+  const winner=p1.eliminated&&!p2.eliminated?'MBAPPE':p2.eliminated&&!p1.eliminated?'CR7':p1.score>p2.score?'CR7':p2.score>p1.score?'MBAPPE':'TIE';
+  mpTrack('game_ended',{
+    player_1_score:p1.score,
+    player_2_score:p2.score,
+    time_spent_seconds:dur,
+    time_spent_ms:dur*1000,
+    winner,end_reason:reason,
+    level_reached:level,
+    p1_lives_left:p1.lives,p2_lives_left:p2.lives,
+    p1_eliminated:p1.eliminated,p2_eliminated:p2.eliminated,
+    game_number:gameCount,
+  });
+}
 </script>
 
 <div id="game">
@@ -134,7 +196,7 @@ mixpanel.init(MIXPANEL_TOKEN, {
   <div id="lvl-ann"><span class="lnum" id="lnum">LEVEL 2</span><span class="lsub" id="lsub">FASTER!</span></div>
   <div id="win-ann"><h2 id="win-txt">CR7 WINS!</h2><p id="win-sub">SURVIVED!</p></div>
   <div id="status" style="opacity:0"></div>
-  <div id="analytics-badge">📊 Mixpanel Analytics ON</div>
+  <div id="analytics-badge" style="display:none">📊 Mixpanel Analytics<br>🎬 Session Replay ON</div>
 
   <div id="ui">
     <div class="ppanel">
@@ -239,7 +301,7 @@ mixpanel.init(MIXPANEL_TOKEN, {
       <button class="btn btn-gold" id="start-btn">SIUUUU! 🚀</button>
       <button class="btn btn-green" id="logs-btn">📋 Game Logs</button>
     </div>
-    <div style="color:rgba(255,179,71,0.5);font-size:10px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy &nbsp;·&nbsp; 📊 Analytics by Mixpanel</div>
+    <div style="color:rgba(255,179,71,0.45);font-size:10px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
   </div>
 
   <div class="screen" id="es" style="display:none">
@@ -277,70 +339,6 @@ mixpanel.init(MIXPANEL_TOKEN, {
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-//  MIXPANEL ANALYTICS HELPERS
-//  Events tracked:
-//    game_started     — when SIUUU is pressed
-//    game_ended       — on every game finish (main event)
-//    level_up         — each time level increases
-//    player_eliminated — when a player loses all lives
-//    snake_bite       — each snake hit
-//    crab_sting       — each crab stun
-// ══════════════════════════════════════════════════════════
-
-// Generate/persist a session ID per browser session
-const SESSION_ID = (()=>{
-  let id = sessionStorage.getItem('rcg_session');
-  if(!id){id='sess_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);sessionStorage.setItem('rcg_session',id);}
-  return id;
-})();
-
-// Game counter (how many games played this session)
-let gameCount = parseInt(sessionStorage.getItem('rcg_count')||'0');
-
-function mpTrack(event, props={}){
-  try{
-    mixpanel.track(event, {
-      session_id: SESSION_ID,
-      game_count: gameCount,
-      game_title: 'Ronaldo Chicken Game',
-      game_version: 'v2.0',
-      ...props
-    });
-  } catch(e){
-    // Silent fail — analytics should never break the game
-    console.warn('[Mixpanel]', e.message);
-  }
-}
-
-function mpTrackGameEnd(reason){
-  const dur = TOTAL_TIME - timeLeft;
-  const winner = p1.eliminated&&!p2.eliminated ? 'MBAPPE'
-               : p2.eliminated&&!p1.eliminated ? 'CR7'
-               : p1.score > p2.score ? 'CR7'
-               : p2.score > p1.score ? 'MBAPPE'
-               : 'TIE';
-
-  mpTrack('game_ended', {
-    // Core requested fields
-    player_1_score:    p1.score,        // CR7 (arrow keys)
-    player_2_score:    p2.score,        // Mbappe (WASD)
-    time_spent_seconds: dur,            // seconds actually played
-    time_spent_ms:     dur * 1000,
-
-    // Extra context
-    winner,
-    end_reason:        reason,          // 'time_survived' | 'both_eliminated' | 'manual'
-    level_reached:     level,
-    p1_lives_left:     p1.lives,
-    p2_lives_left:     p2.lives,
-    p1_eliminated:     p1.eliminated,
-    p2_eliminated:     p2.eliminated,
-    game_number:       gameCount,
-  });
-}
-
-// ── DECOR ──
 const gameEl=document.getElementById('game'),skyEl=document.getElementById('sky');
 for(let i=0;i<40;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`position:absolute;border-radius:50%;left:${Math.random()*100}%;top:${Math.random()*44}%;width:${1+Math.random()*2.5}px;height:${1+Math.random()*2.5}px;animation-delay:${Math.random()*2}s`;gameEl.appendChild(s);}
 for(let i=0;i<4;i++){const c=document.createElement('div');c.className='cloud';c.style.cssText=`position:absolute;top:${8+Math.random()*28}%;left:${i*25+Math.random()*12}%;width:${80+Math.random()*80}px;height:${26+Math.random()*18}px`;gameEl.appendChild(c);}
@@ -348,7 +346,6 @@ for(let i=0;i<14;i++){const d=document.createElement('div');d.className='gdot';c
 let bgEls=[];
 for(let i=0;i<8;i++){const el=document.createElement('div');el.style.cssText=`position:absolute;bottom:155px;font-size:30px;z-index:8;opacity:0.4`;el.textContent=['🌿','🌳','🏟️','🌲','🌺','🌸'][Math.floor(Math.random()*6)];el.style.left=(i*100)+'px';el.dataset.spd=(0.6+Math.random()*0.7).toString();gameEl.appendChild(el);bgEls.push(el);}
 
-// ── AUDIO ──
 const AC=new(window.AudioContext||window.webkitAudioContext)();
 function tone(f,t,dur,v=0.3,d=0){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type=t;o.frequency.setValueAtTime(f,AC.currentTime+d);g.gain.setValueAtTime(0,AC.currentTime+d);g.gain.linearRampToValueAtTime(v,AC.currentTime+d+0.01);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+d+dur);o.start(AC.currentTime+d);o.stop(AC.currentTime+d+dur+0.05);}
 function sfxSnakeWarn(){try{const buf=AC.createBuffer(1,AC.sampleRate*0.35,AC.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(AC.sampleRate*0.12));const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();s.buffer=buf;f.type='bandpass';f.frequency.value=3000;f.Q.value=1.5;s.connect(f);f.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.32);s.start();s.stop(AC.currentTime+0.36);tone(80,'sawtooth',0.25,0.18,0.05);}catch(e){}}
@@ -423,15 +420,13 @@ function fullRecover(p){p.hurt=false;p.snakeHit=false;p.g.removeAttribute('style
 function doSnakeHit(p){
   if(p.snakeHit||p.hurt||p.eliminated)return;
   p.snakeHit=true;p.lives=Math.max(0,p.lives-1);updateLives(p);sfxKidScream();doHurtVisuals(p);p.combo=0;
-  // Track snake bite in Mixpanel
-  mpTrack('snake_bite',{player: p.id===1?'CR7':'MBAPPE', player_id: p.id, lives_remaining: p.lives, current_level: level, p1_score: p1.score, p2_score: p2.score});
+  mpTrack('snake_bite',{player:p.id===1?'CR7':'MBAPPE',player_id:p.id,lives_remaining:p.lives,current_level:level,p1_score:p1.score,p2_score:p2.score});
   const gw=gameEl.offsetWidth||680;const px=p.x*(gw/GW);
   const ov=document.createElement('div');ov.className='elim-overlay';ov.style.left=(px-70)+'px';ov.style.bottom=(GROUND+p.y+60)+'px';
   if(p.lives<=0){
     p.eliminated=true;ov.textContent=`${p.id===1?'CR7':'MBAPPE'} OUT! 💀`;gameEl.appendChild(ov);setTimeout(()=>ov.remove(),2500);sfxElim();updateLives(p);p.el.classList.add('out');
     showStatus(`${p.id===1?'CR7':'MBAPPE'} ELIMINATED! 💀`,3000);
-    // Track elimination
-    mpTrack('player_eliminated',{player: p.id===1?'CR7':'MBAPPE', player_id: p.id, eliminated_by:'snake', level_at_elimination: level, p1_score: p1.score, p2_score: p2.score});
+    mpTrack('player_eliminated',{player:p.id===1?'CR7':'MBAPPE',player_id:p.id,eliminated_by:'snake',level_at_elimination:level,p1_score:p1.score,p2_score:p2.score});
     if(p1.eliminated&&p2.eliminated)setTimeout(()=>endGame('both_eliminated'),1200);
   } else {
     ov.textContent=`🐍 OUCH! ${p.lives} ${p.lives===1?'life':'lives'} left!`;gameEl.appendChild(ov);setTimeout(()=>ov.remove(),1800);
@@ -447,24 +442,10 @@ document.addEventListener('keyup',e=>{keys[e.key]=false;});
 function handleJump(p){if(p.hurt||p.snakeHit||p.eliminated)return;if(p.onGround){p.vy=16;p.onGround=false;p.airJumped=false;sfxJump();}else if(!p.airJumped){p.vy=22;p.airJumped=true;sfxHiJump();}}
 function doCatch(p){if(!running||p.hurt||p.snakeHit||p.eliminated)return;p.g.removeAttribute('class');void p.g.offsetWidth;p.g.className='kicking';setTimeout(()=>{if(p.g.className==='kicking')p.g.removeAttribute('class');},480);}
 
-function onCatch(p,cx,cy){
-  p.score++;updateUI();p.combo++;clearTimeout(p.comboTimer);p.comboTimer=setTimeout(()=>p.combo=0,1800);
-  if(p.combo===1)sfxSingle();else if(p.combo===2)sfxDouble();else if(p.combo===3)sfxTriple();else sfxMega();
-  doHappy(p,p.combo);const gw=gameEl.offsetWidth||680;const px=p.x*(gw/GW);
-  if(p.combo>=2){const lbl=comboLabels[Math.min(p.combo,comboLabels.length-1)]||(p.combo+'x COMBO!!');const cb=document.createElement('div');cb.className='combo-banner';cb.style.color=p.combo>=4?'#ff6fd8':p.combo===3?'#ffb347':'#FFD700';cb.style.fontSize=p.combo>=4?'40px':'34px';cb.textContent=lbl;cb.style.left=(px-60)+'px';cb.style.bottom=(GROUND+p.y+60)+'px';gameEl.appendChild(cb);setTimeout(()=>cb.remove(),1300);}
-  spawnPop(cx,cy+GROUND,'+1 🍗',p.col,p.combo>=2?32:24);spawnFunny(cx,cy+GROUND+40);
-  rpEvents.push({fi:rpFrames.length,px,py:p.y+GROUND,col:p.col});
-}
+function onCatch(p,cx,cy){p.score++;updateUI();p.combo++;clearTimeout(p.comboTimer);p.comboTimer=setTimeout(()=>p.combo=0,1800);if(p.combo===1)sfxSingle();else if(p.combo===2)sfxDouble();else if(p.combo===3)sfxTriple();else sfxMega();doHappy(p,p.combo);const gw=gameEl.offsetWidth||680;const px=p.x*(gw/GW);if(p.combo>=2){const lbl=comboLabels[Math.min(p.combo,comboLabels.length-1)]||(p.combo+'x COMBO!!');const cb=document.createElement('div');cb.className='combo-banner';cb.style.color=p.combo>=4?'#ff6fd8':p.combo===3?'#ffb347':'#FFD700';cb.style.fontSize=p.combo>=4?'40px':'34px';cb.textContent=lbl;cb.style.left=(px-60)+'px';cb.style.bottom=(GROUND+p.y+60)+'px';gameEl.appendChild(cb);setTimeout(()=>cb.remove(),1300);}spawnPop(cx,cy+GROUND,'+1 🍗',p.col,p.combo>=2?32:24);spawnFunny(cx,cy+GROUND+40);rpEvents.push({fi:rpFrames.length,px,py:p.y+GROUND,col:p.col});}
 
 function checkChickens(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;chickens.forEach(c=>{if(c.gone)return;const cx=parseFloat(c.el.style.left)+22,cy=parseFloat(c.el.style.bottom)+22;[p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;const px=p.x*sc+38,py=p.y+55;if(Math.abs(cx-px)<72&&Math.abs(cy-py)<85&&!p.onGround){c.gone=true;c.el.classList.add('poof');setTimeout(()=>{try{c.el.remove();}catch(e){}},420);onCatch(p,cx,parseFloat(c.el.style.bottom));}});});chickens=chickens.filter(c=>!c.gone);}
-
-function checkCrabs(){
-  const gw=gameEl.offsetWidth||680;const sc=gw/GW;
-  crabs.forEach(cr=>{if(!cr.alive)return;[p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;if(p.y<30){const px=p.x*sc+38;if(Math.abs(cr.x-px)<58){p.hurt=true;p.lives=Math.max(0,p.lives-1);updateLives(p);sfxCrab();doHurtVisuals(p);p.combo=0;
-    // Track crab sting
-    mpTrack('crab_sting',{player: p.id===1?'CR7':'MBAPPE', player_id: p.id, lives_remaining: p.lives, current_level: level});
-    showStatus(`${p.id===1?'CR7':'MBAPPE'} pinched! 🦀 2s stun!`,2000);clearTimeout(p.hurtTimer);p.hurtTimer=setTimeout(()=>{if(!running||p.eliminated)return;fullRecover(p);},2000);}}});});
-}
+function checkCrabs(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;crabs.forEach(cr=>{if(!cr.alive)return;[p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;if(p.y<30){const px=p.x*sc+38;if(Math.abs(cr.x-px)<58){p.hurt=true;p.lives=Math.max(0,p.lives-1);updateLives(p);sfxCrab();doHurtVisuals(p);p.combo=0;mpTrack('crab_sting',{player:p.id===1?'CR7':'MBAPPE',player_id:p.id,lives_remaining:p.lives,current_level:level});showStatus(`${p.id===1?'CR7':'MBAPPE'} pinched! 🦀 2s stun!`,2000);clearTimeout(p.hurtTimer);p.hurtTimer=setTimeout(()=>{if(!running||p.eliminated)return;fullRecover(p);},2000);}}});});}
 function checkSnakes(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;snakes.forEach(sn=>{if(!sn.alive)return;[p1,p2].forEach(p=>{if(p.snakeHit||p.hurt||p.eliminated)return;if(p.y<25){const px=p.x*sc+38;if(Math.abs(sn.x-px)<58)doSnakeHit(p);}});});}
 
 function spawnOneChicken(cfg){const el=document.createElement('div');el.className='chk';el.textContent=['🐔','🐓'][Math.floor(Math.random()*2)];const gw=gameEl.offsetWidth||680;const fromRight=Math.random()>0.5;const h=cfg.heights[Math.floor(Math.random()*cfg.heights.length)];el.style.bottom=h+'px';el.style.fontSize=(36+Math.random()*16)+'px';el.style.zIndex=15;el.style.left=(fromRight?gw:-60)+'px';gameEl.appendChild(el);chickens.push({el,fromRight,speed:cfg.speed*(0.8+Math.random()*0.5),gone:false,h,startX:fromRight?gw:-60});}
@@ -487,23 +468,13 @@ function doLevelUp(){
   document.getElementById('level-badge').textContent=`⭐ LEVEL ${level} ⭐`;sfxLevel();
   document.getElementById('lnum').textContent=`LEVEL ${level}! ⚡`;document.getElementById('lsub').textContent=cfg.label;
   lvlAnn.classList.remove('lvlanim');void lvlAnn.offsetWidth;lvlAnn.classList.add('lvlanim');setTimeout(()=>lvlAnn.classList.remove('lvlanim'),2400);
-  showStatus(`⚡ LEVEL ${level}: ${cfg.label}`,2000);
-  spawnSnake(cfg);
-  // Track level up
-  mpTrack('level_up',{new_level: level, p1_score: p1.score, p2_score: p2.score, time_remaining: timeLeft});
+  showStatus(`⚡ LEVEL ${level}: ${cfg.label}`,2000);spawnSnake(cfg);
+  mpTrack('level_up',{new_level:level,p1_score:p1.score,p2_score:p2.score,time_remaining:timeLeft});
 }
 
 function gameFrame(){
   const gw=gameEl.offsetWidth||680;const sc=gw/GW;
-  [p1,p2].forEach(p=>{
-    if(p.hurt||p.snakeHit||p.eliminated)return;
-    let dx=0;
-    if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}
-    else{if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}
-    p.x=Math.max(5,Math.min(p.x+dx,(gw/sc)-65));
-    if(!p.onGround){p.y+=p.vy;p.vy-=1.05;if(p.y<=0){p.y=0;p.vy=0;p.onGround=true;p.airJumped=false;}}
-    p.el.style.left=(p.x*sc)+'px';p.el.style.bottom=(GROUND+p.y)+'px';
-  });
+  [p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}else{if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}p.x=Math.max(5,Math.min(p.x+dx,(gw/sc)-65));if(!p.onGround){p.y+=p.vy;p.vy-=1.05;if(p.y<=0){p.y=0;p.vy=0;p.onGround=true;p.airJumped=false;}}p.el.style.left=(p.x*sc)+'px';p.el.style.bottom=(GROUND+p.y)+'px';});
   chickens.forEach(c=>{if(c.gone)return;let x=parseFloat(c.el.style.left);x+=c.fromRight?-c.speed:c.speed;c.el.style.left=x+'px';c.el.style.bottom=(c.h+Math.sin(Date.now()/260+c.startX)*14)+'px';const gw=gameEl.offsetWidth||680;if((c.fromRight&&x<-70)||(!c.fromRight&&x>(gw+70))){c.gone=true;try{c.el.remove();}catch(e){}}});chickens=chickens.filter(c=>!c.gone);
   crabs.forEach(cr=>{if(!cr.alive)return;cr.x-=cr.speed;cr.el.style.left=cr.x+'px';const gw=gameEl.offsetWidth||680;if(cr.x<-80||cr.x>gw+80){cr.alive=false;try{cr.el.remove();}catch(e){}}});crabs=crabs.filter(c=>c.alive);
   const gw2=gameEl.offsetWidth||680;snakes.forEach(sn=>{if(!sn.alive)return;sn.x+=sn.speed;if(sn.x<-10){sn.x=-10;sn.speed=Math.abs(sn.speed);sn.el.style.flexDirection='row';sn.el.classList.add('warning');setTimeout(()=>sn.el.classList.remove('warning'),800);sfxSnakeWarn();}if(sn.x>gw2-90){sn.x=gw2-90;sn.speed=-Math.abs(sn.speed);sn.el.style.flexDirection='row-reverse';sn.el.classList.add('warning');setTimeout(()=>sn.el.classList.remove('warning'),800);sfxSnakeWarn();}sn.el.style.left=sn.x+'px';});
@@ -514,11 +485,9 @@ function gameFrame(){
 function spawnPop(x,y,txt,col,sz=24){const p=document.createElement('div');p.className='spop';p.textContent=txt;p.style.cssText=`color:${col};font-size:${sz}px;left:${x}px;bottom:${y}px`;gameEl.appendChild(p);setTimeout(()=>p.remove(),1050);}
 function spawnFunny(x,y){const p=document.createElement('div');p.style.cssText=`position:absolute;font-family:Bangers,cursive;font-size:22px;pointer-events:none;animation:spopA 1s ease-out forwards;z-index:35;left:${x}px;bottom:${y}px`;const cols=['#FFD700','#ff6fd8','#4ade80','#60A5FA','#fb923c'];p.style.color=cols[Math.floor(Math.random()*cols.length)];p.textContent=funnyTexts[Math.floor(Math.random()*funnyTexts.length)];gameEl.appendChild(p);setTimeout(()=>p.remove(),1100);}
 
-// Replay
 const RFPS=10;let rpFrames=[],rpEvents=[],rpRecT=null;
 function recordRF(){if(!running)return;const gw=gameEl.offsetWidth||680;const sc=gw/GW;rpFrames.push({p1x:p1.x*sc,p1y:p1.y,p2x:p2.x*sc,p2y:p2.y,p1e:p1.eliminated,p2e:p2.eliminated,chks:chickens.map(c=>({x:parseFloat(c.el.style.left),y:parseFloat(c.el.style.bottom)})),crabs:crabs.filter(c=>c.alive).map(c=>({x:c.x})),snakes:snakes.filter(s=>s.alive).map(s=>({x:s.x,col:s.palette.head})),p1s:p1.score,p2s:p2.score,t:timeLeft,lv:level});}
 
-// Logs
 let gameLogs=[];
 function saveLog(){try{const n=new Date();gameLogs.unshift({date:n.toLocaleDateString('en-IN',{day:'numeric',month:'short'}),time:n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),p1s:p1.score,p2s:p2.score,level,winner:p1.eliminated&&!p2.eliminated?'MBAPPE':p2.eliminated&&!p1.eliminated?'CR7':p1.score>p2.score?'CR7':p2.score>p1.score?'MBAPPE':'TIE',dur:TOTAL_TIME-timeLeft,p1e:p1.eliminated,p2e:p2.eliminated});if(gameLogs.length>10)gameLogs.pop();}catch(e){}}
 function renderLogs(){const b=document.getElementById('logs-body');if(!gameLogs.length){b.innerHTML='<p style="color:#888;font-size:12px;padding:10px">No games yet!</p>';return;}b.innerHTML=gameLogs.map((l,i)=>`<div class="log-entry"><div class="log-date">#${gameLogs.length-i} &nbsp;${l.date} ${l.time} &nbsp;⏱ ${l.dur}s</div><div class="log-result" style="color:${l.winner==='CR7'?'#FFD700':l.winner==='MBAPPE'?'#60A5FA':'#aaa'}">${l.winner==='TIE'?'🤝 TIE':l.winner+' WINS! 🏆'}</div><div class="log-detail"><span style="color:#60A5FA">Mbappe: ${l.p2s}🍗${l.p2e?' 💀':''}</span> &nbsp;<span style="color:#FFD700">CR7: ${l.p1s}🍗${l.p1e?' 💀':''}</span> &nbsp;Lvl ${l.level}</div></div>`).join('');}
@@ -537,27 +506,16 @@ function startGame(){
   updateUI();updateLives(p1);updateLives(p2);sfxStart();
   clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
   loopId=setInterval(gameFrame,16);rpRecT=setInterval(recordRF,1000/RFPS);
-  timerIntv=setInterval(()=>{
-    timeLeft--;document.getElementById('timer-big').textContent=timeLeft+'s';
-    document.getElementById('win-timer').textContent=timeLeft>0?`Survive ${timeLeft}s!`:'';
-    if(timeLeft%10===0&&timeLeft>0&&timeLeft<TOTAL_TIME)doLevelUp();
-    if(timeLeft<=0){triggerWin();return;}
-    if(p1.eliminated&&p2.eliminated)endGame('both_eliminated');
-  },1000);
-  const cfg=getCfg(1);
-  setTimeout(()=>scheduleChickens(cfg),700);setTimeout(()=>scheduleCrabs(cfg),3200);setTimeout(()=>{if(running)spawnSnake(getCfg(level));},5000);
+  timerIntv=setInterval(()=>{timeLeft--;document.getElementById('timer-big').textContent=timeLeft+'s';document.getElementById('win-timer').textContent=timeLeft>0?`Survive ${timeLeft}s!`:'';if(timeLeft%10===0&&timeLeft>0&&timeLeft<TOTAL_TIME)doLevelUp();if(timeLeft<=0){triggerWin();return;}if(p1.eliminated&&p2.eliminated)endGame('both_eliminated');},1000);
+  const cfg=getCfg(1);setTimeout(()=>scheduleChickens(cfg),700);setTimeout(()=>scheduleCrabs(cfg),3200);setTimeout(()=>{if(running)spawnSnake(getCfg(level));},5000);
   showStatus('🐔 Catch chickens! 🐍 JUMP OVER the snake! 🦀 Dodge crabs!',3500);
-
-  // Increment game counter and track game start
-  gameCount++;
-  sessionStorage.setItem('rcg_count', gameCount);
-  mpTrack('game_started',{game_number: gameCount});
+  gameCount++;sessionStorage.setItem('rcg_count',gameCount);
+  mpTrack('game_started',{game_number:gameCount});
 }
 
 function triggerWin(){
   clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
-  running=false;saveLog();sfxWin();
-  mpTrackGameEnd('time_survived'); // ← Analytics
+  running=false;saveLog();sfxWin();mpTrackGameEnd('time_survived');
   const winAnn=document.getElementById('win-ann');
   const p1a=!p1.eliminated,p2a=!p2.eliminated;const tie=p1a&&p2a&&p1.score===p2.score;const p1w=(p1a&&!p2a)||(p1a&&p2a&&p1.score>p2.score);
   document.getElementById('win-txt').textContent=tie?'🤝 TIE!':p1w?'⚽ CR7 WINS!':'🏆 MBAPPE WINS!';
@@ -568,10 +526,7 @@ function triggerWin(){
 
 function endGame(reason='manual'){
   clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearInterval(rpRecT);
-  running=false;
-  try{saveLog();}catch(e){}
-  mpTrackGameEnd(reason); // ← Analytics
-  showEndScreen();
+  running=false;try{saveLog();}catch(e){}mpTrackGameEnd(reason);showEndScreen();
 }
 
 function showEndScreen(){
@@ -584,7 +539,6 @@ function showEndScreen(){
   document.getElementById('es').style.display='flex';
 }
 
-// Replay engine
 const rpCvs=document.getElementById('rp-canvas');const rCtx=rpCvs.getContext('2d');
 let rpPlaying=false,rpFi=0,rpSpd=1,rpAnimId=null,rpLastT=0;
 function showReplay(){if(rpFrames.length<2){alert('Play a game first!');return;}document.getElementById('es').style.display='none';document.getElementById('rp-screen').style.display='flex';rpFi=0;rpPlaying=true;rpLastT=0;document.getElementById('rp-play-btn').textContent='⏸';requestAnimationFrame(rpLoop);}
@@ -606,7 +560,6 @@ window.addEventListener('load',()=>{
   document.getElementById('rp-close-btn').addEventListener('click',()=>{document.getElementById('rp-screen').style.display='none';document.getElementById('es').style.display='flex';rpPlaying=false;if(rpAnimId)cancelAnimationFrame(rpAnimId);});
   document.getElementById('rp-spd-sel').addEventListener('change',e=>rpSpd=parseFloat(e.target.value));
   document.getElementById('rp-prog').addEventListener('click',e=>{const r=document.getElementById('rp-prog').getBoundingClientRect();rpFi=Math.floor(((e.clientX-r.left)/r.width)*(rpFrames.length-1));drawRPF(Math.floor(rpFi));});
-  // Track page load
   mpTrack('game_loaded');
 });
 </script>

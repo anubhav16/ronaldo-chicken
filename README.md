@@ -31,3 +31,13 @@ A chaotic 2-player browser game where Ronaldo and Mbappe compete to catch flying
 - Time your jumps — don't land on a crab
 - Combos are the fastest way to rack up points
 - Sometimes survival matters more than scoring
+
+## The Story Behind This Game
+
+Ronaldo Chicken was born from the imagination of **Arush, age 7, Grade 1** — a kid who loves Ronaldo, chickens, and chaos (in that order).
+
+Arush came up with the original idea and directed the entire game design. His dad helped build it, with Claude as the coding assistant. What started as a simple "Ronaldo catches chickens" prototype quickly spiraled into 20 versions over two days.
+
+The development process was... spirited. Arush had strong opinions. Features were added, fought over, and sometimes removed after heated negotiations. Dad would occasionally sneak in a new feature — crabs, combo systems, snakes — to see if Arush would like them. Sometimes he did. Mostly he didn't. The ones that survived Arush's quality bar made it into the game.
+
+The result is a game that a 7-year-old designed, his dad engineered, and Claude helped code — built over a weekend, played on one keyboard, and best enjoyed with someone you love sitting next to you.

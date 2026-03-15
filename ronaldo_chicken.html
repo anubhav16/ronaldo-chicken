@@ -157,7 +157,8 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 .egg-cd { display: inline-block; font-size: 22px; margin-left: 6px; vertical-align: middle; opacity: 0.2; filter: grayscale(1); transition: all 0.3s; }
 .egg-cd.charging { animation: eggFill 3s linear forwards; }
 .egg-cd.ready { opacity: 1; filter: grayscale(0); animation: eggReady 0.6s ease-in-out infinite alternate; }
-.char.sitting { transform: scaleY(0.75) translateY(12px); transform-origin: bottom center; }
+.char.sitting { animation: layEggPose 0.5s ease-out forwards; transform-origin: bottom center; }
+@keyframes layEggPose { 0% { transform: scaleY(1) scaleX(1); } 30% { transform: scaleY(0.65) scaleX(1.15) translateY(16px); } 60% { transform: scaleY(0.6) scaleX(1.2) translateY(18px); } 100% { transform: scaleY(1) scaleX(1); } }
 </style>
 <script>
 // ================================================================
@@ -243,7 +244,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
       <div class="phi" style="font-family:'Bangers',cursive;font-size:13px;color:rgba(255,179,71,0.7);letter-spacing:1px">HI: <span id="p2hi">0</span>🍗</div>
       <div class="plives" id="p2lv">❤️❤️❤️</div>
       <div class="pelim" id="p2elim"></div>
-      <div class="pkeys">W jump · WW HIGH · A/D move · S catch</div>
+      <div class="pkeys">W jump · WW HIGH · A/D move · S egg</div>
     </div>
     <div id="center-ui">
       <div style="font-family:'Bangers',cursive;font-size:11px;color:#ff6fd8;letter-spacing:1px">🐔 CHICKEN GAME 🐔</div>
@@ -256,7 +257,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
       <div class="phi" style="font-family:'Bangers',cursive;font-size:13px;color:rgba(255,179,71,0.7);letter-spacing:1px;text-align:right">HI: <span id="p1hi">0</span>🍗</div>
       <div class="plives" id="p1lv">❤️❤️❤️</div>
       <div class="pelim" id="p1elim" style="text-align:right"></div>
-      <div class="pkeys" style="text-align:right">↑ jump · ↑↑ HIGH · ←/→ move · ↓ catch</div>
+      <div class="pkeys" style="text-align:right">↑ jump · ↑↑ HIGH · ←/→ move · ↓ egg</div>
     </div>
   </div>
 
@@ -331,12 +332,13 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
     <h1>RONALDO CHICKEN GAME<br><span style="font-size:19px;color:#ff6fd8">2 PLAYER DELUXE! 🎮</span></h1>
     <div id="high-score-display" style="font-family:'Bangers',cursive;font-size:22px;color:#ffb347;text-shadow:0 0 12px #ff6000;margin-bottom:8px"></div>
     <div class="cgrid">
-      <div class="cbox"><h3 style="color:#60A5FA">🏆 MBAPPE — LEFT SIDE</h3><p><span class="key">A</span><span class="key">D</span> Move Left/Right<br><span class="key">W</span> Jump · <span class="key">WW</span> HIGH Jump<br><span class="key">S</span> Catch Chicken</p></div>
-      <div class="cbox"><h3 style="color:#FFD700">⚽ RONALDO — RIGHT SIDE</h3><p><span class="key">←</span><span class="key">→</span> Move Left/Right<br><span class="key">↑</span> Jump · <span class="key">↑↑</span> HIGH Jump<br><span class="key">↓</span> Catch Chicken</p></div>
+      <div class="cbox"><h3 style="color:#60A5FA">🏆 MBAPPE — LEFT SIDE</h3><p><span class="key">A</span><span class="key">D</span> Move<br><span class="key">W</span> Jump · <span class="key">WW</span> HIGH<br><span class="key">S</span> Drop Egg 🥚 (even mid-air!)<br>Run into egg to kick it!</p></div>
+      <div class="cbox"><h3 style="color:#FFD700">⚽ RONALDO — RIGHT SIDE</h3><p><span class="key">←</span><span class="key">→</span> Move<br><span class="key">↑</span> Jump · <span class="key">↑↑</span> HIGH<br><span class="key">↓</span> Drop Egg 🥚 (even mid-air!)<br>Run into egg to kick it!</p></div>
     </div>
     <p style="font-size:11px;color:#ddd;text-align:center;margin-bottom:12px">
       🐔 Jump INTO chickens · 🦀 Crabs = 2s stun · 🐍 Snake gets faster each level!<br>
-      ❤️❤️❤️ 3 lives · 3 bites = OUT! · Survive <b style="color:#ffb347">90s</b> to WIN!
+      🥚 Drop eggs mid-air or ground! Run into eggs to kick them! Hit snake = +5pts!<br>
+      ❤️❤️❤️ 3 lives · 3 bites = OUT!
     </p>
     <div style="font-family:'Bangers',cursive;font-size:24px;color:#ff6fd8;letter-spacing:2px;animation:winPulse 0.8s ease-in-out infinite alternate;margin-bottom:8px">PRESS SPACE OR ANY KEY TO START!</div>
     <div style="color:rgba(255,179,71,0.45);font-size:10px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
@@ -411,7 +413,13 @@ function sfxHiJump(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g
 function sfxLevel(){[300,400,600,800,1100,1400,1800].forEach((f,i)=>tone(f,'square',0.1,0.35,i*0.07));}  // level up fanfare
 function sfxStart(){[523,659,784,1047].forEach((f,i)=>tone(f,'square',0.12,0.3,i*0.12));}  // game start
 function sfxWin(){[523,659,784,1047,1318,1568].forEach((f,i)=>{tone(f,'square',0.15,0.4,i*0.09);tone(f*1.25,'sine',0.08,0.25,i*0.09+0.04);});}  // win celebration
-function sfxEggLay(){[300,400,500,600,800].forEach((f,i)=>tone(f,'sine',0.1,0.3,i*0.06));tone(1000,'square',0.08,0.2,0.35);}
+function sfxEggLay(){
+  // Chicken cluck "pa-ka-kak!" sound
+  tone(800,'square',0.04,0.35,0);tone(600,'square',0.04,0.3,0.06);
+  tone(1100,'square',0.05,0.4,0.12);tone(900,'square',0.04,0.3,0.18);
+  tone(1200,'square',0.06,0.4,0.24);tone(700,'square',0.05,0.25,0.32);
+  tone(1000,'sine',0.08,0.2,0.38);
+}
 function sfxEggThrow(){tone(500,'sawtooth',0.08,0.3);tone(700,'sawtooth',0.06,0.25,0.05);tone(900,'sine',0.05,0.2,0.1);}
 function sfxEggHitPlayer(){const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sawtooth';o.frequency.setValueAtTime(800,AC.currentTime);o.frequency.linearRampToValueAtTime(200,AC.currentTime+0.3);g.gain.setValueAtTime(0.4,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.35);o.start();o.stop(AC.currentTime+0.4);tone(300,'square',0.15,0.3,0.1);}
 function sfxEggHitSnake(){[800,1000,1200,1500,1800,2200].forEach((f,i)=>{tone(f,'square',0.08,0.35,i*0.05);tone(f*0.75,'sine',0.06,0.2,i*0.05+0.02);});tone(400,'sine',0.3,0.3,0.35);}
@@ -485,7 +493,7 @@ function makePlayer(id,startX,col){
     startX,col,el,g,
     mouth:document.getElementById(`p${id}mouth`),sweat:document.getElementById(`p${id}sweat`),
     star1:document.getElementById(`p${id}star1`),star2:document.getElementById(`p${id}star2`),
-    sitting:false,hasEgg:false,eggCooldown:false,eggEl:null,eggCdEl:document.getElementById(`p${id}eggcd`)};
+    eggCooldown:false,eggCdEl:document.getElementById(`p${id}eggcd`)};
 }
 
 
@@ -508,7 +516,7 @@ function doHappy(p,combo){p.g.removeAttribute('style');p.g.removeAttribute('clas
 function doHurtVisuals(p){p.g.removeAttribute('style');p.g.removeAttribute('class');void p.g.offsetWidth;p.g.style.animation='lieDown 0.35s ease-out forwards';p.g.style.transformOrigin='bottom center';p.mouth.setAttribute('d','M -4 -66 Q 0 -70 4 -66');p.sweat.setAttribute('opacity','1');p.el.style.filter='drop-shadow(0 0 16px #ff4400)';const gw=gameEl.offsetWidth||680;spawnSad(p.x*(gw/GW)+20,GROUND+p.y+60);}
 
 /** Reset all hurt state */
-function fullRecover(p){p.hurt=false;p.snakeHit=false;p.g.removeAttribute('style');p.g.removeAttribute('class');p.el.style.filter='';p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');p.sweat.setAttribute('opacity','0');p.y=0;p.vy=0;p.onGround=true;p.airJumped=false;}
+function fullRecover(p){p.hurt=false;p.snakeHit=false;p.g.removeAttribute('style');p.g.removeAttribute('class');p.el.style.filter='';p.el.className='char idle';p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');p.sweat.setAttribute('opacity','0');p.y=0;p.vy=0;p.onGround=true;p.airJumped=false;}
 
 
 // ================================================================
@@ -538,15 +546,97 @@ function spawnSad(x,y){const el=document.createElement('div');el.className='sad-
 //  INPUT — P1: arrows, P2: WASD
 // ================================================================
 const keys={};
-document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running)return;AC.resume();if(e.key==='ArrowUp')handleJump(p1);if(e.key==='ArrowDown')doCatch(p1);if(e.key==='w'||e.key==='W')handleJump(p2);if(e.key==='s'||e.key==='S')doCatch(p2);});
+let eggs=[];
+document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running)return;AC.resume();
+  if(e.key==='ArrowUp')handleJump(p1);
+  if(e.key==='ArrowDown'){if(p1.eggCooldown)doFart(p1);else layEgg(p1);}
+  if(e.key==='w'||e.key==='W')handleJump(p2);
+  if(e.key==='s'||e.key==='S'){if(p2.eggCooldown)doFart(p2);else layEgg(p2);}
+});
 document.addEventListener('keyup',e=>{keys[e.key]=false;});
 
-/** Jump: ground=normal(vy=16), air=double-jump(vy=22) */
 function handleJump(p){if(p.hurt||p.snakeHit||p.eliminated)return;if(p.onGround){p.vy=16;p.onGround=false;p.airJumped=false;sfxJump();}else if(!p.airJumped){p.vy=22;p.airJumped=true;sfxHiJump();}}
 
-/** Kick animation (catch detected by checkChickens) */
-function doCatch(p){if(!running||p.hurt||p.snakeHit||p.eliminated)return;p.g.removeAttribute('class');void p.g.offsetWidth;p.g.className='kicking';setTimeout(()=>{if(p.g.className==='kicking')p.g.removeAttribute('class');},480);}
+/** Sit down and fart — egg not ready yet */
+function doFart(p){
+  if(!running||p.hurt||p.snakeHit||p.eliminated||!p.onGround)return;
+  // Sit posture
+  p.el.classList.add('sitting');p.el.classList.remove('idle');
+  p.mouth.setAttribute('d','M -4 -68 Q 0 -72 4 -68');p.sweat.setAttribute('opacity','0.6');
+  // Fart sound — low rumbling noise
+  sfxFart();
+  // Spawn gas cloud
+  const gw=gameEl.offsetWidth||680;const sc=gw/GW;const px=p.x*sc+38;
+  const gasTexts=['💨','💨💨','🌫️','💨'];
+  for(let i=0;i<3;i++){
+    setTimeout(()=>{
+      const g=document.createElement('div');g.className='spop';
+      g.textContent=gasTexts[Math.floor(Math.random()*gasTexts.length)];
+      g.style.cssText=`color:rgba(180,200,100,0.7);font-size:${18+Math.random()*14}px;left:${px-20+Math.random()*40}px;bottom:${GROUND+10+Math.random()*20}px`;
+      gameEl.appendChild(g);setTimeout(()=>g.remove(),1000);
+    },i*150);
+  }
+  showStatus(`${p.id===1?'RONALDO':'MBAPPE'}: No egg yet... 💨`,1200);
+  setTimeout(()=>{
+    p.el.classList.remove('sitting');
+    if(p.mouth)p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');
+    if(p.sweat)p.sweat.setAttribute('opacity','0');
+  },500);
+}
 
+function sfxFart(){
+  // Low rumbly fart sound
+  const o=AC.createOscillator(),g=AC.createGain(),f=AC.createBiquadFilter();
+  o.type='sawtooth';o.frequency.setValueAtTime(80,AC.currentTime);
+  o.frequency.linearRampToValueAtTime(40,AC.currentTime+0.4);
+  f.type='lowpass';f.frequency.value=200;f.Q.value=2;
+  o.connect(f);f.connect(g);g.connect(AC.destination);
+  g.gain.setValueAtTime(0.3,AC.currentTime);
+  g.gain.linearRampToValueAtTime(0.15,AC.currentTime+0.15);
+  g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.45);
+  o.start();o.stop(AC.currentTime+0.5);
+  // Add some noise for texture
+  try{const buf=AC.createBuffer(1,AC.sampleRate*0.3,AC.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(AC.sampleRate*0.15));const s=AC.createBufferSource(),g2=AC.createGain(),f2=AC.createBiquadFilter();s.buffer=buf;f2.type='lowpass';f2.frequency.value=300;s.connect(f2);f2.connect(g2);g2.connect(AC.destination);g2.gain.setValueAtTime(0.15,AC.currentTime);g2.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.35);s.start();s.stop(AC.currentTime+0.4);}catch(e){}
+}
+
+/** Lay egg at player's current position — works on ground or mid-air */
+function layEgg(p){
+  if(!running||p.hurt||p.snakeHit||p.eliminated||p.eggCooldown)return;
+  p.eggCooldown=true;
+  if(p.eggCdEl){p.eggCdEl.className='egg-cd';void p.eggCdEl.offsetWidth;p.eggCdEl.className='egg-cd charging';}
+  setTimeout(()=>{p.eggCooldown=false;if(p.eggCdEl)p.eggCdEl.className='egg-cd ready';},3000);
+  sfxEggLay();
+  const gw=gameEl.offsetWidth||680;const sc=gw/GW;const px=p.x*sc+38;
+  const bottomY=GROUND+p.y;
+  // Sitting posture if on ground
+  if(p.onGround){
+    p.mouth.setAttribute('d','M -5 -67 Q 0 -71 5 -67');p.sweat.setAttribute('opacity','0.8');
+    p.el.classList.add('sitting');p.el.classList.remove('idle');
+    p.g.removeAttribute('class');void p.g.offsetWidth;p.g.setAttribute('class','');
+    setTimeout(()=>{
+      p.el.classList.remove('sitting');
+      if(p.mouth)p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');
+      if(p.sweat)p.sweat.setAttribute('opacity','0');
+    },500);
+  } else {
+    // Brief strain face mid-air
+    p.mouth.setAttribute('d','M -5 -67 Q 0 -71 5 -67');
+    setTimeout(()=>{if(p.mouth)p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');},400);
+  }
+  const el=document.createElement('div');el.className='egg eggpop';
+  el.innerHTML='<div class="egg-inner">🥚</div>';
+  el.style.left=px+'px';el.style.bottom=bottomY+'px';
+  gameEl.appendChild(el);
+  // Egg drops behind/below the player — give it horizontal kick AWAY from player toward opponent
+  const throwDir=p.id===1?-1:1; // P1(right) throws left, P2(left) throws right
+  const hSpeed=p.onGround?throwDir*6:throwDir*4; // ground=stronger toss, air=lighter
+  eggs.push({el,x:px,y:p.y,vy:p.onGround?2:-1,speed:hSpeed,owner:p.id,alive:true,grounded:false});
+  burstConfetti(px,bottomY,8);
+  spawnPop(px,bottomY+30,'🥚 EGG!',p.col,26);
+}
+
+
+function eggSplat(eg,i){eg.alive=false;eg.el.innerHTML='<div class="egg-inner egg-splat">🍳</div>';setTimeout(()=>{try{eg.el.remove();}catch(e){}},500);}
 
 // ================================================================
 //  SCORING — on chicken catch
@@ -613,11 +703,61 @@ function doLevelUp(){
 function gameFrame(){
   const gw=gameEl.offsetWidth||680;const sc=gw/GW;
   // Move players
-  [p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}else{if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}
+  [p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;
+    let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}else{if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}
     const active=dx!==0||!p.onGround;
     if(active&&p.el.classList.contains('idle'))p.el.classList.remove('idle');
     else if(!active&&!p.el.classList.contains('idle'))p.el.classList.add('idle');
     p.x=Math.max(5,Math.min(p.x+dx,(gw/sc)-65));if(!p.onGround){p.y+=p.vy;p.vy-=1.05;if(p.y<=0){p.y=0;p.vy=0;p.onGround=true;p.airJumped=false;}}p.el.style.left=(p.x*sc)+'px';p.el.style.bottom=(GROUND+p.y)+'px';});
+  // Move eggs — gravity, ground bounce, player/snake collisions
+  for(let i=eggs.length-1;i>=0;i--){const eg=eggs[i];if(!eg.alive){eggs.splice(i,1);continue;}
+    // Gravity for airborne eggs
+    if(!eg.grounded){eg.vy-=0.8;eg.y+=eg.vy;if(eg.y<=0){eg.y=0;eg.vy=0;eg.grounded=true;eg.el.innerHTML='<div class="egg-inner" style="animation:none">🥚</div>';}}
+    // Horizontal movement (from kicks)
+    if(eg.speed!==0){eg.x+=eg.speed;eg.speed*=0.97;if(Math.abs(eg.speed)<0.3)eg.speed=0;}
+    eg.el.style.left=eg.x+'px';eg.el.style.bottom=(GROUND+eg.y)+'px';
+    // Off screen
+    if(eg.x<-40||eg.x>gw+40){eg.alive=false;try{eg.el.remove();}catch(e){}eggs.splice(i,1);continue;}
+    // Auto-expire grounded eggs after 8s
+    if(eg.grounded&&!eg._expire){eg._expire=Date.now()+8000;}
+    if(eg._expire&&Date.now()>eg._expire){eg.alive=false;eg.el.innerHTML='<div class="egg-inner egg-splat">🍳</div>';setTimeout(()=>{try{eg.el.remove();}catch(e){}},500);eggs.splice(i,1);continue;}
+    // Hit players — any player can be hit (grounded egg kicked into them, or falling egg hits them)
+    [p1,p2].forEach(t=>{if(!eg.alive||t.hurt||t.snakeHit||t.eliminated)return;
+      // Falling egg hits OTHER player on the way down
+      if(!eg.grounded&&t.id!==eg.owner&&Math.abs(eg.x-t.x*sc-38)<45&&Math.abs(eg.y-t.y)<50){
+        eggSplat(eg,i);sfxEggHitPlayer();t.hurt=true;t.combo=0;doHurtVisuals(t);
+        showStatus(`${t.id===1?'RONALDO':'MBAPPE'} hit by EGG! 🍳`,2000);
+        spawnPop(t.x*sc+38,GROUND+t.y+50,'SPLAT! 🍳','#FFD700',32);burstConfetti(t.x*sc+38,GROUND+t.y+40,18);
+        clearTimeout(t.hurtTimer);t.hurtTimer=setTimeout(()=>{if(!running||t.eliminated)return;fullRecover(t);},2000);return;
+      }
+      // Grounded egg: player runs into it → kicks it away
+      if(eg.grounded&&eg.speed===0&&t.y<30&&Math.abs(eg.x-t.x*sc-38)<45){
+        const kickDir=eg.x>(t.x*sc+38)?1:-1;
+        eg.speed=kickDir*10;eg.owner=t.id;
+        eg.el.innerHTML='<div class="egg-inner">🥚</div>';
+        sfxEggThrow();spawnPop(eg.x,GROUND+20,'KICK! 🦵',t.col,24);
+      }
+      // Moving egg hits other player
+      if(eg.grounded&&Math.abs(eg.speed)>1&&t.id!==eg.owner&&t.y<30&&Math.abs(eg.x-t.x*sc-38)<45){
+        eggSplat(eg,i);sfxEggHitPlayer();t.hurt=true;t.combo=0;doHurtVisuals(t);
+        showStatus(`${t.id===1?'RONALDO':'MBAPPE'} hit by EGG! 🍳 2s stun!`,2000);
+        spawnPop(t.x*sc+38,GROUND+t.y+50,'SPLAT! 🍳','#FFD700',32);burstConfetti(t.x*sc+38,GROUND+t.y+40,18);
+        clearTimeout(t.hurtTimer);t.hurtTimer=setTimeout(()=>{if(!running||t.eliminated)return;fullRecover(t);},2000);
+      }
+    });
+    // Hit snake (falling or sliding)
+    if(!eg.alive)continue;
+    for(let j=0;j<snakes.length;j++){const sn=snakes[j];if(!sn.alive||!eg.alive)continue;
+      if(eg.y<30&&Math.abs(eg.x-sn.x-40)<60){
+        const thrower=eg.owner===1?p1:p2;
+        eggSplat(eg,i);sfxEggHitSnake();thrower.score+=5;updateUI();
+        sn.alive=false;sn.el.style.animation='snakeEat 0.6s ease-out forwards';setTimeout(()=>{try{sn.el.remove();}catch(e){}},700);
+        showStatus(`${thrower.id===1?'RONALDO':'MBAPPE'} fed the snake! 🐍🥚 +5 PTS!`,2500);
+        spawnPop(sn.x+30,GROUND+40,'+5 🐍🥚',thrower.col,36);burstConfetti(sn.x+30,GROUND+50,25);
+        setTimeout(()=>{if(running)spawnSnake(getCfg(level));},3000);break;
+      }
+    }
+  }
   // Move chickens (with sine bobble)
   chickens.forEach(c=>{if(c.gone)return;let x=parseFloat(c.el.style.left);x+=c.fromRight?-c.speed:c.speed;c.el.style.left=x+'px';c.el.style.bottom=(c.h+Math.sin(Date.now()/260+c.startX)*14)+'px';const gw=gameEl.offsetWidth||680;if((c.fromRight&&x<-70)||(!c.fromRight&&x>(gw+70))){c.gone=true;try{c.el.remove();}catch(e){}}});chickens=chickens.filter(c=>!c.gone);
   // Move crabs
@@ -662,9 +802,10 @@ function startGame(startLevel){
   if(typeof startLevel==='undefined')startLevel=Math.max(1,lastLevelReached-1);
   AC.resume();onScreen=false;
   document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';
-  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];
+  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];
   Object.keys(keys).forEach(k=>keys[k]=false);
   p1=makePlayer(1,550,'#FFD700');p2=makePlayer(2,80,'#60A5FA');
+  document.getElementById('p1eggcd').className='egg-cd ready';document.getElementById('p2eggcd').className='egg-cd ready';
   level=startLevel;timeLeft=0;running=true;
   skyEl.className='';if(level>1&&SKY_CLASSES[level-1])skyEl.classList.add(SKY_CLASSES[level-1]);
   document.getElementById('level-badge').textContent=`⭐ LEVEL ${level} ⭐`;

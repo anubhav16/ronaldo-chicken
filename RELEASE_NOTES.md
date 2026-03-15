@@ -27,6 +27,47 @@
 | v3.3.0 | 2026-03-15 | Minor | Mixpanel fix: direct HTTP API tracking, full-height game, user profiles |
 | v3.3.1 | 2026-03-15 | Patch | Remove session replay feature — low quality canvas playback |
 | v3.4.0 | 2026-03-15 | Minor | Code readability overhaul — annotations, comments, and formatting |
+| v4.0.0 | 2026-03-15 | Major | Egg mechanic, high scores, player states, performance fixes, UX overhaul |
+
+---
+
+## v4.0.0 — Egg Mechanic & Game Overhaul (Mar 15)
+
+Major feature release adding the egg combat system, persistent high scores, animated player states, and significant performance/UX improvements.
+
+### New Features
+- **Egg mechanic** — press ↓/S to lay an egg (works on ground AND mid-air!)
+  - Eggs fall with gravity when laid mid-air
+  - Grounded eggs can be kicked by running into them
+  - Egg hits other player = 2s stun with splat animation 🍳
+  - Egg hits snake = snake eats it + 5 points, snake respawns after 3s
+  - 3s cooldown between eggs with animated 🥚 indicator next to player name
+  - Chicken cluck "pa-ka-kak!" sound on egg lay
+- **Fart mechanic** — press ↓/S when egg is on cooldown: player sits, 💨 gas clouds + rumbly fart sound
+- **Persistent high scores** — saved in localStorage, survives browser close/reopen
+  - HI score shown next to each player's score in the UI bar
+  - High score summary with relative time ("2m ago", "3d ago") on start/end screens
+- **Press any key to start** — no buttons needed, just open and press any key
+- **Resume from last level** — after game over, press any key to resume from one level below where you died
+- **Restart from Level 1** button on end screen
+
+### Visual & Animation
+- **Animated player states** — legs/arms only move when player is moving or jumping (idle = still)
+- **Sitting/laying egg posture** — player crouches with squish animation, straining face + sweat
+- **Facial expressions** — determined face when moving, excited when jumping, strain when laying egg
+- **Egg cooldown indicator** — 🥚 next to player name: greyed out during cooldown, fills up with glow, pulses when ready
+
+### UX Changes
+- CR7 renamed to "Cristiano Ronaldo" throughout
+- Player positions swapped: Ronaldo (arrow keys) on RIGHT, Mbappe (WASD) on LEFT
+- Timer removed — game runs until both players are eliminated
+- Game log removed — replaced by persistent high scores
+- Scores displayed larger (42px in-game, 36px end screen)
+
+### Performance Fixes
+- Snake wall-bounce sound debounced (max 1 per second, was firing every frame)
+- Active chickens capped at 20 to prevent DOM bloat at higher levels
+- Fixed `classList.add('')` crash when starting at level 1 (empty SKY_CLASSES[0])
 
 ---
 

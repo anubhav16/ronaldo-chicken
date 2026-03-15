@@ -579,15 +579,24 @@ function spawnSad(x,y){const el=document.createElement('div');el.className='sad-
 // ================================================================
 //  INPUT — P1: arrows, P2: WASD
 // ================================================================
+// [2026-03-15] Use lowercase-normalized key tracking to prevent stuck keys from case mismatch
+// (e.g. pressing 'd' then releasing with Shift held fires keyup for 'D', leaving 'd' stuck)
 const keys={};
+function clearKeys(){Object.keys(keys).forEach(k=>keys[k]=false);}
+function nk(k){return k.length===1?k.toLowerCase():k;} // normalize: single chars to lowercase, special keys as-is
 let eggs=[];
-document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running||paused)return;AC.resume();
+document.addEventListener('keydown',e=>{
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
+  const k=nk(e.key);if(keys[k])return;keys[k]=true;if(!running||paused)return;AC.resume();
   if(e.key==='ArrowUp')handleJump(p1);
   if(e.key==='ArrowDown'){if(p1.eggCooldown)doFart(p1);else layEgg(p1);}
-  if(e.key==='w'||e.key==='W')handleJump(p2);
-  if(e.key==='s'||e.key==='S'){if(p2.eggCooldown)doFart(p2);else layEgg(p2);}
+  if(k==='w')handleJump(p2);
+  if(k==='s'){if(p2.eggCooldown)doFart(p2);else layEgg(p2);}
 });
-document.addEventListener('keyup',e=>{keys[e.key]=false;});
+document.addEventListener('keyup',e=>{keys[nk(e.key)]=false;});
+// [2026-03-15] Clear all keys on focus loss to prevent stuck keys when tabbing away
+window.addEventListener('blur',clearKeys);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)clearKeys();});
 
 function handleJump(p){if(p.hurt||p.snakeHit||p.eliminated)return;if(p.onGround){p.vy=16;p.onGround=false;p.airJumped=false;sfxJump();}else if(!p.airJumped){p.vy=22;p.airJumped=true;sfxHiJump();}}
 
@@ -775,7 +784,7 @@ function gameFrame(){
   const gw=gameEl.offsetWidth||680;const sc=gw/GW;
   // Move players
   [p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;
-    let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}else{if(keys['a']||keys['A'])dx=-3.8;if(keys['d']||keys['D'])dx=3.8;}
+    let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}else{if(keys['a'])dx=-3.8;if(keys['d'])dx=3.8;}
     const active=dx!==0||!p.onGround;
     if(active&&p.el.classList.contains('idle'))p.el.classList.remove('idle');
     else if(!active&&!p.el.classList.contains('idle'))p.el.classList.add('idle');
@@ -911,7 +920,7 @@ function startGame(startLevel){
   AC.resume();onScreen=false;paused=false;
   document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';document.getElementById('pause-overlay').style.display='none';
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];fartClouds.forEach(f=>{try{f.el.remove();}catch(e){}});fartClouds=[];
-  Object.keys(keys).forEach(k=>keys[k]=false);
+  clearKeys();
   p1=makePlayer(1,550,'#FFD700');p2=makePlayer(2,80,'#60A5FA');
   document.getElementById('p1eggcd').className='egg-cd ready';document.getElementById('p2eggcd').className='egg-cd ready';
   level=startLevel;timeLeft=0;running=true;
@@ -940,7 +949,7 @@ function triggerWin(){
 
 /** End game */
 function endGame(reason='manual'){
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);running=false;lastLevelReached=level;try{saveHighScore(p1.score,p2.score);}catch(e){}mpTrackGameEnd(reason);showEndScreen();
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);running=false;clearKeys();lastLevelReached=level;try{saveHighScore(p1.score,p2.score);}catch(e){}mpTrackGameEnd(reason);showEndScreen();
 }
 
 /** Show end screen */
@@ -969,7 +978,7 @@ function togglePause(){
   paused=!paused;
   const po=document.getElementById('pause-overlay');
   if(paused){
-    clearInterval(loopId);clearInterval(timerIntv);
+    clearInterval(loopId);clearInterval(timerIntv);clearKeys();
     po.style.display='flex';
   } else {
     po.style.display='none';

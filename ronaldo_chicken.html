@@ -110,85 +110,80 @@ body{background:#1a0533;overflow:hidden;font-family:'Nunito',sans-serif}
 .rbtn{background:rgba(255,111,216,0.15);border:1px solid rgba(255,111,216,0.4);color:#ff6fd8;font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer}
 #credits-bar{position:absolute;bottom:1px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,179,71,0.5);pointer-events:none;z-index:25}
 </style>
-</head>
-<body>
-
-<!-- ══════════════════════════════════════════════
-     MIXPANEL SDK — v2.50.0+ (required for Session Replay)
-     REPLACE 'YOUR_MIXPANEL_TOKEN_HERE' with your token.
-
-     SESSION REPLAY is enabled via:
-       record_sessions_percent: 100   ← records every session (lower for production)
-       record_block_class: 'mp-block' ← add class="mp-block" to any element to mask it
-       record_mask_text_selector: ''  ← no extra text masking needed for a game
-
-     View replays in Mixpanel → Activity → Session Replay
-     Replays are linked to all your tracked events automatically.
-════════════════════════════════════════════════ -->
 <script>
-(function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src="https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable time_event track track_pageview track_links track_forms register register_once unregister identify name_tag set_config reset people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+// Direct Mixpanel HTTP API — works from file:// protocol, no SDK needed
+const MP_TOKEN = 'f312eb9fc449831d9161f0682e3c6f64';
+const MP_API = 'https://api-eu.mixpanel.com';
 
-// ── YOUR TOKEN HERE ──
-const MIXPANEL_TOKEN = 'f312eb9fc449831d9161f0682e3c6f64';
-
-mixpanel.init(MIXPANEL_TOKEN, {
-  persistence: 'localStorage',
-  track_pageview: false,
-  api_host: 'https://api-eu.mixpanel.com',
-  autocapture: true,
-
-  // ── SESSION REPLAY CONFIG ──
-  record_sessions_percent: 100,
-  record_block_class: 'mp-block',
-  record_mask_text_selector: '',
-  record_idle_timeout_ms: 1800000,
-});
-
-// Identify this device consistently across sessions
 const DEVICE_ID = (()=>{
   let id = localStorage.getItem('rcg_device_id');
   if(!id){id='device_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);localStorage.setItem('rcg_device_id',id);}
   return id;
 })();
-mixpanel.identify(DEVICE_ID);
-mixpanel.people.set({'$name': 'Game Player', 'game': 'Ronaldo Chicken Game'});
-
 const SESSION_ID=(()=>{let id=sessionStorage.getItem('rcg_session');if(!id){id='sess_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);sessionStorage.setItem('rcg_session',id);}return id;})();
 let gameCount=parseInt(sessionStorage.getItem('rcg_count')||'0');
 
 function mpTrack(event,props={}){
   try{
-    // Attach $mp_replay_id so every event is linked to the correct Session Replay
-    const replayId = (typeof mixpanel.get_session_recording_properties === 'function')
-      ? (mixpanel.get_session_recording_properties()||{}).$mp_replay_id
-      : undefined;
-    mixpanel.track(event,{
-      session_id:SESSION_ID,
-      game_count:gameCount,
-      game_title:'Ronaldo Chicken Game',
-      game_version:'v2.1',
-      ...(replayId ? {$mp_replay_id: replayId} : {}),
-      ...props
-    });
-  }catch(e){console.warn('[Mixpanel]',e.message);}
+    const data = btoa(JSON.stringify({
+      event: event,
+      properties: {
+        token: MP_TOKEN,
+        distinct_id: DEVICE_ID,
+        session_id: SESSION_ID,
+        game_count: gameCount,
+        game_title: 'Ronaldo Chicken Game',
+        game_version: 'v2.1',
+        ...props
+      }
+    }));
+    // Image pixel GET — works from file:// protocol, no CORS issues
+    new Image().src = MP_API+'/track/?data='+encodeURIComponent(data)+'&ip=1&_='+Date.now();
+  }catch(e){}
 }
 
 function mpTrackGameEnd(reason){
   const dur=TOTAL_TIME-timeLeft;
   const winner=p1.eliminated&&!p2.eliminated?'MBAPPE':p2.eliminated&&!p1.eliminated?'CR7':p1.score>p2.score?'CR7':p2.score>p1.score?'MBAPPE':'TIE';
   mpTrack('game_ended',{
-    player_1_score:p1.score,
-    player_2_score:p2.score,
-    time_spent_seconds:dur,
-    time_spent_ms:dur*1000,
-    winner,end_reason:reason,
-    level_reached:level,
-    p1_lives_left:p1.lives,p2_lives_left:p2.lives,
-    p1_eliminated:p1.eliminated,p2_eliminated:p2.eliminated,
+    player_1_score:p1.score, player_2_score:p2.score,
+    total_score:p1.score+p2.score,
+    time_spent_seconds:dur, time_spent_ms:dur*1000,
+    winner, end_reason:reason, level_reached:level,
+    p1_lives_left:p1.lives, p2_lives_left:p2.lives,
+    p1_eliminated:p1.eliminated, p2_eliminated:p2.eliminated,
     game_number:gameCount,
   });
+  // Update user profile with lifetime stats
+  mpEngage({
+    '$set': {'$name':'Player '+DEVICE_ID.slice(-6), 'last_game':new Date().toISOString(), 'last_winner':winner},
+    '$add': {'total_games':1, 'total_score':p1.score+p2.score, 'total_time_playing_seconds':dur},
+  });
 }
+
+// Send user profile updates via /engage
+function mpEngage(ops){
+  try{
+    const payload = {'$token':MP_TOKEN, '$distinct_id':DEVICE_ID, ...ops};
+    const data = btoa(JSON.stringify(payload));
+    new Image().src = MP_API+'/engage/?data='+encodeURIComponent(data)+'&_='+Date.now();
+  }catch(e){}
+}
+
+// Session timing
+const SESSION_START = Date.now();
+window.addEventListener('beforeunload', ()=>{
+  const sessionSec = Math.round((Date.now()-SESSION_START)/1000);
+  mpTrack('session_end',{session_duration_seconds:sessionSec, games_played:gameCount});
+  mpEngage({'$add':{'total_sessions':1, 'total_session_seconds':sessionSec}});
+});
+
+// Track page load + set initial user profile
+mpTrack('game_loaded');
+mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVICE_ID}, '$set':{'$name':'Player '+DEVICE_ID.slice(-6)}});
 </script>
+</head>
+<body>
 
 <div id="game">
   <div id="sky"></div>

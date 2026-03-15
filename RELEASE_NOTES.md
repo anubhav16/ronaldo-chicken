@@ -24,6 +24,7 @@
 | v3.0.0 | 2026-03-15 | Major | 90-second survival mode with player elimination |
 | v3.1.0 | 2026-03-15 | Minor | Mixpanel analytics integration |
 | v3.2.0 | 2026-03-15 | Minor | Session replay system with full game recording |
+| v3.3.0 | 2026-03-15 | Minor | Mixpanel fix: direct HTTP API tracking, full-height game, user profiles |
 
 ---
 
@@ -309,3 +310,17 @@ New endgame mode with player elimination.
 - Full session replay system layered on top of survival mode
 - Complete game recording with all players, enemies, and events
 - All v3.0.0 features preserved (survival, elimination, snakes, combos, levels)
+
+---
+
+## v3.3.0 — Analytics Overhaul (Mar 15)
+**File:** `ronaldo_chicken.html`
+
+### Changes
+- **Replaced Mixpanel SDK with direct HTTP API** — uses image pixel tracking (`new Image().src`) which works from `file://` protocol without CORS issues
+- **Moved Mixpanel init to `<head>`** for proper loading order
+- **Full-viewport game height** — changed from fixed 580px to `100vh`
+- **Hidden analytics UI** — removed visible Mixpanel badge and Session Replay text from game
+- **User profiles via `/engage` API** — tracks lifetime stats per player (total_games, total_score, total_time_playing)
+- **Session timing** — `session_end` event with duration fired on page unload
+- **Events tracked:** game_loaded, game_started, game_ended (with scores/winner/time), snake_bite, crab_sting, player_eliminated, level_up, session_end

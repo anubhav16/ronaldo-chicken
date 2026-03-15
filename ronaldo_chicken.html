@@ -112,6 +112,12 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 @keyframes chickenDie { 0% { transform: rotate(0); } 30% { transform: rotate(180deg); } 100% { transform: rotate(360deg) translateY(200px); opacity: 0; } }
 .chk.dying { animation: chickenDie 0.8s ease-in forwards !important; }
 
+/* Pause overlay */
+#pause-overlay { position: absolute; inset: 0; z-index: 55; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.75); pointer-events: none; }
+#pause-overlay .pause-title { font-family: 'Bangers', cursive; font-size: 80px; color: #fff; text-shadow: 0 0 40px #ff6fd8, 0 0 80px #7b2ff7; letter-spacing: 8px; animation: winPulse 0.8s ease-in-out infinite alternate; }
+#pause-overlay .pause-hint { font-family: 'Bangers', cursive; font-size: 24px; color: #ffb347; letter-spacing: 2px; margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+#pause-overlay .space-key { display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #555, #333); border: 2px solid #888; border-radius: 8px; padding: 6px 24px; font-size: 18px; color: #fff; box-shadow: 0 4px 0 #222, 0 0 16px rgba(255,179,71,0.4); min-width: 120px; }
+
 /* Level-up announcement */
 #lvl-ann { position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%); z-index: 55; pointer-events: none; opacity: 0; text-align: center; }
 #lvl-ann .lnum { font-family: 'Bangers', cursive; font-size: 76px; color: #ffb347; text-shadow: 0 0 40px #ff6000; display: block; line-height: 1; }
@@ -238,6 +244,7 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
   <div id="ground"><div class="gline"></div></div>
   <div id="lvl-ann"><span class="lnum" id="lnum">LEVEL 2</span><span class="lsub" id="lsub">FASTER!</span></div>
   <div id="win-ann"><h2 id="win-txt">RONALDO WINS!</h2><p id="win-sub">SURVIVED!</p></div>
+  <div id="pause-overlay"><div class="pause-title">⏸️ PAUSED</div><div class="pause-hint">Press <span class="space-key">␣ SPACE</span> to resume</div></div>
   <div id="status" style="opacity:0"></div>
   <div id="analytics-badge" style="display:none">📊 Mixpanel Analytics</div>
 
@@ -557,7 +564,7 @@ function spawnSad(x,y){const el=document.createElement('div');el.className='sad-
 // ================================================================
 const keys={};
 let eggs=[];
-document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running||paused)return;AC.resume();
+document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();if(keys[e.key])return;keys[e.key]=true;if(!running||paused)return;AC.resume();
   if(e.key==='ArrowUp')handleJump(p1);
   if(e.key==='ArrowDown'){if(p1.eggCooldown)doFart(p1);else layEgg(p1);}
   if(e.key==='w'||e.key==='W')handleJump(p2);
@@ -890,7 +897,7 @@ let lastLevelReached=1;
 function startGame(startLevel){
   if(typeof startLevel==='undefined')startLevel=Math.max(1,lastLevelReached-1);
   AC.resume();onScreen=false;paused=false;
-  document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';
+  document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';document.getElementById('pause-overlay').style.display='none';
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];fartClouds.forEach(f=>{try{f.el.remove();}catch(e){}});fartClouds=[];
   Object.keys(keys).forEach(k=>keys[k]=false);
   p1=makePlayer(1,550,'#FFD700');p2=makePlayer(2,80,'#60A5FA');
@@ -948,10 +955,12 @@ let paused=false;
 function togglePause(){
   if(!running&&!paused)return;
   paused=!paused;
+  const po=document.getElementById('pause-overlay');
   if(paused){
     clearInterval(loopId);clearInterval(timerIntv);
-    showStatus('⏸️ PAUSED — Press SPACE to resume',99999);
+    po.style.display='flex';
   } else {
+    po.style.display='none';
     loopId=setInterval(gameFrame,16);
     timerIntv=setInterval(()=>{timeLeft++;if(timeLeft%10===0)doLevelUp();if(p1.eliminated&&p2.eliminated)endGame('both_eliminated');},1000);
     showStatus('▶️ RESUMED!',1000);

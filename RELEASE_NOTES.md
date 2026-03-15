@@ -29,6 +29,20 @@
 | v3.4.0 | 2026-03-15 | Minor | Code readability overhaul — annotations, comments, and formatting |
 | v4.0.0 | 2026-03-15 | Major | Egg mechanic, high scores, player states, performance fixes, UX overhaul |
 | v5.0.0 | 2026-03-15 | Major | Fart kills chickens, pause, multi-snake, player identity, respawn fixes |
+| v5.1.0 | 2026-03-15 | Minor | Snakes hop over each other, hiss & death sounds, pause overlay, spacebar fix |
+
+---
+
+## v5.1.0 — Snake AI & Audio Polish (Mar 15)
+
+### Snake Behavior
+- **Snakes hop over each other** — when two snakes meet, the faster one leaps over with a smooth arc animation (35px rise, 0.5s) instead of blocking. Snakes can now freely cross paths.
+- **Hiss sound** — snakes hiss (eerie high-pass filtered noise) when spawning, respawning, and bouncing off walls
+- **Death cry** — when killed by an egg, snakes play a descending hiss + thud sound and spin/shrink to nothing (replaces old "eat" animation)
+
+### Pause & Controls
+- **Big pause overlay** — pausing now shows a full-screen overlay with large pulsing "⏸️ PAUSED" text and a styled spacebar key visual prompting to resume
+- **Spacebar fix** — space now correctly starts the game from start/end screens (was being blocked by scroll prevention)
 
 ---
 

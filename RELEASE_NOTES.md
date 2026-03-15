@@ -26,6 +26,7 @@
 | v3.2.0 | 2026-03-15 | Minor | Session replay system with full game recording |
 | v3.3.0 | 2026-03-15 | Minor | Mixpanel fix: direct HTTP API tracking, full-height game, user profiles |
 | v3.3.1 | 2026-03-15 | Patch | Remove session replay feature — low quality canvas playback |
+| v3.4.0 | 2026-03-15 | Minor | Code readability overhaul — annotations, comments, and formatting |
 
 ---
 
@@ -335,3 +336,17 @@ New endgame mode with player elimination.
 - **Removed session replay feature entirely** — canvas-based playback at 10fps produced low-quality results that didn't match the actual game rendering
 - Removed replay button from end screen, replay player UI, all recording/playback code
 - Cleaned up related CSS, HTML, and JS (~46 lines removed)
+
+---
+
+## v3.4.0 — Code Readability Overhaul (Mar 15)
+**File:** `ronaldo_chicken.html`
+
+### Changes
+- **CSS section headers** — labeled every style block (fonts, sky, ground, UI bar, characters, animations, snake, objects, text effects, screens, sky themes)
+- **JS section dividers** — `// ====` blocks for all 20+ code sections (Analytics, Scene Setup, Sound Engine, Config, State, Snake Builder, Player Factory, UI, Expressions, Snake Bite, Input, Jump/Catch, Scoring, Collision, Spawning, Level-Up, Game Loop, Floating Text, High Scores, Lifecycle, Screen Input)
+- **HTML structural comments** — marked scoreboard, P1 Ronaldo, P2 Mbappe, start screen, end screen
+- **SVG body part labels** — inline comments on every character element (shadow, legs, jersey, arms, neck, head, hair, eyes, eyebrows, nose, mouth, ears, sweat, stars)
+- **JSDoc comments** on key functions with parameter descriptions
+- **Inline annotations** on non-obvious logic (combo window, gravity, hitbox sizes, respawn mechanics)
+- No gameplay changes — purely a readability and documentation pass

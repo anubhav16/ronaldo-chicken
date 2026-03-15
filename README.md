@@ -40,4 +40,6 @@ Arush came up with the original idea and directed the entire game design. His da
 
 The development process was... spirited. Arush had strong opinions. Features were added, fought over, and sometimes removed after heated negotiations. Dad would occasionally sneak in a new feature — crabs, combo systems, snakes — to see if Arush would like them. Sometimes he did. Mostly he didn't. The ones that survived Arush's quality bar made it into the game.
 
+The whole exercise was really about introducing Arush to **AI, game design, and creative thinking** — showing him that you can start with a wild idea, talk to an AI, and watch it come to life on screen. That the thing you imagine can become the thing you play. Along the way he picked up how games are built, how to make design decisions, and how to argue for the features he believed in (and against the ones he didn't).
+
 The result is a game that a 7-year-old designed, his dad engineered, and Claude helped code — built over a weekend, played on one keyboard, and best enjoyed with someone you love sitting next to you.

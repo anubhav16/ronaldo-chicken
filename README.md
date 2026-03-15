@@ -4,9 +4,11 @@ A chaotic 2-player browser game where Ronaldo and Mbappe compete to catch flying
 
 ## How to Play
 
+No login. No app store. No phone. No account. No identity. No fuss.
+
 1. Open `ronaldo_chicken.html` in your browser (just double-click it)
 2. Grab a friend, partner, or kid — this is a **2-player game** on one keyboard
-3. Press **Start** and have fun!
+3. Place your fingers on the arrow keys and go
 
 ## Controls
 

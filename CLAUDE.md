@@ -19,7 +19,7 @@ This repo contains two separate games:
 Each update must include: version bump (patch/minor/major), date, summary, and changes. Update the Version History table at the top.
 
 ### Current Versions
-- **Ronaldo Chicken:** v6.0.0 (2026-03-20)
+- **Ronaldo Chicken:** v6.0.1 (2026-03-20)
 - **Chicken Farm:** v0.1.0 (2026-03-17)
 
 ## Git Protocol

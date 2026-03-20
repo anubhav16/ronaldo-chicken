@@ -31,6 +31,21 @@
 | v5.0.0 | 2026-03-15 | Major | Fart kills chickens, pause, multi-snake, player identity, respawn fixes |
 | v5.1.0 | 2026-03-15 | Minor | Snakes hop over each other, hiss & death sounds, pause overlay, spacebar fix |
 | v6.0.0 | 2026-03-20 | Major | Spawn immunity, kid-friendly fonts, snake persistence fix, snake evolution, elixir power-up, key activation (1P support) |
+| v6.0.1 | 2026-03-20 | Patch | Gem guardian snakes + circular countdown ring |
+
+---
+
+## v6.0.1 — Gem Guardian Snakes & Countdown Ring (Mar 20)
+
+### Gem Guardian Snakes
+- **Snakes speed up 60%** while the `💎🧪` gem is on screen — makes it much harder to grab
+- **Extra guardian snake** spawns when gem appears, removed when gem is collected or fades
+- Status message warns players: "🐍 SNAKES GUARDING THE GEM! 💎"
+
+### Circular Countdown Ring
+- Replaced text countdown with **SVG circular progress ring** around the `🛡️` shield
+- Ring depletes smoothly over 10 seconds
+- **Color-coded**: green (10–6s) → yellow (5–4s) → red (3–0s) for urgency at a glance
 
 ---
 

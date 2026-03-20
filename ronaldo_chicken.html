@@ -205,7 +205,12 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 /* [2026-03-20] Power-up active state — rainbow glow on player */
 @keyframes powerupAura { 0% { box-shadow: 0 0 20px 10px rgba(0,255,128,0.7), 0 0 50px 20px rgba(255,0,255,0.3); } 33% { box-shadow: 0 0 25px 14px rgba(255,215,0,0.8), 0 0 60px 24px rgba(0,128,255,0.4); } 66% { box-shadow: 0 0 22px 12px rgba(255,0,128,0.7), 0 0 55px 22px rgba(0,255,255,0.3); } 100% { box-shadow: 0 0 20px 10px rgba(0,255,128,0.7), 0 0 50px 20px rgba(255,0,255,0.3); } }
 .char.powered-up { animation: powerupAura 1.2s ease-in-out infinite; filter: drop-shadow(0 0 16px #00ff80); }
-.powerup-timer { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); font-family: 'Bangers', cursive; font-size: 18px; color: #00ff80; text-shadow: 0 0 8px #00ff80; pointer-events: none; z-index: 25; white-space: nowrap; }
+/* [2026-03-20] Power-up countdown — circular SVG ring around shield, color-coded */
+.powerup-ring-wrap { position: absolute; top: -38px; left: 50%; transform: translateX(-50%); width: 48px; height: 48px; pointer-events: none; z-index: 25; }
+.powerup-ring-wrap svg { width: 48px; height: 48px; transform: rotate(-90deg); }
+.powerup-ring-bg { fill: none; stroke: rgba(255,255,255,0.15); stroke-width: 4; }
+.powerup-ring-fg { fill: none; stroke-width: 4.5; stroke-linecap: round; transition: stroke-dashoffset 0.3s linear, stroke 0.5s; filter: drop-shadow(0 0 6px currentColor); }
+.powerup-ring-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bangers', cursive; font-size: 15px; color: #fff; text-shadow: 0 0 6px currentColor; pointer-events: none; }
 /* [2026-03-20] Snake explosion when hitting powered-up player */
 @keyframes snakeExplode { 0% { transform: scale(1); } 30% { transform: scale(2) rotate(30deg); } 60% { transform: scale(2.5) rotate(-20deg); opacity: 0.5; } 100% { transform: scale(0) rotate(360deg); opacity: 0; } }
 .snake-el.exploding { animation: snakeExplode 0.8s ease-out forwards !important; }
@@ -918,8 +923,37 @@ function spawnPowerup(){
   sfxPowerupAppear();
   const pu={el,x:fromRight?gw+10:-60,y:h,speed:(fromRight?-1.5:1.5),alive:true,age:0};
   powerups.push(pu);
-  // Power-up auto-disappears after 8s if not grabbed
-  setTimeout(()=>{if(pu.alive){pu.alive=false;el.classList.remove('entering');el.classList.add('leaving');setTimeout(()=>{try{el.remove();}catch(e){}},500);}},8000);
+  // [2026-03-20] Gem guardian — boost snake activity while gem is on screen to make it harder
+  boostSnakesForGem();
+  // Power-up auto-disappears after 8s if not grabbed — restore snake speed
+  setTimeout(()=>{if(pu.alive){pu.alive=false;el.classList.remove('entering');el.classList.add('leaving');setTimeout(()=>{try{el.remove();}catch(e){}},500);}restoreSnakesAfterGem();},8000);
+}
+
+// [2026-03-20] Temporarily boost snakes when gem appears — faster + spawn an extra guardian snake
+let _preGemSpeeds=[];
+function boostSnakesForGem(){
+  const cfg=getCfg(level);
+  const boost=1.6; // 60% faster while gem is on screen
+  _preGemSpeeds=snakes.filter(s=>s.alive).map(s=>({sn:s,origSpeed:s.speed}));
+  snakes.forEach(sn=>{if(sn.alive)sn.speed*=boost;});
+  // Spawn 1 extra guardian snake (temporary — will be removed when gem disappears or is grabbed)
+  const gw=gameEl.offsetWidth||680;
+  const goRight=Math.random()>0.5;
+  const palette=SNAKE_PALETTES[Math.floor(Math.random()*SNAKE_PALETTES.length)];
+  const el=buildSnakeEl(palette,goRight,level);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
+  const startX=goRight?-80:gw+10;
+  el.style.left=startX+'px';gameEl.appendChild(el);
+  el.classList.add('warning');setTimeout(()=>el.classList.remove('warning'),1600);
+  sfxSnakeWarn();sfxSnakeHiss();
+  snakes.push({el,x:startX,speed:cfg.snakeSpeed*boost*(goRight?1:-1),alive:true,palette,_hopping:false,_gemGuardian:true});
+  showStatus('🐍 SNAKES GUARDING THE GEM! 💎',2000);
+}
+function restoreSnakesAfterGem(){
+  // Restore original speeds
+  _preGemSpeeds.forEach(({sn,origSpeed})=>{if(sn.alive)sn.speed=origSpeed;});
+  _preGemSpeeds=[];
+  // Remove guardian snakes
+  snakes.forEach(sn=>{if(sn._gemGuardian&&sn.alive){sn.alive=false;sn.el.classList.add('dying');setTimeout(()=>{try{sn.el.remove();}catch(e){}},700);}});
 }
 
 // [2026-03-20] Schedule periodic power-up spawns
@@ -947,9 +981,10 @@ function checkPowerups(){
       const px=p.x*sc+38,py=GROUND+p.y+55;
       const puX=pu.x+30,puY=parseFloat(pu.el.style.bottom)+20;
       if(Math.abs(px-puX)<65&&Math.abs(py-puY)<65&&!p.onGround){
-        // Collected!
+        // Collected! [2026-03-20] Also restore snake speed since gem is gone
         pu.alive=false;pu.el.classList.remove('entering');pu.el.classList.add('leaving');
         setTimeout(()=>{try{pu.el.remove();}catch(e){}},500);
+        restoreSnakesAfterGem();
         activatePowerUp(p);
       }
     });
@@ -967,12 +1002,26 @@ function activatePowerUp(p){
   burstConfetti(p.x*(gw/GW)+38,GROUND+p.y+60,30);
   spawnPop(p.x*(gw/GW)+38,GROUND+p.y+80,'💎 POWER UP! 🧪',p.col,38);
   showStatus(`${p.id===1?'RONALDO':'MBAPPE'} GOT THE ELIXIR! 💎 SNAKES BEWARE! 🐍💀`,3000);
-  // Countdown timer display
-  let timerEl=p.el.querySelector('.powerup-timer');
-  if(!timerEl){timerEl=document.createElement('div');timerEl.className='powerup-timer';p.el.appendChild(timerEl);}
+  // [2026-03-20] Circular countdown ring — SVG progress ring with color-coded fill (green→yellow→red)
+  let ringWrap=p.el.querySelector('.powerup-ring-wrap');
+  if(ringWrap)ringWrap.remove();
+  ringWrap=document.createElement('div');ringWrap.className='powerup-ring-wrap';
+  const circR=20,circC=2*Math.PI*circR; // radius 20, circumference ~125.66
+  ringWrap.innerHTML=`<svg viewBox="0 0 48 48"><circle class="powerup-ring-bg" cx="24" cy="24" r="${circR}"/><circle class="powerup-ring-fg" cx="24" cy="24" r="${circR}" stroke="#00ff80" stroke-dasharray="${circC}" stroke-dashoffset="0"/></svg><div class="powerup-ring-text">🛡️10</div>`;
+  p.el.appendChild(ringWrap);
+  const ringFg=ringWrap.querySelector('.powerup-ring-fg');
+  const ringTxt=ringWrap.querySelector('.powerup-ring-text');
   let remaining=10;
-  timerEl.textContent=`💎 ${remaining}s`;
-  const cdIntv=setInterval(()=>{remaining--;if(remaining<=0){clearInterval(cdIntv);return;}timerEl.textContent=`💎 ${remaining}s`;if(remaining<=3)timerEl.style.color='#ff4444';},1000);
+  const cdIntv=setInterval(()=>{
+    remaining--;if(remaining<0){clearInterval(cdIntv);return;}
+    // Update ring: offset goes from 0 (full) to circC (empty)
+    const pct=remaining/10;
+    ringFg.style.strokeDashoffset=((1-pct)*circC).toFixed(1);
+    // Color code: green (10-6s) → yellow (5-4s) → red (3-0s)
+    const color=remaining>5?'#00ff80':remaining>3?'#ffcc00':'#ff3333';
+    ringFg.style.stroke=color;ringTxt.style.color=color;
+    ringTxt.textContent=remaining>0?`🛡️${remaining}`:'';
+  },1000);
   // Background music loop
   clearInterval(powerupMusicId);
   sfxPowerupMusic();
@@ -985,7 +1034,8 @@ function activatePowerUp(p){
     p.el.classList.remove('powered-up');
     clearInterval(powerupMusicId);powerupMusicId=null;
     clearInterval(cdIntv);clearInterval(confettiIntv);
-    const te=p.el.querySelector('.powerup-timer');if(te)te.remove();
+    // [2026-03-20] Remove countdown ring
+    const rw=p.el.querySelector('.powerup-ring-wrap');if(rw)rw.remove();
     showStatus(`${p.id===1?'RONALDO':'MBAPPE'}'s elixir wore off! 🧪`,2000);
     // Brief sound for end
     tone(400,'sine',0.15,0.2);tone(300,'sine',0.15,0.2,0.1);

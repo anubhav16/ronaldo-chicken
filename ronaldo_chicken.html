@@ -32,23 +32,25 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 
 /* Top scoreboard bar */
 #ui { position: absolute; top: 0; left: 0; right: 0; z-index: 40; display: flex; justify-content: space-between; align-items: stretch; background: linear-gradient(90deg, rgba(80,0,160,0.9), rgba(30,0,80,0.95), rgba(80,0,160,0.9)); border-bottom: 3px solid #ff6fd8; }
-.ppanel  { display: flex; flex-direction: column; padding: 5px 10px; min-width: 135px; }
-.pname   { font-family: 'Bangers', cursive; font-size: 14px; letter-spacing: 1px; }
-.pscore  { font-family: 'Bangers', cursive; font-size: 42px; }
-.plives  { font-size: 13px; letter-spacing: 1px; }
-.pelim   { font-family: 'Bangers', cursive; font-size: 11px; color: #ff6fd8; letter-spacing: 1px; min-height: 14px; }
-.pkeys   { font-size: 9px; color: rgba(255,255,255,0.35); margin-top: 1px; }
-#center-ui   { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3px 8px; }
-#timer-big   { font-family: 'Bangers', cursive; font-size: 26px; color: #fff; text-shadow: 0 0 10px #ff6fd8; }
-#level-badge { font-family: 'Bangers', cursive; font-size: 13px; color: #ffb347; letter-spacing: 1px; }
-#win-timer   { font-family: 'Bangers', cursive; font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+/* [2026-03-20] Scaled up all scoreboard fonts for kids — big, bold, loud colors */
+.ppanel  { display: flex; flex-direction: column; padding: 6px 12px; min-width: 160px; }
+.pname   { font-family: 'Bangers', cursive; font-size: 20px; letter-spacing: 2px; text-shadow: 0 0 8px currentColor; }
+.pscore  { font-family: 'Bangers', cursive; font-size: 52px; text-shadow: 0 0 12px currentColor; }
+.plives  { font-size: 20px; letter-spacing: 2px; }
+.pelim   { font-family: 'Bangers', cursive; font-size: 16px; color: #ff4444; letter-spacing: 2px; min-height: 18px; text-shadow: 0 0 10px #ff0000; }
+.pkeys   { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+#center-ui   { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 10px; }
+#timer-big   { font-family: 'Bangers', cursive; font-size: 34px; color: #fff; text-shadow: 0 0 14px #ff6fd8, 0 0 28px #7b2ff7; }
+#level-badge { font-family: 'Bangers', cursive; font-size: 22px; color: #ffb347; letter-spacing: 2px; text-shadow: 0 0 10px #ff6000; }
+#win-timer   { font-family: 'Bangers', cursive; font-size: 15px; color: rgba(255,255,255,0.7); letter-spacing: 2px; }
 
 /* Character containers */
 .char     { position: absolute; z-index: 20; display: flex; flex-direction: column; align-items: center; bottom: 155px; }
 .char.out { opacity: 0.2; }
 .char svg { overflow: visible; }
 .char.idle .rl, .char.idle .rr, .char.idle .al, .char.idle .ar { animation: none; }
-.ctag     { font-family: 'Bangers', cursive; font-size: 13px; letter-spacing: 1px; text-shadow: 0 2px 8px #000; margin-bottom: 1px; white-space: nowrap; display: flex; align-items: center; gap: 4px; justify-content: center; }
+/* [2026-03-20] Bigger player name tags for kids */
+.ctag     { font-family: 'Bangers', cursive; font-size: 18px; letter-spacing: 2px; text-shadow: 0 2px 10px #000, 0 0 8px currentColor; margin-bottom: 2px; white-space: nowrap; display: flex; align-items: center; gap: 5px; justify-content: center; }
 .ctag .player-photo { width: 24px; height: 24px; border-radius: 50%; border: 2px solid currentColor; object-fit: cover; background: #222; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
 
 /* === CHARACTER ANIMATIONS === */
@@ -84,6 +86,15 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 @keyframes respawnFlash { 0%,100% { opacity: 1; } 40%,60% { opacity: 0.1; } }
 .respawning { animation: respawnFlash 0.22s linear 5; }
 
+/* [2026-03-20] Spawn immunity shield — pulsing golden glow for 5s after birth/respawn */
+@keyframes immuneShield { 0% { box-shadow: 0 0 18px 8px rgba(255,215,0,0.7), 0 0 40px 16px rgba(255,111,216,0.3); transform: scale(1); } 50% { box-shadow: 0 0 30px 14px rgba(255,215,0,0.9), 0 0 60px 24px rgba(255,111,216,0.5); transform: scale(1.04); } 100% { box-shadow: 0 0 18px 8px rgba(255,215,0,0.7), 0 0 40px 16px rgba(255,111,216,0.3); transform: scale(1); } }
+.char.immune { animation: immuneShield 0.8s ease-in-out infinite; filter: drop-shadow(0 0 12px gold); }
+.immune-badge { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 20px; pointer-events: none; animation: immuneBadgePulse 0.6s ease-in-out infinite alternate; z-index: 25; }
+@keyframes immuneBadgePulse { 0% { transform: translateX(-50%) scale(1); opacity: 0.8; } 100% { transform: translateX(-50%) scale(1.3); opacity: 1; } }
+/* [2026-03-20] Immunity countdown bar above player */
+.immune-bar { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 50px; height: 5px; background: rgba(0,0,0,0.4); border-radius: 3px; overflow: hidden; pointer-events: none; z-index: 25; }
+.immune-bar-fill { height: 100%; background: linear-gradient(90deg, #FFD700, #ff6fd8); border-radius: 3px; transition: width 0.3s linear; }
+
 /* === SNAKE === */
 .snake-el { position: absolute; z-index: 17; bottom: 158px; pointer-events: none; display: flex; align-items: center; animation: snakeMove 0.5s ease-in-out infinite alternate; }
 @keyframes snakeMove  { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
@@ -103,15 +114,15 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 @keyframes poof { 0% { transform: scale(1); } 40% { transform: scale(2.5) rotate(30deg); } 100% { transform: scale(0); opacity: 0; } }
 .crab { position: absolute; z-index: 16; font-size: 36px; bottom: 155px; pointer-events: none; }
 
-/* === FLOATING TEXT === */
-.spop { position: absolute; font-family: 'Bangers', cursive; pointer-events: none; animation: spopA 1s ease-out forwards; z-index: 45; }
-@keyframes spopA { 0% { transform: translateY(0) scale(0.4); opacity: 1; } 60% { opacity: 1; } 100% { transform: translateY(-90px) scale(1.4); opacity: 0; } }
-.combo-banner { position: absolute; font-family: 'Bangers', cursive; font-size: 36px; pointer-events: none; z-index: 46; animation: comboBoom 1.2s ease-out forwards; text-shadow: 0 0 20px currentColor; }
-@keyframes comboBoom { 0% { transform: scale(0.3) rotate(-10deg); opacity: 1; } 25% { transform: scale(1.4); } 50% { transform: scale(1.1); } 80% { opacity: 1; } 100% { transform: scale(1.3) translateY(-60px); opacity: 0; } }
-.elim-overlay { position: absolute; font-family: 'Bangers', cursive; font-size: 26px; color: #ff4444; text-shadow: 0 0 16px #f00; pointer-events: none; animation: elimPop 2.5s ease-out forwards; z-index: 48; white-space: nowrap; }
-@keyframes elimPop { 0% { transform: scale(0.4); opacity: 1; } 20% { transform: scale(1.3); } 80% { opacity: 1; } 100% { transform: scale(1.1) translateY(-30px); opacity: 0; } }
-.sad-emoji { position: absolute; font-size: 24px; animation: sadFloat 0.7s ease-out forwards; pointer-events: none; z-index: 35; }
-@keyframes sadFloat { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-80px) scale(1.2); opacity: 0; } }
+/* === FLOATING TEXT === [2026-03-20] Scaled up for kids */
+.spop { position: absolute; font-family: 'Bangers', cursive; pointer-events: none; animation: spopA 1s ease-out forwards; z-index: 45; font-size: 28px; text-shadow: 0 0 10px currentColor; }
+@keyframes spopA { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 60% { opacity: 1; } 100% { transform: translateY(-100px) scale(1.6); opacity: 0; } }
+.combo-banner { position: absolute; font-family: 'Bangers', cursive; font-size: 46px; pointer-events: none; z-index: 46; animation: comboBoom 1.2s ease-out forwards; text-shadow: 0 0 24px currentColor, 0 0 48px currentColor; }
+@keyframes comboBoom { 0% { transform: scale(0.3) rotate(-10deg); opacity: 1; } 25% { transform: scale(1.5); } 50% { transform: scale(1.2); } 80% { opacity: 1; } 100% { transform: scale(1.4) translateY(-70px); opacity: 0; } }
+.elim-overlay { position: absolute; font-family: 'Bangers', cursive; font-size: 34px; color: #ff4444; text-shadow: 0 0 20px #f00, 0 0 40px #f00; pointer-events: none; animation: elimPop 2.5s ease-out forwards; z-index: 48; white-space: nowrap; }
+@keyframes elimPop { 0% { transform: scale(0.4); opacity: 1; } 20% { transform: scale(1.4); } 80% { opacity: 1; } 100% { transform: scale(1.2) translateY(-40px); opacity: 0; } }
+.sad-emoji { position: absolute; font-size: 32px; animation: sadFloat 0.7s ease-out forwards; pointer-events: none; z-index: 35; }
+@keyframes sadFloat { 0% { transform: translateY(0) scale(0.6); opacity: 1; } 100% { transform: translateY(-90px) scale(1.4); opacity: 0; } }
 
 /* Fart smoke rising */
 .fart-smoke { position: absolute; pointer-events: none; z-index: 18; font-size: 30px; opacity: 0.8; }
@@ -126,17 +137,20 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 
 /* Level-up announcement */
 #lvl-ann { position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%); z-index: 55; pointer-events: none; opacity: 0; text-align: center; }
-#lvl-ann .lnum { font-family: 'Bangers', cursive; font-size: 76px; color: #ffb347; text-shadow: 0 0 40px #ff6000; display: block; line-height: 1; }
-#lvl-ann .lsub { font-family: 'Bangers', cursive; font-size: 20px; color: #ff6fd8; letter-spacing: 3px; display: block; }
+/* [2026-03-20] Level-up fonts bigger and more vivid for kids */
+#lvl-ann .lnum { font-family: 'Bangers', cursive; font-size: 96px; color: #ffb347; text-shadow: 0 0 50px #ff6000, 0 0 100px #ff6fd8; display: block; line-height: 1; }
+#lvl-ann .lsub { font-family: 'Bangers', cursive; font-size: 28px; color: #ff6fd8; letter-spacing: 4px; display: block; text-shadow: 0 0 14px #ff6fd8; }
 @keyframes lvlPop { 0% { opacity: 0; transform: translate(-50%,-50%) scale(0.3); } 20% { opacity: 1; transform: translate(-50%,-50%) scale(1.2); } 60% { opacity: 1; transform: translate(-50%,-50%) scale(1); } 100% { opacity: 0; transform: translate(-50%,-50%) scale(1.05); } }
 .lvlanim { animation: lvlPop 2.2s ease-out forwards; }
 
 /* Win overlay */
 #win-ann { position: absolute; inset: 0; z-index: 52; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(10,0,30,0.8); pointer-events: none; }
-#win-ann h2 { font-family: 'Bangers', cursive; font-size: 66px; color: gold; text-shadow: 0 0 40px gold; letter-spacing: 4px; animation: winPulse 0.6s ease-in-out infinite alternate; }
+/* [2026-03-20] Win text bigger for kids */
+#win-ann h2 { font-family: 'Bangers', cursive; font-size: 80px; color: gold; text-shadow: 0 0 50px gold, 0 0 100px #ff6fd8; letter-spacing: 6px; animation: winPulse 0.6s ease-in-out infinite alternate; }
 @keyframes winPulse { 0% { transform: scale(1); } 100% { transform: scale(1.06); } }
-#win-ann p { font-family: 'Bangers', cursive; font-size: 22px; color: #fff; letter-spacing: 2px; margin-top: 8px; text-align: center; }
-#status { position: absolute; top: 68px; left: 50%; transform: translateX(-50%); font-family: 'Bangers', cursive; font-size: 21px; color: #fff; text-shadow: 0 0 12px #ff6fd8; z-index: 30; pointer-events: none; transition: opacity 0.3s; white-space: nowrap; text-align: center; }
+#win-ann p { font-family: 'Bangers', cursive; font-size: 30px; color: #fff; letter-spacing: 3px; margin-top: 10px; text-align: center; text-shadow: 0 0 12px #ff6fd8; }
+/* [2026-03-20] Status text bigger for kids */
+#status { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); font-family: 'Bangers', cursive; font-size: 28px; color: #fff; text-shadow: 0 0 16px #ff6fd8, 0 0 32px #7b2ff7; z-index: 30; pointer-events: none; transition: opacity 0.3s; white-space: nowrap; text-align: center; }
 
 /* Sky themes per level */
 #sky.lv2 { background: linear-gradient(180deg, #001a50 0%, #003080 25%, #0060ff 45%, #00c8ff 50%, #ffb347 55%, #52b788 60%, #2d6a4f 100%); }
@@ -146,7 +160,8 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 
 /* Start/End screen overlays */
 .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 60; background: linear-gradient(135deg, #1a0050, #3a0080, #1a0050); overflow-y: auto; padding: 8px 0; pointer-events: all; }
-.screen h1 { font-family: 'Bangers', cursive; font-size: 36px; color: #ffb347; letter-spacing: 2px; text-shadow: 0 0 20px #ff6000; margin-bottom: 4px; text-align: center; }
+/* [2026-03-20] Screen titles bigger for kids */
+.screen h1 { font-family: 'Bangers', cursive; font-size: 46px; color: #ffb347; letter-spacing: 3px; text-shadow: 0 0 30px #ff6000, 0 0 60px #ff6fd8; margin-bottom: 6px; text-align: center; }
 .cgrid   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; width: 320px; }
 .cbox    { background: rgba(255,255,255,0.08); border: 2px solid rgba(255,179,71,0.3); border-radius: 14px; padding: 8px; text-align: center; }
 .cbox h3 { font-family: 'Bangers', cursive; font-size: 14px; margin-bottom: 3px; letter-spacing: 1px; }
@@ -177,12 +192,44 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 .egg-cd.ready { opacity: 1; filter: grayscale(0); animation: eggReady 0.6s ease-in-out infinite alternate; }
 .char.sitting { animation: layEggPose 0.5s ease-out forwards; transform-origin: bottom center; }
 @keyframes layEggPose { 0% { transform: scaleY(1) scaleX(1); } 30% { transform: scaleY(0.65) scaleX(1.15) translateY(16px); } 60% { transform: scaleY(0.6) scaleX(1.2) translateY(18px); } 100% { transform: scaleY(1) scaleX(1); } }
+
+/* [2026-03-20] Elixir/Diamond power-up — floating collectible that grants snake immunity */
+.powerup-el { position: absolute; z-index: 22; pointer-events: none; font-size: 40px; text-align: center; }
+@keyframes powerupFloat { 0% { transform: translateY(0) scale(1) rotate(-5deg); } 50% { transform: translateY(-18px) scale(1.15) rotate(5deg); } 100% { transform: translateY(0) scale(1) rotate(-5deg); } }
+@keyframes powerupGlow { 0% { filter: drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 16px #ff6fd8); } 50% { filter: drop-shadow(0 0 20px #FFD700) drop-shadow(0 0 40px #ff6fd8); } 100% { filter: drop-shadow(0 0 8px #FFD700) drop-shadow(0 0 16px #ff6fd8); } }
+.powerup-el .pu-icon { animation: powerupFloat 1.5s ease-in-out infinite, powerupGlow 1.5s ease-in-out infinite; display: block; }
+@keyframes powerupFadeIn { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 50% { transform: scale(1.3) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes powerupFadeOut { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(0) rotate(180deg); opacity: 0; } }
+.powerup-el.entering { animation: powerupFadeIn 0.6s ease-out forwards; }
+.powerup-el.leaving { animation: powerupFadeOut 0.5s ease-in forwards; }
+/* [2026-03-20] Power-up active state — rainbow glow on player */
+@keyframes powerupAura { 0% { box-shadow: 0 0 20px 10px rgba(0,255,128,0.7), 0 0 50px 20px rgba(255,0,255,0.3); } 33% { box-shadow: 0 0 25px 14px rgba(255,215,0,0.8), 0 0 60px 24px rgba(0,128,255,0.4); } 66% { box-shadow: 0 0 22px 12px rgba(255,0,128,0.7), 0 0 55px 22px rgba(0,255,255,0.3); } 100% { box-shadow: 0 0 20px 10px rgba(0,255,128,0.7), 0 0 50px 20px rgba(255,0,255,0.3); } }
+.char.powered-up { animation: powerupAura 1.2s ease-in-out infinite; filter: drop-shadow(0 0 16px #00ff80); }
+.powerup-timer { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); font-family: 'Bangers', cursive; font-size: 18px; color: #00ff80; text-shadow: 0 0 8px #00ff80; pointer-events: none; z-index: 25; white-space: nowrap; }
+/* [2026-03-20] Snake explosion when hitting powered-up player */
+@keyframes snakeExplode { 0% { transform: scale(1); } 30% { transform: scale(2) rotate(30deg); } 60% { transform: scale(2.5) rotate(-20deg); opacity: 0.5; } 100% { transform: scale(0) rotate(360deg); opacity: 0; } }
+.snake-el.exploding { animation: snakeExplode 0.8s ease-out forwards !important; }
+
+/* [2026-03-20] Key activation overlays — show controls at spawn point before player joins */
+.key-overlay { position: absolute; z-index: 30; display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: opacity 0.8s ease; }
+.key-overlay.hidden { opacity: 0; }
+.key-overlay .ko-title { font-family: 'Bangers', cursive; font-size: 22px; letter-spacing: 2px; margin-bottom: 8px; animation: winPulse 0.8s ease-in-out infinite alternate; }
+.key-overlay .ko-keys { display: grid; gap: 4px; justify-items: center; }
+.key-overlay .ko-keys.wasd { grid-template-columns: repeat(3, 48px); grid-template-rows: 48px 48px; }
+.key-overlay .ko-keys.arrows { grid-template-columns: repeat(3, 48px); grid-template-rows: 48px 48px; }
+.ko-key { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: linear-gradient(180deg, #555, #333); border: 2px solid #aaa; border-radius: 10px; font-family: 'Bangers', cursive; font-size: 20px; color: #fff; box-shadow: 0 4px 0 #222, 0 0 12px rgba(255,255,255,0.2); animation: koPulse 1.2s ease-in-out infinite alternate; }
+@keyframes koPulse { 0% { transform: scale(1); box-shadow: 0 4px 0 #222, 0 0 12px rgba(255,255,255,0.2); } 100% { transform: scale(1.08); box-shadow: 0 4px 0 #222, 0 0 20px rgba(255,215,0,0.5); } }
+.ko-key.accent { background: linear-gradient(180deg, #ff6fd8, #7b2ff7); border-color: #ff6fd8; }
+.key-overlay .ko-hint { font-family: 'Bangers', cursive; font-size: 16px; color: #ffb347; margin-top: 8px; text-shadow: 0 0 8px #ff6000; letter-spacing: 1px; }
+/* [2026-03-20] Player appear animation — scale up from nothing */
+@keyframes playerAppear { 0% { transform: scale(0) rotate(-15deg); opacity: 0; } 50% { transform: scale(1.2) rotate(5deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+.char.appearing { animation: playerAppear 0.6s ease-out forwards; }
 </style>
 <script>
 // ================================================================
 //  MIXPANEL ANALYTICS — image pixel API (works from file://)
 // ================================================================
-const MP_TOKEN = 'f312eb9fc449831d9161f0682e3c6f64';
+const MP_TOKEN = 'f312eb9fc449831d9161f0682e3c6f64'; // [2026-03-18 13:00] Ronaldo Chicken project token
 const MP_API = 'https://api-eu.mixpanel.com';
 
 // Persistent device ID (localStorage) and session ID (sessionStorage)
@@ -208,11 +255,14 @@ function mpTrack(event,props={}){
 /** Track game end — scores, winner, duration, profile update */
 function mpTrackGameEnd(reason){
   const dur=TOTAL_TIME-timeLeft;
-  const winner=p1.eliminated&&!p2.eliminated?'MBAPPE':p2.eliminated&&!p1.eliminated?'RONALDO':p1.score>p2.score?'RONALDO':p2.score>p1.score?'MBAPPE':'TIE';
+  // [2026-03-20] Account for 1-player mode in winner determination
+  const p1in=p1.activated,p2in=p2.activated;
+  const winner=(!p1in&&p2in)?'MBAPPE':(!p2in&&p1in)?'RONALDO':(p1.eliminated&&!p2.eliminated)?'MBAPPE':(p2.eliminated&&!p1.eliminated)?'RONALDO':p1.score>p2.score?'RONALDO':p2.score>p1.score?'MBAPPE':'TIE';
   mpTrack('game_ended',{
     player_1_score:p1.score, player_2_score:p2.score, total_score:p1.score+p2.score,
     time_spent_seconds:dur, time_spent_ms:dur*1000, winner, end_reason:reason, level_reached:level,
     p1_lives_left:p1.lives, p2_lives_left:p2.lives, p1_eliminated:p1.eliminated, p2_eliminated:p2.eliminated,
+    p1_activated:p1in, p2_activated:p2in,
     game_number:gameCount,
   });
   mpEngage({
@@ -260,21 +310,24 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
     <div class="ppanel">
       <div class="pname" style="color:#60A5FA">🇫🇷 MBAPPE (P2) <span id="p2eggcd" class="egg-cd ready">🥚</span></div>
       <div class="pscore" style="color:#60A5FA">🍗 <span id="p2s">0</span></div>
-      <div class="phi" style="font-family:'Bangers',cursive;font-size:13px;color:rgba(255,179,71,0.7);letter-spacing:1px">HI: <span id="p2hi">0</span>🍗</div>
+      <!-- [2026-03-20] Bigger hi-score for kids -->
+      <div class="phi" style="font-family:'Bangers',cursive;font-size:18px;color:#ffb347;letter-spacing:2px;text-shadow:0 0 6px #ff6000">HI: <span id="p2hi">0</span>🍗</div>
       <div class="plives" id="p2lv">❤️❤️❤️</div>
       <div class="pelim" id="p2elim"></div>
       <div class="pkeys">W jump · WW HIGH · A/D move · S egg</div>
     </div>
     <div id="center-ui">
-      <div style="font-family:'Bangers',cursive;font-size:11px;color:#ff6fd8;letter-spacing:1px">🐔 CHICKEN GAME 🐔</div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.35)">SPACE = pause</div>
+      <!-- [2026-03-20] Bigger center text for kids -->
+      <div style="font-family:'Bangers',cursive;font-size:16px;color:#ff6fd8;letter-spacing:2px;text-shadow:0 0 8px #ff6fd8">🐔 CHICKEN GAME 🐔</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.6);font-family:'Bangers',cursive">SPACE = pause</div>
       <div id="level-badge">⭐ LEVEL 1 ⭐</div>
     </div>
     <!-- Ronaldo (P1) — right -->
     <div class="ppanel" style="align-items:flex-end">
       <div class="pname" style="color:#FFD700">🇵🇹 RONALDO (P1) <span id="p1eggcd" class="egg-cd ready">🥚</span></div>
       <div class="pscore" style="color:#FFD700"><span id="p1s">0</span> 🍗</div>
-      <div class="phi" style="font-family:'Bangers',cursive;font-size:13px;color:rgba(255,179,71,0.7);letter-spacing:1px;text-align:right">HI: <span id="p1hi">0</span>🍗</div>
+      <!-- [2026-03-20] Bigger hi-score for kids -->
+      <div class="phi" style="font-family:'Bangers',cursive;font-size:18px;color:#ffb347;letter-spacing:2px;text-align:right;text-shadow:0 0 6px #ff6000">HI: <span id="p1hi">0</span>🍗</div>
       <div class="plives" id="p1lv">❤️❤️❤️</div>
       <div class="pelim" id="p1elim" style="text-align:right"></div>
       <div class="pkeys" style="text-align:right">↑ jump · ↑↑ HIGH · ←/→ move · ↓ egg</div>
@@ -355,12 +408,15 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
       <div class="cbox"><h3 style="color:#60A5FA">🏆 MBAPPE — LEFT SIDE</h3><p><span class="key">A</span><span class="key">D</span> Move<br><span class="key">W</span> Jump · <span class="key">WW</span> HIGH<br><span class="key">S</span> Drop Egg 🥚 (even mid-air!)<br>Run into egg to kick it!</p></div>
       <div class="cbox"><h3 style="color:#FFD700">⚽ RONALDO — RIGHT SIDE</h3><p><span class="key">←</span><span class="key">→</span> Move<br><span class="key">↑</span> Jump · <span class="key">↑↑</span> HIGH<br><span class="key">↓</span> Drop Egg 🥚 (even mid-air!)<br>Run into egg to kick it!</p></div>
     </div>
-    <p style="font-size:11px;color:#ddd;text-align:center;margin-bottom:12px">
+    <!-- [2026-03-20] Bigger instruction text for kids -->
+    <p style="font-size:15px;color:#fff;text-align:center;margin-bottom:12px;text-shadow:0 0 6px #ff6fd8">
       🐔 Jump INTO chickens · 🦀 Crabs = 2s stun · 🐍 Snake gets faster each level!<br>
       🥚 Drop eggs mid-air or ground! Run into eggs to kick them! Hit snake = +5pts!<br>
-      ❤️❤️❤️ 3 lives · 3 bites = OUT!
+      💎🧪 Grab the floating ELIXIR for 10s SNAKE IMMUNITY! Snakes DIE on touch!<br>
+      ❤️❤️❤️ 3 lives · 3 bites = OUT! · 🛡️ 5s immunity at spawn!
     </p>
-    <div style="font-family:'Bangers',cursive;font-size:24px;color:#ff6fd8;letter-spacing:2px;animation:winPulse 0.8s ease-in-out infinite alternate;margin-bottom:8px">PRESS SPACE OR ANY KEY TO START!</div>
+    <!-- [2026-03-20] Bigger start prompt for kids -->
+    <div style="font-family:'Bangers',cursive;font-size:32px;color:#ff6fd8;letter-spacing:3px;animation:winPulse 0.8s ease-in-out infinite alternate;margin-bottom:8px;text-shadow:0 0 16px #ff6fd8">PRESS SPACE OR ANY KEY TO START!</div>
     <div style="color:rgba(255,179,71,0.45);font-size:10px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
   </div>
 
@@ -368,11 +424,12 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
   <div class="screen" id="es" style="display:none">
     <div style="font-size:50px;margin-bottom:4px" id="wemoji">🏆</div>
     <h1 id="wtxt">WINNER!</h1>
-    <div id="fscores" style="font-family:'Bangers',cursive;font-size:36px;text-align:center;margin-bottom:4px"></div>
-    <div id="high-score-end" style="font-family:'Bangers',cursive;font-size:20px;color:#ffb347;text-shadow:0 0 10px #ff6000;margin-bottom:4px"></div>
-    <div id="reached-level" style="font-family:'Bangers',cursive;font-size:16px;color:#ffb347;margin-bottom:4px"></div>
-    <div id="resume-info" style="font-family:'Bangers',cursive;font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:8px"></div>
-    <div style="font-family:'Bangers',cursive;font-size:20px;color:#ff6fd8;letter-spacing:2px;animation:winPulse 0.8s ease-in-out infinite alternate;margin-bottom:6px">PRESS ANY KEY TO CONTINUE!</div>
+    <!-- [2026-03-20] Bigger end screen text for kids -->
+    <div id="fscores" style="font-family:'Bangers',cursive;font-size:44px;text-align:center;margin-bottom:6px;text-shadow:0 0 12px currentColor"></div>
+    <div id="high-score-end" style="font-family:'Bangers',cursive;font-size:26px;color:#ffb347;text-shadow:0 0 14px #ff6000;margin-bottom:6px"></div>
+    <div id="reached-level" style="font-family:'Bangers',cursive;font-size:22px;color:#ffb347;margin-bottom:6px;text-shadow:0 0 8px #ff6000"></div>
+    <div id="resume-info" style="font-family:'Bangers',cursive;font-size:18px;color:rgba(255,255,255,0.8);margin-bottom:10px"></div>
+    <div style="font-family:'Bangers',cursive;font-size:28px;color:#ff6fd8;letter-spacing:3px;animation:winPulse 0.8s ease-in-out infinite alternate;margin-bottom:8px;text-shadow:0 0 14px #ff6fd8">PRESS ANY KEY TO CONTINUE!</div>
     <button class="btn btn-blue" id="restart-btn" style="font-size:14px;padding:8px 24px">RESTART FROM LEVEL 1</button>
     <div style="color:rgba(255,179,71,0.45);font-size:10px;margin-top:8px">Game Designer: Arush &nbsp;|&nbsp; Assistant: Daddy</div>
   </div>
@@ -455,6 +512,30 @@ function sfxSnakeHiss(){
   try{const buf=AC.createBuffer(1,AC.sampleRate*0.6,AC.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(AC.sampleRate*0.25));const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();s.buffer=buf;f.type='highpass';f.frequency.value=2000;f.Q.value=1;s.connect(f);f.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(0.15,AC.currentTime);g.gain.linearRampToValueAtTime(0.25,AC.currentTime+0.15);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.55);s.start();s.stop(AC.currentTime+0.6);}catch(e){}
 }
 
+// [2026-03-20] Power-up pickup sound — magical ascending chime
+function sfxPowerupPickup(){
+  [523,659,784,1047,1318,1568,2093].forEach((f,i)=>{
+    tone(f,'sine',0.15,0.35,i*0.06);
+    tone(f*1.5,'square',0.08,0.15,i*0.06+0.03);
+  });
+}
+// [2026-03-20] Power-up appear sound — sparkle
+function sfxPowerupAppear(){
+  [1200,1400,1600,1800].forEach((f,i)=>tone(f,'sine',0.1,0.2,i*0.08));
+}
+// [2026-03-20] Snake explodes on powered-up player — big boom
+function sfxSnakeExplode(){
+  sfxSnakeDie();
+  [200,150,100,80,60].forEach((f,i)=>tone(f,'sawtooth',0.2,0.4,i*0.08));
+  tone(1600,'square',0.08,0.3,0.5);tone(2000,'square',0.06,0.25,0.55);
+}
+// [2026-03-20] Celebratory background music loop during power-up — plays one bar per call
+function sfxPowerupMusic(){
+  const notes=[523,587,659,698,784,880,988,1047]; // C5 major scale
+  const melody=[0,2,4,5,4,2,0,4]; // simple happy melody
+  melody.forEach((n,i)=>tone(notes[n],'sine',0.12,0.12,i*0.15));
+}
+
 /** Burst confetti particles */
 function burstConfetti(x,y,n=12){const cols=['#FFD700','#ff6fd8','#60A5FA','#4ade80','#fb923c','#f472b6','#a78bfa'];for(let i=0;i<n;i++){const el=document.createElement('div');el.className='confetti';el.style.background=cols[Math.floor(Math.random()*cols.length)];el.style.left=(x+Math.random()*60-30)+'px';el.style.bottom=(y+Math.random()*40)+'px';el.style.borderRadius=Math.random()>0.5?'50%':'2px';el.style.width=(6+Math.random()*8)+'px';el.style.height=(6+Math.random()*8)+'px';el.style.animationDelay=(Math.random()*0.2)+'s';gameEl.appendChild(el);setTimeout(()=>el.remove(),1200);}}
 
@@ -488,23 +569,41 @@ function getCfg(lv){return LEVEL_CFG[Math.min(lv-1,LEVEL_CFG.length-1)];}
 let p1,p2,chickens=[],crabs=[],snakes=[],running=false,timeLeft=TOTAL_TIME,level=1;
 let fartClouds=[]; // [2026-03-15] Rising fart smoke that kills flying chickens on contact
 let loopId,timerIntv,chkTimer,crabTimer;
+// [2026-03-20] Elixir power-up state
+let powerups=[];         // active floating power-ups on screen
+let powerupTimer=null;   // schedule next power-up spawn
+let powerupMusicId=null; // interval for celebratory music loop
 const statusEl=document.getElementById('status'),lvlAnn=document.getElementById('lvl-ann');
 
 
 // ================================================================
 //  SNAKE BUILDER — DOM element (head + body + tail)
 // ================================================================
-function buildSnakeEl(palette,goRight){
+// [2026-03-20] Snake builder accepts level for visual evolution — bigger, glowier, longer at higher levels
+function buildSnakeEl(palette,goRight,lv){
+  lv=lv||1;
+  const sc=1+Math.min(lv-1,5)*0.1; // scale: 1.0 → 1.5 over 6 levels
+  const glow=8+Math.min(lv-1,5)*6;  // glow: 8px → 38px
   const wrap=document.createElement('div');wrap.className='snake-el';wrap.style.flexDirection=goRight?'row':'row-reverse';
-  const head=document.createElement('div');head.style.cssText=`width:32px;height:26px;background:${palette.head};border:2.5px solid rgba(255,255,255,0.9);border-radius:${goRight?'50% 30% 30% 50%':'30% 50% 50% 30%'};position:relative;flex-shrink:0;box-shadow:0 0 10px ${palette.head}`;
-  const eye=document.createElement('div');eye.style.cssText=`width:6px;height:6px;background:#fff;border-radius:50%;position:absolute;top:4px;${goRight?'right':'left'}:5px`;
-  const pupil=document.createElement('div');pupil.style.cssText=`width:3px;height:3px;background:#111;border-radius:50%;position:absolute;top:5.5px;${goRight?'right':'left'}:6.5px`;
-  const tongue=document.createElement('div');tongue.style.cssText=`position:absolute;${goRight?'left':'right'}:-8px;top:11px;width:10px;height:4px;background:#ff0066;border-radius:2px;animation:tongueLick 0.35s ease-in-out infinite alternate`;
+  wrap.style.transform=`scale(${sc})`;wrap.style.transformOrigin='center bottom';
+  // [2026-03-20] Eye color shifts red at higher levels for menacing look
+  const eyeColor=lv>=4?'#ff0':'#fff';const pupilColor=lv>=5?'#f00':'#111';
+  const headW=Math.round(32*sc);const headH=Math.round(26*sc);
+  const head=document.createElement('div');head.style.cssText=`width:${headW}px;height:${headH}px;background:${palette.head};border:2.5px solid rgba(255,255,255,0.9);border-radius:${goRight?'50% 30% 30% 50%':'30% 50% 50% 30%'};position:relative;flex-shrink:0;box-shadow:0 0 ${glow}px ${palette.head}`;
+  const eye=document.createElement('div');eye.style.cssText=`width:${Math.round(6*sc)}px;height:${Math.round(6*sc)}px;background:${eyeColor};border-radius:50%;position:absolute;top:4px;${goRight?'right':'left'}:5px`;
+  const pupil=document.createElement('div');pupil.style.cssText=`width:${Math.round(3*sc)}px;height:${Math.round(3*sc)}px;background:${pupilColor};border-radius:50%;position:absolute;top:5.5px;${goRight?'right':'left'}:6.5px`;
+  const tongueW=10+Math.min(lv-1,5)*3; // tongue grows longer
+  const tongue=document.createElement('div');tongue.style.cssText=`position:absolute;${goRight?'left':'right'}:-${tongueW-2}px;top:${Math.round(headH*0.42)}px;width:${tongueW}px;height:4px;background:#ff0066;border-radius:2px;animation:tongueLick 0.35s ease-in-out infinite alternate`;
   head.appendChild(eye);head.appendChild(pupil);head.appendChild(tongue);
-  const bodyLen=50+Math.floor(Math.random()*20);
-  const body=document.createElement('div');body.style.cssText=`background:linear-gradient(${goRight?'90deg':'270deg'},${palette.head},${palette.body});border:1.5px solid rgba(255,255,255,0.5);width:${bodyLen}px;height:20px;border-radius:8px;box-shadow:0 0 8px ${palette.body}88`;
-  const tail=document.createElement('div');tail.style.cssText=`width:12px;height:12px;background:${palette.body};border-radius:50%;border:1.5px solid rgba(255,255,255,0.3);flex-shrink:0`;
-  wrap.appendChild(head);wrap.appendChild(body);wrap.appendChild(tail);return wrap;
+  // [2026-03-20] Body length grows with level
+  const bodyLen=50+Math.floor(Math.random()*20)+Math.min(lv-1,5)*12;
+  const bodyH=Math.round(20*sc);
+  const body=document.createElement('div');body.style.cssText=`background:linear-gradient(${goRight?'90deg':'270deg'},${palette.head},${palette.body});border:1.5px solid rgba(255,255,255,0.5);width:${bodyLen}px;height:${bodyH}px;border-radius:8px;box-shadow:0 0 ${glow}px ${palette.body}88`;
+  // [2026-03-20] Add spikes/crown emoji for levels 4+
+  const tail=document.createElement('div');tail.style.cssText=`width:${Math.round(12*sc)}px;height:${Math.round(12*sc)}px;background:${palette.body};border-radius:50%;border:1.5px solid rgba(255,255,255,0.3);flex-shrink:0`;
+  wrap.appendChild(head);wrap.appendChild(body);wrap.appendChild(tail);
+  if(lv>=4){const crown=document.createElement('div');crown.style.cssText='position:absolute;top:-16px;left:4px;font-size:14px;pointer-events:none';crown.textContent=lv>=5?'👑':'🔥';wrap.style.position='relative';wrap.appendChild(crown);}
+  return wrap;
 }
 
 
@@ -519,11 +618,15 @@ function makePlayer(id,startX,col){
   document.getElementById(`p${id}sweat`).setAttribute('opacity','0');
   document.getElementById(`p${id}star1`).setAttribute('opacity','0');
   document.getElementById(`p${id}star2`).setAttribute('opacity','0');
-  return{id,x:startX,y:0,vy:0,score:0,lives:3,eliminated:false,
+  // [2026-03-20] immune: 5s snake immunity after spawn/respawn so players aren't killed instantly
+  // [2026-03-20] activated: false until player presses their keys (supports 1-player mode)
+  return{id,x:startX,y:0,vy:0,score:0,lives:3,eliminated:false,activated:false,
     hurt:false,hurtTimer:null,      // crab stun
     snakeHit:false,snakeTimer:null,  // snake stun
     combo:0,comboTimer:null,         // catch combo
     onGround:true,airJumped:false,   // jump state
+    immune:false,immuneTimer:null,   // [2026-03-20] spawn immunity
+    powerUp:false,                   // [2026-03-20] elixir power-up active
     startX,col,el,g,
     mouth:document.getElementById(`p${id}mouth`),sweat:document.getElementById(`p${id}sweat`),
     star1:document.getElementById(`p${id}star1`),star2:document.getElementById(`p${id}star2`),
@@ -536,7 +639,8 @@ function makePlayer(id,startX,col){
 // ================================================================
 function showStatus(msg,dur=1800){statusEl.textContent=msg;statusEl.style.opacity='1';clearTimeout(statusEl._t);statusEl._t=setTimeout(()=>statusEl.style.opacity='0',dur);}
 function updateUI(){document.getElementById('p1s').textContent=p1.score;document.getElementById('p2s').textContent=p2.score;const hs=getHighScore();document.getElementById('p1hi').textContent=Math.max(hs.ronaldo,p1.score);document.getElementById('p2hi').textContent=Math.max(hs.mbappe,p2.score);}
-function updateLives(p){const lv=document.getElementById(`p${p.id}lv`),em=document.getElementById(`p${p.id}elim`);if(p.eliminated){lv.textContent='💀 OUT';em.textContent='ELIMINATED!';return;}lv.textContent='❤️'.repeat(p.lives)+'🖤'.repeat(Math.max(0,3-p.lives));em.textContent='';}
+// [2026-03-20] Show "WAITING" for unactivated players instead of "ELIMINATED"
+function updateLives(p){const lv=document.getElementById(`p${p.id}lv`),em=document.getElementById(`p${p.id}elim`);if(p.eliminated&&!p.activated){lv.textContent='🎮 PRESS KEYS';em.textContent='WAITING...';return;}if(p.eliminated){lv.textContent='💀 OUT';em.textContent='ELIMINATED!';return;}lv.textContent='❤️'.repeat(p.lives)+'🖤'.repeat(Math.max(0,3-p.lives));em.textContent='';}
 
 
 // ================================================================
@@ -545,6 +649,32 @@ function updateLives(p){const lv=document.getElementById(`p${p.id}lv`),em=docume
 
 /** Happy dance + confetti + smile */
 function doHappy(p,combo){p.g.removeAttribute('style');p.g.removeAttribute('class');void p.g.offsetWidth;p.g.className=combo>=3?'superhappy':'happy';p.star1.setAttribute('opacity','1');p.star2.setAttribute('opacity','1');setTimeout(()=>{p.star1.setAttribute('opacity','0');p.star2.setAttribute('opacity','0');},600);p.mouth.setAttribute('d','M -5 -69 Q 0 -63 5 -69');setTimeout(()=>{if(p.mouth)p.mouth.setAttribute('d','M -4 -69 Q 0 -65 4 -69');},800);const gw=gameEl.offsetWidth||680;burstConfetti(p.x*(gw/GW)+10,GROUND+p.y+40,combo>=3?20:10);}
+
+// [2026-03-20] Consolidated snake-hit guard — single source of truth for immunity check
+// [2026-03-20] powerUp also prevents snake bite — snake dies instead (handled by checkPowerupSnakeKills)
+function canBeHitBySnake(p){return !p.immune && !p.powerUp && !p.snakeHit && !p.hurt && !p.eliminated;}
+
+// [2026-03-20] Grant spawn immunity for duration (ms), with shield badge + countdown bar
+function grantImmunity(p, duration=5000){
+  p.immune=true;clearTimeout(p.immuneTimer);
+  p.el.classList.add('immune');
+  // Add shield badge if not present
+  let badge=p.el.querySelector('.immune-badge');
+  if(!badge){badge=document.createElement('div');badge.className='immune-badge';badge.textContent='🛡️';p.el.appendChild(badge);}
+  // Add countdown bar
+  let bar=p.el.querySelector('.immune-bar');
+  if(!bar){bar=document.createElement('div');bar.className='immune-bar';bar.innerHTML='<div class="immune-bar-fill" style="width:100%"></div>';p.el.appendChild(bar);}
+  const fill=bar.querySelector('.immune-bar-fill');fill.style.width='100%';
+  // Animate bar shrinking over duration
+  const barStart=Date.now();const barIntv=setInterval(()=>{const elapsed=Date.now()-barStart;const pct=Math.max(0,100-elapsed/duration*100);fill.style.width=pct+'%';if(pct<=0)clearInterval(barIntv);},100);
+  p.immuneTimer=setTimeout(()=>{revokeImmunity(p);clearInterval(barIntv);},duration);
+}
+function revokeImmunity(p){
+  p.immune=false;clearTimeout(p.immuneTimer);p.immuneTimer=null;
+  p.el.classList.remove('immune');
+  const badge=p.el.querySelector('.immune-badge');if(badge)badge.remove();
+  const bar=p.el.querySelector('.immune-bar');if(bar)bar.remove();
+}
 
 /** Hurt: fall over + frown + sweat + red glow */
 function doHurtVisuals(p){p.g.removeAttribute('style');p.g.removeAttribute('class');void p.g.offsetWidth;p.g.style.animation='lieDown 0.35s ease-out forwards';p.g.style.transformOrigin='bottom center';p.mouth.setAttribute('d','M -4 -66 Q 0 -70 4 -66');p.sweat.setAttribute('opacity','1');p.el.style.filter='drop-shadow(0 0 16px #ff4400)';const gw=gameEl.offsetWidth||680;spawnSad(p.x*(gw/GW)+20,GROUND+p.y+60);}
@@ -557,8 +687,9 @@ function fullRecover(p){p.hurt=false;p.snakeHit=false;p.g.removeAttribute('style
 //  SNAKE BITE — -1 life, scream, hurt. 0 lives = eliminated.
 // ================================================================
 function doSnakeHit(p){
-  if(p.snakeHit||p.hurt||p.eliminated)return;
-  p.snakeHit=true;p.lives=Math.max(0,p.lives-1);updateLives(p);sfxKidScream();doHurtVisuals(p);p.combo=0;
+  // [2026-03-20] Use consolidated guard — includes immune check
+  if(!canBeHitBySnake(p))return;
+  p.snakeHit=true;revokeImmunity(p);p.lives=Math.max(0,p.lives-1);updateLives(p);sfxKidScream();doHurtVisuals(p);p.combo=0;
   mpTrack('snake_bite',{player:p.id===1?'RONALDO':'MBAPPE',player_id:p.id,lives_remaining:p.lives,current_level:level,p1_score:p1.score,p2_score:p2.score});
   const gw=gameEl.offsetWidth||680;const px=p.x*(gw/GW);
   const ov=document.createElement('div');ov.className='elim-overlay';ov.style.left=(px-70)+'px';ov.style.bottom=(GROUND+p.y+60)+'px';
@@ -570,7 +701,8 @@ function doSnakeHit(p){
   } else {
     ov.textContent=`🐍 OUCH! ${p.lives} ${p.lives===1?'life':'lives'} left!`;gameEl.appendChild(ov);setTimeout(()=>ov.remove(),1800);
     showStatus(`${p.id===1?'RONALDO':'MBAPPE'} bitten! ${p.lives} left — respawning!`,2000);
-    clearTimeout(p.snakeTimer);p.snakeTimer=setTimeout(()=>{if(!running||p.eliminated)return;fullRecover(p);p.x=p.startX;p.el.style.left=(p.x*((gameEl.offsetWidth||680)/GW))+'px';p.el.classList.add('respawning');setTimeout(()=>p.el.classList.remove('respawning'),1200);},2000);
+    // [2026-03-20] Grant 5s immunity after respawn so player isn't killed instantly again
+    clearTimeout(p.snakeTimer);p.snakeTimer=setTimeout(()=>{if(!running||p.eliminated)return;fullRecover(p);p.x=p.startX;p.el.style.left=(p.x*((gameEl.offsetWidth||680)/GW))+'px';p.el.classList.add('respawning');setTimeout(()=>p.el.classList.remove('respawning'),1200);grantImmunity(p,5000);},2000);
   }
 }
 function spawnSad(x,y){const el=document.createElement('div');el.className='sad-emoji';el.textContent=['😢','😭','💀','😵','🤕','😱'][Math.floor(Math.random()*6)];el.style.left=x+'px';el.style.bottom=y+'px';gameEl.appendChild(el);setTimeout(()=>el.remove(),800);}
@@ -588,6 +720,9 @@ let eggs=[];
 document.addEventListener('keydown',e=>{
   if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();
   const k=nk(e.key);if(keys[k])return;keys[k]=true;if(!running||paused)return;AC.resume();
+  // [2026-03-20] Key activation — first arrow key press activates P1, first WASD activates P2
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)&&p1&&!p1.activated)activatePlayer(p1);
+  if(['w','a','s','d'].includes(k)&&p2&&!p2.activated)activatePlayer(p2);
   if(e.key==='ArrowUp')handleJump(p1);
   if(e.key==='ArrowDown'){if(p1.eggCooldown)doFart(p1);else layEgg(p1);}
   if(k==='w')handleJump(p2);
@@ -708,8 +843,8 @@ function checkChickens(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;chicken
 /** Crabs: ground only (y<30), 2s stun + life loss */
 function checkCrabs(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;crabs.forEach(cr=>{if(!cr.alive)return;[p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;if(p.y<30){const px=p.x*sc+38;if(Math.abs(cr.x-px)<58){p.hurt=true;p.lives=Math.max(0,p.lives-1);updateLives(p);sfxCrab();doHurtVisuals(p);p.combo=0;mpTrack('crab_sting',{player:p.id===1?'RONALDO':'MBAPPE',player_id:p.id,lives_remaining:p.lives,current_level:level});showStatus(`${p.id===1?'RONALDO':'MBAPPE'} pinched! 🦀 2s stun!`,2000);clearTimeout(p.hurtTimer);p.hurtTimer=setTimeout(()=>{if(!running||p.eliminated)return;fullRecover(p);},2000);}}});});}
 
-/** Snakes: ground only (y<25) */
-function checkSnakes(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;snakes.forEach(sn=>{if(!sn.alive)return;[p1,p2].forEach(p=>{if(p.snakeHit||p.hurt||p.eliminated)return;if(p.y<25){const px=p.x*sc+38;if(Math.abs(sn.x-px)<58)doSnakeHit(p);}});});}
+/** Snakes: ground only (y<25) — [2026-03-20] uses canBeHitBySnake guard for immunity */
+function checkSnakes(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;snakes.forEach(sn=>{if(!sn.alive)return;[p1,p2].forEach(p=>{if(!canBeHitBySnake(p))return;if(p.y<25){const px=p.x*sc+38;if(Math.abs(sn.x-px)<58)doSnakeHit(p);}});});}
 
 
 // ================================================================
@@ -737,7 +872,7 @@ function spawnSnake(cfg){
     let palette;do{palette=SNAKE_PALETTES[Math.floor(Math.random()*SNAKE_PALETTES.length)];}while(usedPalettes.includes(palette)&&usedPalettes.length<SNAKE_PALETTES.length);
     usedPalettes.push(palette);
     const goRight=i%2===0; // alternate directions so snakes don't stack
-    const el=buildSnakeEl(palette,goRight);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
+    const el=buildSnakeEl(palette,goRight,level);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
     // Stagger start positions so they enter with spacing
     const startX=goRight?-80-(i*120):gw+10+(i*120);
     el.style.left=startX+'px';gameEl.appendChild(el);
@@ -755,11 +890,132 @@ function respawnOneSnake(cfg){
   const gap=cfg.minSnakeGap||160;
   const goRight=Math.random()>0.5;
   const palette=SNAKE_PALETTES[Math.floor(Math.random()*SNAKE_PALETTES.length)];
-  const el=buildSnakeEl(palette,goRight);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
+  // [2026-03-20] Pass level for visual evolution
+  const el=buildSnakeEl(palette,goRight,level);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
   const startX=goRight?-80:gw+10;
   el.style.left=startX+'px';gameEl.appendChild(el);
   el.classList.add('warning');setTimeout(()=>el.classList.remove('warning'),1600);sfxSnakeWarn();sfxSnakeHiss();
   snakes.push({el,x:startX,speed:cfg.snakeSpeed*(goRight?1:-1),alive:true,palette,_hopping:false});
+}
+
+
+// ================================================================
+//  ELIXIR POWER-UP — floating collectible, snake immunity for 10s
+//  [2026-03-20] Spawns every ~25s from level 2+, floats across screen
+// ================================================================
+function spawnPowerup(){
+  if(!running||paused)return;
+  if(level<2)return; // only available from level 2
+  const gw=gameEl.offsetWidth||680;
+  const el=document.createElement('div');el.className='powerup-el entering';
+  // Elixir + diamond combo
+  el.innerHTML='<span class="pu-icon">💎🧪</span>';
+  const fromRight=Math.random()>0.5;
+  const h=GROUND+120+Math.random()*200; // float at mid-height
+  el.style.bottom=h+'px';
+  el.style.left=(fromRight?gw+10:-60)+'px';
+  gameEl.appendChild(el);
+  sfxPowerupAppear();
+  const pu={el,x:fromRight?gw+10:-60,y:h,speed:(fromRight?-1.5:1.5),alive:true,age:0};
+  powerups.push(pu);
+  // Power-up auto-disappears after 8s if not grabbed
+  setTimeout(()=>{if(pu.alive){pu.alive=false;el.classList.remove('entering');el.classList.add('leaving');setTimeout(()=>{try{el.remove();}catch(e){}},500);}},8000);
+}
+
+// [2026-03-20] Schedule periodic power-up spawns
+function schedulePowerups(){
+  if(!running)return;
+  const delay=22000+Math.random()*8000; // 22-30s between spawns
+  powerupTimer=setTimeout(()=>{spawnPowerup();schedulePowerups();},delay);
+}
+
+// [2026-03-20] Check if player jumps into power-up to collect it
+function checkPowerups(){
+  const gw=gameEl.offsetWidth||680;const sc=gw/GW;
+  for(let i=powerups.length-1;i>=0;i--){
+    const pu=powerups[i];if(!pu.alive)continue;
+    // Move power-up horizontally with gentle sine bob
+    pu.x+=pu.speed;pu.age++;
+    pu.el.style.left=pu.x+'px';
+    pu.el.style.bottom=(pu.y+Math.sin(pu.age*0.05)*15)+'px';
+    // Off screen — remove
+    if(pu.x<-80||pu.x>gw+80){pu.alive=false;try{pu.el.remove();}catch(e){}}
+    // Check player collision (must be airborne to grab it)
+    [p1,p2].forEach(p=>{
+      if(!pu.alive||p.hurt||p.snakeHit||p.eliminated)return;
+      if(p.powerUp)return; // already powered up
+      const px=p.x*sc+38,py=GROUND+p.y+55;
+      const puX=pu.x+30,puY=parseFloat(pu.el.style.bottom)+20;
+      if(Math.abs(px-puX)<65&&Math.abs(py-puY)<65&&!p.onGround){
+        // Collected!
+        pu.alive=false;pu.el.classList.remove('entering');pu.el.classList.add('leaving');
+        setTimeout(()=>{try{pu.el.remove();}catch(e){}},500);
+        activatePowerUp(p);
+      }
+    });
+  }
+  powerups=powerups.filter(pu=>pu.alive);
+}
+
+// [2026-03-20] Activate power-up on player — 10s snake immunity, snakes die on touch
+function activatePowerUp(p){
+  p.powerUp=true;
+  revokeImmunity(p); // clear spawn immunity if any — power-up supersedes
+  p.el.classList.add('powered-up');p.el.classList.remove('immune');
+  sfxPowerupPickup();
+  const gw=gameEl.offsetWidth||680;
+  burstConfetti(p.x*(gw/GW)+38,GROUND+p.y+60,30);
+  spawnPop(p.x*(gw/GW)+38,GROUND+p.y+80,'💎 POWER UP! 🧪',p.col,38);
+  showStatus(`${p.id===1?'RONALDO':'MBAPPE'} GOT THE ELIXIR! 💎 SNAKES BEWARE! 🐍💀`,3000);
+  // Countdown timer display
+  let timerEl=p.el.querySelector('.powerup-timer');
+  if(!timerEl){timerEl=document.createElement('div');timerEl.className='powerup-timer';p.el.appendChild(timerEl);}
+  let remaining=10;
+  timerEl.textContent=`💎 ${remaining}s`;
+  const cdIntv=setInterval(()=>{remaining--;if(remaining<=0){clearInterval(cdIntv);return;}timerEl.textContent=`💎 ${remaining}s`;if(remaining<=3)timerEl.style.color='#ff4444';},1000);
+  // Background music loop
+  clearInterval(powerupMusicId);
+  sfxPowerupMusic();
+  powerupMusicId=setInterval(()=>{if(running&&!paused)sfxPowerupMusic();},1200);
+  // Continuous celebratory confetti
+  const confettiIntv=setInterval(()=>{if(!running||!p.powerUp)return;const gw2=gameEl.offsetWidth||680;burstConfetti(p.x*(gw2/GW)+38,GROUND+p.y+60,6);},800);
+  // Deactivate after 10s
+  setTimeout(()=>{
+    p.powerUp=false;
+    p.el.classList.remove('powered-up');
+    clearInterval(powerupMusicId);powerupMusicId=null;
+    clearInterval(cdIntv);clearInterval(confettiIntv);
+    const te=p.el.querySelector('.powerup-timer');if(te)te.remove();
+    showStatus(`${p.id===1?'RONALDO':'MBAPPE'}'s elixir wore off! 🧪`,2000);
+    // Brief sound for end
+    tone(400,'sine',0.15,0.2);tone(300,'sine',0.15,0.2,0.1);
+  },10000);
+  mpTrack('powerup_collected',{player:p.id===1?'RONALDO':'MBAPPE',player_id:p.id,level:level});
+}
+
+// [2026-03-20] Check if powered-up player touches snake — snake explodes, player gets +5
+function checkPowerupSnakeKills(){
+  const gw=gameEl.offsetWidth||680;const sc=gw/GW;
+  [p1,p2].forEach(p=>{
+    if(!p.powerUp||p.eliminated)return;
+    if(p.y>25)return; // only on ground
+    const px=p.x*sc+38;
+    snakes.forEach(sn=>{
+      if(!sn.alive)return;
+      if(Math.abs(sn.x-px)<58){
+        // Snake explodes!
+        sn.alive=false;sfxSnakeExplode();
+        sn.el.classList.add('exploding');
+        setTimeout(()=>{try{sn.el.remove();}catch(e){}},900);
+        p.score+=5;updateUI();
+        burstConfetti(sn.x+30,GROUND+50,30);
+        spawnPop(sn.x+30,GROUND+50,'+5 💎🐍💀',p.col,38);
+        showStatus(`${p.id===1?'RONALDO':'MBAPPE'} DESTROYED the snake! 💎🐍💀 +5!`,2500);
+        mpTrack('powerup_snake_kill',{player:p.id===1?'RONALDO':'MBAPPE',player_id:p.id,level:level});
+        setTimeout(()=>{if(running)respawnOneSnake(getCfg(level));},4000);
+      }
+    });
+  });
 }
 
 
@@ -772,8 +1028,38 @@ function doLevelUp(){
   document.getElementById('level-badge').textContent=`⭐ LEVEL ${level} ⭐`;sfxLevel();
   document.getElementById('lnum').textContent=`LEVEL ${level}! ⚡`;document.getElementById('lsub').textContent=cfg.label;
   lvlAnn.classList.remove('lvlanim');void lvlAnn.offsetWidth;lvlAnn.classList.add('lvlanim');setTimeout(()=>lvlAnn.classList.remove('lvlanim'),2400);
-  showStatus(`⚡ LEVEL ${level}: ${cfg.label}`,2000);spawnSnake(cfg);
+  showStatus(`⚡ LEVEL ${level}: ${cfg.label}`,2000);
+  // [2026-03-20] FIX: Keep existing alive snakes, update their speed, only add new ones if needed
+  updateSnakesForLevel(cfg);
   mpTrack('level_up',{new_level:level,p1_score:p1.score,p2_score:p2.score,time_remaining:timeLeft});
+}
+
+// [2026-03-20] Preserve existing snakes on level change — update speed, add new ones to match count
+function updateSnakesForLevel(cfg){
+  const aliveSnakes=snakes.filter(s=>s.alive);
+  // Update speed of existing alive snakes (preserve direction)
+  aliveSnakes.forEach(sn=>{
+    const dir=sn.speed>0?1:-1;
+    sn.speed=cfg.snakeSpeed*dir;
+  });
+  // Add new snakes if level requires more
+  const targetCount=cfg.snakeCount||1;
+  const toAdd=targetCount-aliveSnakes.length;
+  if(toAdd>0){
+    const gw=gameEl.offsetWidth||680;
+    const usedPalettes=aliveSnakes.map(s=>s.palette);
+    for(let i=0;i<toAdd;i++){
+      let palette;do{palette=SNAKE_PALETTES[Math.floor(Math.random()*SNAKE_PALETTES.length)];}while(usedPalettes.includes(palette)&&usedPalettes.length<SNAKE_PALETTES.length);
+      usedPalettes.push(palette);
+      const goRight=Math.random()>0.5;
+      const el=buildSnakeEl(palette,goRight,level);el.style.position='absolute';el.style.bottom='158px';el.style.zIndex='17';
+      const startX=goRight?-80:gw+10;
+      el.style.left=startX+'px';gameEl.appendChild(el);
+      el.classList.add('warning');setTimeout((e=>()=>e.classList.remove('warning'))(el),1600);
+      sfxSnakeWarn();sfxSnakeHiss();
+      snakes.push({el,x:startX,speed:cfg.snakeSpeed*(goRight?1:-1),alive:true,palette,_hopping:false});
+    }
+  }
 }
 
 
@@ -887,6 +1173,8 @@ function gameFrame(){
   }
   chickens=chickens.filter(c=>!c.gone);
   // Collisions
+  // [2026-03-20] Power-up collision checks — must run BEFORE checkSnakes so powered-up kills take priority
+  checkPowerups();checkPowerupSnakeKills();
   checkChickens();checkCrabs();checkSnakes();
   // Parallax scroll
   bgEls.forEach(el=>{let x=parseFloat(el.style.left);x-=parseFloat(el.dataset.spd)*1.3;if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲','🌺','🌸'][Math.floor(Math.random()*6)];}el.style.left=x+'px';});
@@ -910,6 +1198,78 @@ function showHighScores(){const hs=getHighScore();const el=document.getElementBy
 
 
 // ================================================================
+//  KEY ACTIVATION — show keyboard overlays, players join on key press
+//  [2026-03-20] Supports 1-player mode if only one set of keys is pressed
+// ================================================================
+let keyOverlayP1=null,keyOverlayP2=null,activationTimeout=null;
+
+/** Create a keyboard overlay at a player's spawn position */
+function createKeyOverlay(playerId,x){
+  const gw=gameEl.offsetWidth||680;const sc=gw/GW;
+  const el=document.createElement('div');el.className='key-overlay';
+  const px=x*sc;
+  el.style.left=(px-10)+'px';el.style.bottom=(GROUND+20)+'px';
+  if(playerId===1){
+    // Arrow keys (Ronaldo — right side)
+    el.innerHTML=`
+      <div class="ko-title" style="color:#FFD700">🇵🇹 RONALDO</div>
+      <div class="ko-keys arrows">
+        <div></div><div class="ko-key accent">↑</div><div></div>
+        <div class="ko-key">←</div><div class="ko-key">↓</div><div class="ko-key">→</div>
+      </div>
+      <div class="ko-hint">Press ARROW KEYS to join!</div>`;
+  } else {
+    // WASD (Mbappe — left side)
+    el.innerHTML=`
+      <div class="ko-title" style="color:#60A5FA">🇫🇷 MBAPPE</div>
+      <div class="ko-keys wasd">
+        <div></div><div class="ko-key accent">W</div><div></div>
+        <div class="ko-key">A</div><div class="ko-key">S</div><div class="ko-key">D</div>
+      </div>
+      <div class="ko-hint">Press WASD to join!</div>`;
+  }
+  gameEl.appendChild(el);
+  return el;
+}
+
+/** Activate a player — remove overlay, show character, set up game state */
+function activatePlayer(p){
+  if(p.activated)return;
+  p.activated=true;p.eliminated=false;p.lives=3;
+  updateLives(p);
+  // Show character with appear animation
+  p.el.style.display='';p.el.classList.add('appearing');
+  setTimeout(()=>p.el.classList.remove('appearing'),700);
+  // Grant immunity
+  grantImmunity(p,5000);
+  // Sound + confetti
+  sfxStart();
+  const gw=gameEl.offsetWidth||680;
+  burstConfetti(p.x*(gw/GW)+38,GROUND+60,20);
+  spawnPop(p.x*(gw/GW)+38,GROUND+80,`${p.id===1?'RONALDO':'MBAPPE'} JOINS!`,p.col,34);
+  showStatus(`${p.id===1?'⚽ RONALDO':'🏆 MBAPPE'} has entered the game! 🛡️ 5s immunity!`,2500);
+  // Remove this player's overlay
+  if(p.id===1&&keyOverlayP1){keyOverlayP1.classList.add('hidden');setTimeout(()=>{try{keyOverlayP1.remove();}catch(e){}keyOverlayP1=null;},800);}
+  if(p.id===2&&keyOverlayP2){keyOverlayP2.classList.add('hidden');setTimeout(()=>{try{keyOverlayP2.remove();}catch(e){}keyOverlayP2=null;},800);}
+  mpTrack('player_activated',{player:p.id===1?'RONALDO':'MBAPPE',player_id:p.id,time_into_game:timeLeft});
+}
+
+/** Remove remaining overlays after timeout */
+function fadeRemainingOverlays(){
+  if(keyOverlayP1&&!p1.activated){
+    const hint=keyOverlayP1.querySelector('.ko-hint');
+    if(hint)hint.textContent='Press ↑←↓→ anytime to join!';
+    keyOverlayP1.style.opacity='0.4';
+  }
+  if(keyOverlayP2&&!p2.activated){
+    const hint=keyOverlayP2.querySelector('.ko-hint');
+    if(hint)hint.textContent='Press WASD anytime to join!';
+    keyOverlayP2.style.opacity='0.4';
+  }
+}
+
+
+// ================================================================
 //  GAME LIFECYCLE
 // ================================================================
 let lastLevelReached=1;
@@ -919,26 +1279,41 @@ function startGame(startLevel){
   if(typeof startLevel==='undefined')startLevel=Math.max(1,lastLevelReached-1);
   AC.resume();onScreen=false;paused=false;
   document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';document.getElementById('pause-overlay').style.display='none';
+  // [2026-03-20] Clean up all game objects including power-ups
   chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];fartClouds.forEach(f=>{try{f.el.remove();}catch(e){}});fartClouds=[];
+  powerups.forEach(p=>{try{p.el.remove();}catch(e){}});powerups=[];clearTimeout(powerupTimer);clearInterval(powerupMusicId);powerupMusicId=null;
   clearKeys();
+  // [2026-03-20] Clean up any previous key overlays
+  if(keyOverlayP1){try{keyOverlayP1.remove();}catch(e){}}keyOverlayP1=null;
+  if(keyOverlayP2){try{keyOverlayP2.remove();}catch(e){}}keyOverlayP2=null;
+  clearTimeout(activationTimeout);
   p1=makePlayer(1,550,'#FFD700');p2=makePlayer(2,80,'#60A5FA');
   document.getElementById('p1eggcd').className='egg-cd ready';document.getElementById('p2eggcd').className='egg-cd ready';
   level=startLevel;timeLeft=0;running=true;
   skyEl.className='';if(level>1&&SKY_CLASSES[level-1])skyEl.classList.add(SKY_CLASSES[level-1]);
   document.getElementById('level-badge').textContent=`⭐ LEVEL ${level} ⭐`;
   updateUI();updateLives(p1);updateLives(p2);sfxStart();
+  // [2026-03-20] Key activation — hide players, show keyboard overlays, wait for key press
+  p1.el.style.display='none';p1.eliminated=true;p1.activated=false;
+  p2.el.style.display='none';p2.eliminated=true;p2.activated=false;
+  keyOverlayP1=createKeyOverlay(1,550);
+  keyOverlayP2=createKeyOverlay(2,80);
+  // After 5s, dim the remaining unactivated overlays with hint
+  activationTimeout=setTimeout(fadeRemainingOverlays,5000);
   clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);
   loopId=setInterval(gameFrame,16);
-  timerIntv=setInterval(()=>{timeLeft++;if(timeLeft%10===0)doLevelUp();if(p1.eliminated&&p2.eliminated)endGame('both_eliminated');},1000);
+  timerIntv=setInterval(()=>{timeLeft++;if(timeLeft%10===0)doLevelUp();if(p1.eliminated&&p2.eliminated&&(p1.activated||p2.activated))endGame('both_eliminated');},1000);
   const cfg=getCfg(level);setTimeout(()=>scheduleChickens(cfg),700);setTimeout(()=>scheduleCrabs(cfg),3200);setTimeout(()=>{if(running)spawnSnake(getCfg(level));},level>1?1000:5000);
-  showStatus(level>1?`⚡ RESUMING AT LEVEL ${level}!`:'🐔 Catch chickens! 🐍 JUMP OVER the snake! 🦀 Dodge crabs!',3500);
+  // [2026-03-20] Start power-up spawn schedule (available from level 2)
+  schedulePowerups();
+  showStatus(level>1?`⚡ RESUMING AT LEVEL ${level}!`:'Press WASD or ARROW KEYS to join! 🎮',3500);
   gameCount++;sessionStorage.setItem('rcg_count',gameCount);
   mpTrack('game_started',{game_number:gameCount,start_level:level});
 }
 
 /** Win — survived 90s */
 function triggerWin(){
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);  running=false;saveHighScore(p1.score,p2.score);sfxWin();mpTrackGameEnd('time_survived');
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearTimeout(powerupTimer);clearInterval(powerupMusicId);powerupMusicId=null;running=false;saveHighScore(p1.score,p2.score);sfxWin();mpTrackGameEnd('time_survived');
   const winAnn=document.getElementById('win-ann');
   const p1a=!p1.eliminated,p2a=!p2.eliminated;const tie=p1a&&p2a&&p1.score===p2.score;const p1w=(p1a&&!p2a)||(p1a&&p2a&&p1.score>p2.score);
   document.getElementById('win-txt').textContent=tie?'🤝 TIE!':p1w?'⚽ RONALDO WINS!':'🏆 MBAPPE WINS!';
@@ -949,16 +1324,21 @@ function triggerWin(){
 
 /** End game */
 function endGame(reason='manual'){
-  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);running=false;clearKeys();lastLevelReached=level;try{saveHighScore(p1.score,p2.score);}catch(e){}mpTrackGameEnd(reason);showEndScreen();
+  // [2026-03-20] Also clear power-up timers and music
+  clearInterval(loopId);clearInterval(timerIntv);clearTimeout(chkTimer);clearTimeout(crabTimer);clearTimeout(powerupTimer);clearInterval(powerupMusicId);powerupMusicId=null;running=false;clearKeys();lastLevelReached=level;try{saveHighScore(p1.score,p2.score);}catch(e){}mpTrackGameEnd(reason);showEndScreen();
 }
 
 /** Show end screen */
 function showEndScreen(){
-  const w=p1.eliminated&&!p2.eliminated?'MBAPPE':p2.eliminated&&!p1.eliminated?'RONALDO':p1.score>p2.score?'RONALDO':p2.score>p1.score?'MBAPPE':'TIE';
+  // [2026-03-20] Handle 1-player mode — unactivated player doesn't count as competitor
+  const p1in=p1.activated,p2in=p2.activated;
+  const w=(!p1in&&p2in)?'MBAPPE':(!p2in&&p1in)?'RONALDO':(p1.eliminated&&!p2.eliminated)?'MBAPPE':(p2.eliminated&&!p1.eliminated)?'RONALDO':p1.score>p2.score?'RONALDO':p2.score>p1.score?'MBAPPE':'TIE';
   document.getElementById('wemoji').textContent=w==='TIE'?'🤝':w==='RONALDO'?'⭐':'🏆';
   document.getElementById('wtxt').textContent=w==='TIE'?'TIE!':w+' WINS!';
   document.getElementById('wtxt').style.color=w==='TIE'?'#fff':w==='RONALDO'?'#FFD700':'#60A5FA';
-  document.getElementById('fscores').innerHTML=`<span style="color:#60A5FA">Mbappe: ${p2.score}🍗${p2.eliminated?' 💀':''}</span> &nbsp; <span style="color:#FFD700">RONALDO: ${p1.score}🍗${p1.eliminated?' 💀':''}</span>`;
+  const p1label=p1in?`RONALDO: ${p1.score}🍗${p1.eliminated?' 💀':''}`:'RONALDO: didn\'t join';
+  const p2label=p2in?`Mbappe: ${p2.score}🍗${p2.eliminated?' 💀':''}`:'Mbappe: didn\'t join';
+  document.getElementById('fscores').innerHTML=`<span style="color:#60A5FA">${p2label}</span> &nbsp; <span style="color:#FFD700">${p1label}</span>`;
   document.getElementById('reached-level').textContent=`Reached Level ${level} ⚡`;
   const resumeLvl=Math.max(1,level-1);
   document.getElementById('resume-info').textContent=resumeLvl>1?`Press any key to resume from Level ${resumeLvl}`:'Press any key to start from Level 1';

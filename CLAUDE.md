@@ -6,14 +6,14 @@ This repo contains two separate games:
 
 | Game | File | Release Notes |
 |------|------|---------------|
-| Ronaldo Chicken | `ronaldo_chicken.html` | `RELEASE_NOTES_RONALDO_CHICKEN.md` |
+| Ronaldo Chicken | `ronaldo_chicken.html` | `RELEASE_NOTES.md` |
 | Chicken Farm | `chicken_farm.html` | `RELEASE_NOTES_CHICKEN_FARM.md` |
 
 ## Release Notes Protocol
 
 **MANDATORY** on every code change: update the **correct** release notes file for the game you modified.
 
-- Changes to `ronaldo_chicken.html` → update `RELEASE_NOTES_RONALDO_CHICKEN.md`
+- Changes to `ronaldo_chicken.html` → update `RELEASE_NOTES.md`
 - Changes to `chicken_farm.html` → update `RELEASE_NOTES_CHICKEN_FARM.md`
 
 Each update must include: version bump (patch/minor/major), date, summary, and changes. Update the Version History table at the top.

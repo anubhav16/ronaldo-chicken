@@ -89,4 +89,4 @@ The result is a game that a 7-year-old designed, his dad engineered, and Claude 
 
 ## Version
 
-**Current: v6.0.1** — See [RELEASE_NOTES_RONALDO_CHICKEN.md](RELEASE_NOTES_RONALDO_CHICKEN.md) for full changelog.
+**Current: v6.0.1** — See [RELEASE_NOTES.md](RELEASE_NOTES.md) for full changelog.

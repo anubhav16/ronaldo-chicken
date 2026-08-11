@@ -188,7 +188,7 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 @keyframes eggFill { 0% { opacity: 0.2; filter: grayscale(1) brightness(0.5); transform: scale(0.6); } 100% { opacity: 1; filter: grayscale(0) brightness(1); transform: scale(1.3); } }
 @keyframes eggReady { 0% { transform: scale(1); filter: drop-shadow(0 0 4px #FFD700); } 100% { transform: scale(1.3); filter: drop-shadow(0 0 12px #ff6fd8); } }
 .egg-cd { display: inline-block; font-size: 22px; margin-left: 6px; vertical-align: middle; opacity: 0.2; filter: grayscale(1); transition: all 0.3s; }
-.egg-cd.charging { animation: eggFill 3s linear forwards; }
+.egg-cd.charging { animation: eggFill 1s linear forwards; } /* [2026-08-11] Egg recharges in 1s (was 3s) — kids want more eggs! */
 .egg-cd.ready { opacity: 1; filter: grayscale(0); animation: eggReady 0.6s ease-in-out infinite alternate; }
 .char.sitting { animation: layEggPose 0.5s ease-out forwards; transform-origin: bottom center; }
 @keyframes layEggPose { 0% { transform: scaleY(1) scaleX(1); } 30% { transform: scaleY(0.65) scaleX(1.15) translateY(16px); } 60% { transform: scaleY(0.6) scaleX(1.2) translateY(18px); } 100% { transform: scaleY(1) scaleX(1); } }
@@ -214,6 +214,15 @@ body { background: #1a0533; overflow: hidden; font-family: 'Nunito', sans-serif;
 /* [2026-03-20] Snake explosion when hitting powered-up player */
 @keyframes snakeExplode { 0% { transform: scale(1); } 30% { transform: scale(2) rotate(30deg); } 60% { transform: scale(2.5) rotate(-20deg); opacity: 0.5; } 100% { transform: scale(0) rotate(360deg); opacity: 0; } }
 .snake-el.exploding { animation: snakeExplode 0.8s ease-out forwards !important; }
+/* [2026-08-11] Stomp-squish system: jump on a snake → it flattens into a kickable "pancake" shell */
+.snake-el.squished { animation: squishDown 0.3s ease-out forwards !important; filter: saturate(0.7) brightness(1.1); }
+@keyframes squishDown { 0% { transform: scaleY(1); } 40% { transform: scaleY(0.15) scaleX(1.5); } 70% { transform: scaleY(0.45) scaleX(1.2); } 100% { transform: scaleY(0.3) scaleX(1.3); } }
+.snake-el.rolling { animation: shellRoll 0.4s linear infinite !important; }
+@keyframes shellRoll { 0% { transform: scaleY(0.3) scaleX(1.3) rotate(0deg); } 100% { transform: scaleY(0.3) scaleX(1.3) rotate(360deg); } }
+.snake-el.shell-pop { animation: snakeDie 0.5s ease-out forwards !important; }
+/* [2026-08-11] Screen shake on squish — big juicy feedback for kids */
+@keyframes gameShake { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-5px,3px); } 40% { transform: translate(5px,-3px); } 60% { transform: translate(-4px,-2px); } 80% { transform: translate(3px,2px); } }
+#game.shaking { animation: gameShake 0.3s ease-out; }
 
 /* [2026-03-20] Key activation overlays — show controls at spawn point before player joins */
 .key-overlay { position: absolute; z-index: 30; display: flex; flex-direction: column; align-items: center; pointer-events: none; transition: opacity 0.8s ease; }
@@ -415,8 +424,9 @@ mpEngage({'$set_once':{'$created':new Date().toISOString(), 'first_device':DEVIC
     </div>
     <!-- [2026-03-20] Bigger instruction text for kids -->
     <p style="font-size:15px;color:#fff;text-align:center;margin-bottom:12px;text-shadow:0 0 6px #ff6fd8">
-      🐔 Jump INTO chickens · 🦀 Crabs = 2s stun · 🐍 Snake gets faster each level!<br>
-      🥚 Drop eggs mid-air or ground! Run into eggs to kick them! Hit snake = +5pts!<br>
+      🐔 Jump INTO chickens · 🦀 Crabs = 2s stun · 🐍 Snake bites from the SIDE!<br>
+      🥞 JUMP ON snakes to SQUISH them (+3)! KICK the flat snake — it rolls & CHAIN-SQUISHES other snakes (+5 each)!<br>
+      🥚 Drop eggs every 1s — mid-air or ground! Kick eggs at snakes = +5pts!<br>
       💎🧪 Grab the floating ELIXIR for 10s SNAKE IMMUNITY! Snakes DIE on touch!<br>
       ❤️❤️❤️ 3 lives · 3 bites = OUT! · 🛡️ 5s immunity at spawn!
     </p>
@@ -571,7 +581,7 @@ function getCfg(lv){return LEVEL_CFG[Math.min(lv-1,LEVEL_CFG.length-1)];}
 // ================================================================
 //  GAME STATE
 // ================================================================
-let p1,p2,chickens=[],crabs=[],snakes=[],running=false,timeLeft=TOTAL_TIME,level=1;
+let p1,p2,chickens=[],crabs=[],snakes=[],shells=[],running=false,timeLeft=TOTAL_TIME,level=1; // [2026-08-11] shells = squished kickable snakes
 let fartClouds=[]; // [2026-03-15] Rising fart smoke that kills flying chickens on contact
 let loopId,timerIntv,chkTimer,crabTimer;
 // [2026-03-20] Elixir power-up state
@@ -738,7 +748,8 @@ document.addEventListener('keyup',e=>{keys[nk(e.key)]=false;});
 window.addEventListener('blur',clearKeys);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)clearKeys();});
 
-function handleJump(p){if(p.hurt||p.snakeHit||p.eliminated)return;if(p.onGround){p.vy=16;p.onGround=false;p.airJumped=false;sfxJump();}else if(!p.airJumped){p.vy=22;p.airJumped=true;sfxHiJump();}}
+// [2026-08-11] Higher jumps: ground 16→19, air 22→26 — easier to reach high chickens & stomp snakes
+function handleJump(p){if(p.hurt||p.snakeHit||p.eliminated)return;if(p.onGround){p.vy=19;p.onGround=false;p.airJumped=false;sfxJump();}else if(!p.airJumped){p.vy=26;p.airJumped=true;sfxHiJump();}}
 
 /** Sit down and fart — egg not ready yet */
 function doFart(p){
@@ -798,7 +809,7 @@ function layEgg(p){
   if(!running||p.hurt||p.snakeHit||p.eliminated||p.eggCooldown)return;
   p.eggCooldown=true;
   if(p.eggCdEl){p.eggCdEl.className='egg-cd';void p.eggCdEl.offsetWidth;p.eggCdEl.className='egg-cd charging';}
-  setTimeout(()=>{p.eggCooldown=false;if(p.eggCdEl)p.eggCdEl.className='egg-cd ready';},3000);
+  setTimeout(()=>{p.eggCooldown=false;if(p.eggCdEl)p.eggCdEl.className='egg-cd ready';},1000); // [2026-08-11] 1s egg cooldown (was 3s)
   sfxEggLay();
   const gw=gameEl.offsetWidth||680;const sc=gw/GW;const px=p.x*sc+38;
   const bottomY=GROUND+p.y;
@@ -848,8 +859,99 @@ function checkChickens(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;chicken
 /** Crabs: ground only (y<30), 2s stun + life loss */
 function checkCrabs(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;crabs.forEach(cr=>{if(!cr.alive)return;[p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;if(p.y<30){const px=p.x*sc+38;if(Math.abs(cr.x-px)<58){p.hurt=true;p.lives=Math.max(0,p.lives-1);updateLives(p);sfxCrab();doHurtVisuals(p);p.combo=0;mpTrack('crab_sting',{player:p.id===1?'RONALDO':'MBAPPE',player_id:p.id,lives_remaining:p.lives,current_level:level});showStatus(`${p.id===1?'RONALDO':'MBAPPE'} pinched! 🦀 2s stun!`,2000);clearTimeout(p.hurtTimer);p.hurtTimer=setTimeout(()=>{if(!running||p.eliminated)return;fullRecover(p);},2000);}}});});}
 
-/** Snakes: ground only (y<25) — [2026-03-20] uses canBeHitBySnake guard for immunity */
-function checkSnakes(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;snakes.forEach(sn=>{if(!sn.alive)return;[p1,p2].forEach(p=>{if(!canBeHitBySnake(p))return;if(p.y<25){const px=p.x*sc+38;if(Math.abs(sn.x-px)<58)doSnakeHit(p);}});});}
+/** [2026-08-11] Snakes rework: STOMP from above → squish into kickable shell; SIDE hit on ground → bite (as before) */
+function checkSnakes(){const gw=gameEl.offsetWidth||680;const sc=gw/GW;snakes.forEach(sn=>{if(!sn.alive)return;[p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;const px=p.x*sc+38;if(Math.abs(sn.x-px)>=58)return;
+  // Stomp: player falling from above onto the snake → SQUISH + bounce
+  if(!p.onGround&&p.vy<0&&p.y>8&&p.y<80){squishSnake(sn,p);p.vy=14;return;}
+  // Side hit on ground → snake bite (respects immunity/power-up guards)
+  if(p.y<25&&canBeHitBySnake(p))doSnakeHit(p);
+});});}
+
+// ================================================================
+//  [2026-08-11] SNAKE SQUISH & SHELL SYSTEM — Mario-Koopa style for kids
+//  Stomp a snake → it flattens into a shell. Run into the shell to
+//  KICK it — it rolls, spins, and chain-squishes every snake it hits!
+// ================================================================
+function screenShake(){gameEl.classList.remove('shaking');void gameEl.offsetWidth;gameEl.classList.add('shaking');setTimeout(()=>gameEl.classList.remove('shaking'),350);}
+
+/** Squishy cartoon "splat-boing" — descending pitch + wet noise burst */
+function sfxSquish(){try{tone(500,'triangle',0.12,0.3);tone(250,'triangle',0.15,0.25,0.08);tone(120,'sine',0.2,0.3,0.14);
+  const buf=AC.createBuffer(1,AC.sampleRate*0.2,AC.sampleRate);const d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(AC.sampleRate*0.05));
+  const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();s.buffer=buf;f.type='lowpass';f.frequency.value=600;s.connect(f);f.connect(g);g.connect(AC.destination);
+  g.gain.setValueAtTime(0.3,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.18);s.start();s.stop(AC.currentTime+0.2);}catch(e){}}
+
+/** Shell kick — punchy whoosh + rising zing */
+function sfxShellKick(){tone(200,'square',0.08,0.3);tone(400,'sawtooth',0.1,0.25,0.04);const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='sine';o.frequency.setValueAtTime(300,AC.currentTime);o.frequency.linearRampToValueAtTime(900,AC.currentTime+0.15);g.gain.setValueAtTime(0.2,AC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+0.18);o.start();o.stop(AC.currentTime+0.2);}
+
+/** Chain squish — happy ascending arpeggio + squish, gets kids giggling */
+function sfxChainSquish(n){const base=[523,659,784,1047];[0,1,2,3].forEach(i=>tone(base[Math.min(i+Math.min(n,3),3)]||1047,'square',0.09,0.3,i*0.06));sfxSquish();}
+
+const SQUISH_LABELS=['SPLAT! 🥞','SQUISH! 🐍','BOING! 💥','FLAT! 😵','PANCAKE! 🥞'];
+
+/** Turn an alive snake into a flattened kickable shell */
+function squishSnake(sn,stomper,chainCount){
+  if(!sn.alive)return;
+  sn.alive=false;
+  sn.el.classList.remove('warning','hopping');
+  sn.el.classList.add('squished');
+  sfxSquish();screenShake();
+  const isChain=typeof chainCount==='number';
+  const pts=isChain?5:3;
+  if(stomper){stomper.score+=pts;updateUI();}
+  const lbl=isChain?`CHAIN x${chainCount}! 🐍💫 +5`:SQUISH_LABELS[Math.floor(Math.random()*SQUISH_LABELS.length)]+' +3';
+  spawnPop(sn.x+30,GROUND+60,lbl,stomper?stomper.col:'#FFD700',isChain?36:32);
+  burstConfetti(sn.x+30,GROUND+40,isChain?25:15);
+  if(isChain)sfxChainSquish(chainCount);
+  shells.push({el:sn.el,x:sn.x,speed:0,owner:stomper?stomper.id:0,alive:true,expire:Date.now()+12000});
+  mpTrack(isChain?'shell_chain_squish':'snake_stomped',{player:stomper?(stomper.id===1?'RONALDO':'MBAPPE'):'shell',level:level,chain:chainCount||0});
+  // Respawn pressure after a few seconds so the field never empties
+  setTimeout(()=>{if(running)respawnOneSnake(getCfg(level));},4000);
+}
+
+/** Per-frame shell physics: kick, roll, chain-squish, expire */
+function updateShells(){
+  const gw=gameEl.offsetWidth||680;const sc=gw/GW;
+  for(let i=shells.length-1;i>=0;i--){
+    const sh=shells[i];
+    if(!sh.alive){shells.splice(i,1);continue;}
+    // Rolling movement with gentle friction
+    if(sh.speed!==0){
+      sh.x+=sh.speed;sh.speed*=0.992;
+      if(Math.abs(sh.speed)<0.6){sh.speed=0;sh.el.classList.remove('rolling');sh.el.classList.add('squished');}
+      // Bounce off walls so a kicked shell can come back — more chaos, more fun
+      if(sh.x<-10){sh.x=-10;sh.speed=Math.abs(sh.speed);}
+      if(sh.x>gw-90){sh.x=gw-90;sh.speed=-Math.abs(sh.speed);}
+    }
+    sh.el.style.left=sh.x+'px';
+    // Expire: pop away after 12s idle on the field
+    if(Date.now()>sh.expire){sh.alive=false;sh.el.classList.remove('squished','rolling');sh.el.classList.add('shell-pop');setTimeout(((e)=>()=>{try{e.remove();}catch(x){}})(sh.el),600);shells.splice(i,1);continue;}
+    // Kick: grounded player runs into a resting shell
+    [p1,p2].forEach(t=>{
+      if(!sh.alive||sh.speed!==0||t.hurt||t.snakeHit||t.eliminated||t.y>=30)return;
+      const tx=t.x*sc+38;
+      if(Math.abs(sh.x+40-tx)<55){
+        const kickDir=(sh.x+40)>tx?1:-1;
+        sh.speed=kickDir*11;sh.owner=t.id;sh.expire=Date.now()+12000;
+        sh.el.classList.remove('squished');sh.el.classList.add('rolling');
+        sfxShellKick();spawnPop(sh.x+40,GROUND+30,'KICK! 🦵💨',t.col,28);
+        mpTrack('shell_kicked',{player:t.id===1?'RONALDO':'MBAPPE',level:level});
+      }
+    });
+    // Rolling shell chain-squishes every alive snake it touches
+    if(Math.abs(sh.speed)>2){
+      sh._chain=sh._chain||0;
+      snakes.forEach(sn=>{
+        if(!sn.alive||!sh.alive)return;
+        if(Math.abs(sn.x-sh.x)<60){
+          sh._chain++;
+          const owner=sh.owner===1?p1:sh.owner===2?p2:null;
+          squishSnake(sn,owner,sh._chain);
+          showStatus(`🐍 SHELL STRIKE! ${sh._chain>1?'CHAIN x'+sh._chain+'!!':''} 💫`,1800);
+        }
+      });
+    }
+  }
+}
 
 
 // ================================================================
@@ -1120,7 +1222,7 @@ function gameFrame(){
   const gw=gameEl.offsetWidth||680;const sc=gw/GW;
   // Move players
   [p1,p2].forEach(p=>{if(p.hurt||p.snakeHit||p.eliminated)return;
-    let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-3.8;if(keys['ArrowRight'])dx=3.8;}else{if(keys['a'])dx=-3.8;if(keys['d'])dx=3.8;}
+    let dx=0;if(p.id===1){if(keys['ArrowLeft'])dx=-5.2;if(keys['ArrowRight'])dx=5.2;}else{if(keys['a'])dx=-5.2;if(keys['d'])dx=5.2;} // [2026-08-11] Faster run 3.8→5.2
     const active=dx!==0||!p.onGround;
     if(active&&p.el.classList.contains('idle'))p.el.classList.remove('idle');
     else if(!active&&!p.el.classList.contains('idle'))p.el.classList.add('idle');
@@ -1225,6 +1327,7 @@ function gameFrame(){
   // Collisions
   // [2026-03-20] Power-up collision checks — must run BEFORE checkSnakes so powered-up kills take priority
   checkPowerups();checkPowerupSnakeKills();
+  updateShells(); // [2026-08-11] squished-snake shell physics
   checkChickens();checkCrabs();checkSnakes();
   // Parallax scroll
   bgEls.forEach(el=>{let x=parseFloat(el.style.left);x-=parseFloat(el.dataset.spd)*1.3;if(x<-60){x=GW+40;el.textContent=['🌿','🌳','🏟️','🌲','🌺','🌸'][Math.floor(Math.random()*6)];}el.style.left=x+'px';});
@@ -1330,7 +1433,7 @@ function startGame(startLevel){
   AC.resume();onScreen=false;paused=false;
   document.getElementById('ss').style.display='none';document.getElementById('es').style.display='none';document.getElementById('win-ann').style.display='none';document.getElementById('pause-overlay').style.display='none';
   // [2026-03-20] Clean up all game objects including power-ups
-  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];fartClouds.forEach(f=>{try{f.el.remove();}catch(e){}});fartClouds=[];
+  chickens.forEach(c=>{try{c.el.remove();}catch(e){}});chickens=[];crabs.forEach(c=>{try{c.el.remove();}catch(e){}});crabs=[];snakes.forEach(s=>{try{s.el.remove();}catch(e){}});snakes=[];shells.forEach(s=>{try{s.el.remove();}catch(e){}});shells=[];eggs.forEach(e=>{try{e.el.remove();}catch(x){}});eggs=[];fartClouds.forEach(f=>{try{f.el.remove();}catch(e){}});fartClouds=[];
   powerups.forEach(p=>{try{p.el.remove();}catch(e){}});powerups=[];clearTimeout(powerupTimer);clearInterval(powerupMusicId);powerupMusicId=null;
   clearKeys();
   // [2026-03-20] Clean up any previous key overlays

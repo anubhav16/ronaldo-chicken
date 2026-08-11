@@ -32,6 +32,32 @@
 | v5.1.0 | 2026-03-15 | Minor | Snakes hop over each other, hiss & death sounds, pause overlay, spacebar fix |
 | v6.0.0 | 2026-03-20 | Major | Spawn immunity, kid-friendly fonts, snake persistence fix, snake evolution, elixir power-up, key activation (1P support) |
 | v6.0.1 | 2026-03-20 | Patch | Gem guardian snakes + circular countdown ring |
+| v6.1.0 | 2026-08-11 | Minor | Snake stomp & kickable shells, 1s eggs, higher jumps, faster running |
+
+---
+
+## v6.1.0 — Snake Squish & Shell Kicks, Speed Boost (Aug 11)
+
+### Snake Stomp → Squish → Kick → CHAIN SQUISH! 🐍🥞 (Mario-Koopa style)
+- **Jump ON a snake to SQUISH it** (+3 pts) — it flattens into a pancake shell with a squishy splat-boing sound, screen shake, confetti, and a random silly label (SPLAT! / BOING! / PANCAKE!)
+- **Player bounces** off the stomp — chain stomps feel great
+- **Run into a squished snake to KICK it** — it spins and rolls across the field with a punchy kick sound, and **bounces off the walls** for extra chaos
+- **Rolling shells CHAIN-SQUISH every live snake they hit** (+5 pts each) with an ascending happy arpeggio and "CHAIN x2!!" banners — squish them all!
+- Shells expire with a pop after 12s; squished snakes respawn after 4s so the field never empties
+- Analytics: new `snake_stomped`, `shell_kicked`, `shell_chain_squish` events
+
+### Snake Side-Bite Clarified
+- Snakes now only bite when they hit you **from the side on the ground** — landing on top is always a squish, never a bite
+
+### Faster, Bouncier Gameplay
+- **Egg recharges in 1 second** (was 3s) — way more eggs, way more kicking
+- **Higher jumps**: ground jump 16→19, air double-jump 22→26 — easier to reach high chickens and stomp snakes
+- **Faster running**: 3.8→5.2 — zippier dodges and chases
+
+### Kid-Fun Pass 🎉
+- Screen shake on every squish, confetti bursts, oversized comic-style pop labels
+- Three new cartoon sounds: squishy splat-boing, shell-kick whoosh-zing, chain-squish arpeggio
+- Start-screen instructions updated with the new squish/kick rules
 
 ---
 
